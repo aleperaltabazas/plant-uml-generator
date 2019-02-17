@@ -18,7 +18,27 @@ public class Reader {
             classDescription.concat("class ");
         }
 
-        classDescription.concat(klazz.getSimpleName() + "{\n");
+        classDescription.concat(klazz.getSimpleName());
+
+        Class parent = klazz.getSuperclass();
+
+        if (parent != Object.class) {
+            classDescription.concat(" extends " + parent.getSimpleName());
+        }
+
+        List<Class> interfaces = Arrays.asList(klazz.getInterfaces());
+
+        if (!interfaces.isEmpty()) {
+            classDescription.concat(" implements ");
+            interfaces.forEach(i -> {
+                classDescription.concat(i.getSimpleName());
+                if (interfaces.indexOf(i) != (interfaces.size() - 1))
+                    classDescription.concat(", ");
+            });
+        }
+
+
+        classDescription.concat(" {\n");
 
         List<Field> fields = Arrays.asList(klazz.getDeclaredFields());
 
