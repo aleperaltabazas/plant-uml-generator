@@ -1,5 +1,3 @@
-package some;
-
 public class FinalButNotReallyString {
     private String text = "";
 
