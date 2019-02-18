@@ -5,8 +5,8 @@ import java.lang.reflect.Parameter;
 import java.util.Arrays;
 import java.util.List;
 
-public class Reader {
-    public void read(Class klazz) {
+public class ClassReader {
+    public String read(Class klazz) {
         final FinalButNotReallyString classDescription = new FinalButNotReallyString();
         final FinalButNotReallyString classReferences = new FinalButNotReallyString();
 
@@ -45,7 +45,7 @@ public class Reader {
         fields.forEach(f -> {
             classDescription.concat(f.getName() + ": " + f.getType().getSimpleName() + "\n");
             if (!(f.getType().isPrimitive() || isQuasiPrimitive(f.getType())))
-                classReferences.concat((klazz.getSimpleName() + " --> " + f.getType() + "\n").replace("class", ""));
+                classReferences.concat((klazz.getSimpleName() + " --> " + f.getType().getSimpleName() + "\n").replace("class", ""));
         });
 
         List<Method> methods = Arrays.asList(klazz.getDeclaredMethods());
@@ -65,13 +65,10 @@ public class Reader {
             }
         });
 
-        classDescription.concat("}");
-        System.out.println(classDescription.getText());
-        System.out.println(classReferences.getText());
-    }
+        classDescription.concat("}\n");
 
-    private boolean shouldIgnoreMethod(Method m) {
-        return false;
+        return classDescription.getText() + classReferences.getText() + "\n";
+
     }
 
     private boolean isQuasiPrimitive(Class<?> type) {
