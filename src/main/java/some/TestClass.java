@@ -1,3 +1,5 @@
+package some;
+
 public class TestClass {
     private class Foo {
     }
