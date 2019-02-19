@@ -26,7 +26,7 @@ public class ClassFinder {
         List<File> files = Arrays.asList(dir.listFiles());
         files.forEach(f -> {
             if (f.isDirectory())
-                loadClassesInDirectory(f.getName());
+                loadClassesInDirectory(f.getAbsolutePath());
         });
 
         try {
