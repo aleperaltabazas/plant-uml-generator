@@ -1,3 +1,5 @@
+package Managers;
+
 public class FinalButNotReallyString {
     private String text = "";
 

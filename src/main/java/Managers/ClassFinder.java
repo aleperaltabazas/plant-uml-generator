@@ -1,3 +1,5 @@
+package Managers;
+
 import org.reflections.Reflections;
 import org.reflections.scanners.ResourcesScanner;
 import org.reflections.scanners.SubTypesScanner;
@@ -15,8 +17,10 @@ public class ClassFinder {
     public void loadClassesInDirectory(String directory) {
         File dir = new File(directory);
 
+        System.out.println("");
+
         if (!dir.isDirectory()) {
-            throw new RuntimeException("Should be a directory");
+            throw new RuntimeException("Should be a directory: " + directory);
         }
 
         List<File> files = Arrays.asList(dir.listFiles());

@@ -1,3 +1,10 @@
+package Main;
+
+import Managers.ClassFinder;
+import Managers.ClassReader;
+import Managers.FinalButNotReallyString;
+import Managers.PackageFinder;
+
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
