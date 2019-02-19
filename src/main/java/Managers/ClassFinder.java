@@ -14,31 +14,45 @@ import java.net.URLClassLoader;
 import java.util.*;
 
 public class ClassFinder {
-    public void loadClassesInDirectory(String directory) {
+    public void loadClassesInDirectory(String directory, String packageName) {
         File dir = new File(directory);
 
-        System.out.println("");
+        System.out.println(dir.getName());
 
-        if (!dir.isDirectory()) {
-            throw new RuntimeException("Should be a directory: " + directory);
+        String _package;
+        if (packageName == null) {
+            if (dir.getName().equalsIgnoreCase("classes"))
+                _package = null;
+            else
+                _package = dir.getName();
+        } else {
+            _package = packageName + "." + dir.getName();
         }
 
-        List<File> files = Arrays.asList(dir.listFiles());
-        files.forEach(f -> {
+
+        List<File> content = Arrays.asList(dir.listFiles());
+
+        content.forEach(f -> {
+
             if (f.isDirectory())
-                loadClassesInDirectory(f.getAbsolutePath());
+                loadClassesInDirectory(f.getAbsolutePath(), _package);
+
+            if (f.getName().endsWith(".class")) {
+
+                try {
+                    URL url = f.toURI().toURL();
+                    URL[] urls = new URL[]{url};
+
+                    ClassLoader loader = new URLClassLoader(urls);
+                    //loader.loadClass(_package.replace("classes\\.", "").replace("\\.class", "") + "." + f.getName());
+                    System.out.println(url.getFile());
+                    loader.loadClass("Managers.ClassFinder");
+                } catch (MalformedURLException | ClassNotFoundException e) {
+                    e.printStackTrace();
+                }
+
+            }
         });
-
-        try {
-            URL url = dir.toURI().toURL();
-            URL[] urls = new URL[]{url};
-
-            ClassLoader cl = new URLClassLoader(urls);
-
-            cl.loadClass(dir.getName().replace('/', '.'));
-        } catch (MalformedURLException | ClassNotFoundException e) {
-            e.printStackTrace();
-        }
     }
 
     public Set<Class<?>> findClasses(Package _package) {

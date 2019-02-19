@@ -18,10 +18,7 @@ public class Main {
         String directory = args[0];
         String diagramName;
 
-        System.out.println(directory);
         File dir = new File(directory);
-        System.out.println(dir.isDirectory());
-        System.out.println(dir.getAbsolutePath());
 
         try {
             diagramName = args[1];
@@ -33,7 +30,7 @@ public class Main {
         PackageFinder packageFinder = new PackageFinder();
         ClassReader reader = new ClassReader();
 
-        classFinder.loadClassesInDirectory(directory);
+        classFinder.loadClassesInDirectory(directory, null);
         List<Package> packages = packageFinder.packagesFrom(directory);
         Set<Class<?>> classes = new HashSet<>();
         packages.forEach(p -> classes.addAll(classFinder.findClasses(p)));
