@@ -37,6 +37,7 @@ public class ClassFinder {
 
             cl.loadClass(dir.getName().replace('/', '.'));
         } catch (MalformedURLException | ClassNotFoundException e) {
+            e.printStackTrace();
         }
     }
 

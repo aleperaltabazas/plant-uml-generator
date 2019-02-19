@@ -6,6 +6,7 @@ import Managers.FinalButNotReallyString;
 import Managers.PackageFinder;
 
 import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.HashSet;
@@ -16,6 +17,11 @@ public class Main {
     public static void main(String[] args) {
         String directory = args[0];
         String diagramName;
+
+        System.out.println(directory);
+        File dir = new File(directory);
+        System.out.println(dir.isDirectory());
+        System.out.println(dir.getAbsolutePath());
 
         try {
             diagramName = args[1];

@@ -21,8 +21,8 @@ public class PackageFinder {
     public List<File> subDirectoriesFrom(String path) {
         File baseDirectory = new File(path);
 
-        if (baseDirectory.isDirectory()) {
-            throw new RuntimeException("base path should be a directory");
+        if (!baseDirectory.isDirectory()) {
+            throw new RuntimeException("base path should be a directory: " + baseDirectory.getAbsolutePath());
         }
 
         List<File> content = Arrays.asList(baseDirectory.listFiles());
