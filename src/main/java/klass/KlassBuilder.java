@@ -5,6 +5,7 @@ import exceptions.NoClassDefinitionException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 public class KlassBuilder {
@@ -12,6 +13,8 @@ public class KlassBuilder {
     private String name;
     private String parent;
     private List<String> interfaces;
+    private List<Attribute> attributes;
+    private List<Method> methods;
 
     public void addClassDefinition(String classDefinition) {
         if (classDefinition.contains("abstract class"))
@@ -41,6 +44,16 @@ public class KlassBuilder {
         } else {
             interfaces = new ArrayList<>();
         }
+    }
+
+    public void addClassBody(String body) {
+        List<String> lines = Arrays.asList(body.split("\n"));
+        lines.forEach(line -> parse(line));
+    }
+
+    private void parse(String line) {
+        String methodRegex = "(public |private |protected )?\\w+ \\w+\\s?[(](\\w+ \\w+(, \\w+ \\w+)*)?[)]\\s?[{]?\\s?";
+        Pattern methodPattern = Pattern.compile(methodRegex);
     }
 
     public ClassType getClassType() {

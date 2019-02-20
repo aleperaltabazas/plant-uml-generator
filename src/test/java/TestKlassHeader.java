@@ -12,6 +12,7 @@ public class TestKlassHeader {
     String fooExtendsBar = "public class Foo extends Bar";
     String baz = "public interface Baz";
     String fooImplementsBaz = "public class Foo implements Baz";
+    String fooImplementsBazBiz = "public class Foo implements Baz, Biz";
 
     KlassBuilder builder;
 
@@ -60,5 +61,12 @@ public class TestKlassHeader {
         builder.addClassDefinition(fooImplementsBaz);
         assertTrue(builder.getInterfaces().contains("Baz"));
         assertEquals(1, builder.getInterfaces().size());
+    }
+
+    @Test
+    public void fooImplementsBazBizShouldHaveTwoInterfaces() {
+        builder.addClassDefinition(fooImplementsBazBiz);
+        assertTrue(builder.getInterfaces().contains("Baz") && builder.getInterfaces().contains("Biz"));
+        assertEquals(2, builder.getInterfaces().size());
     }
 }
