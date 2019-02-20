@@ -1,10 +1,15 @@
 package klass;
 
 public class Argument {
-    private Klass klass;
+    private String klass;
     private String name;
 
-    public Klass getKlass() {
+    public Argument(String type, String name) {
+        this.klass = type;
+        this.name = name;
+    }
+
+    public String getKlass() {
         return klass;
     }
 

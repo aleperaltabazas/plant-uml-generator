@@ -5,12 +5,13 @@ import exceptions.NoClassDefinitionException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 public class KlassBuilder {
     private ClassType classType;
-    private String name;
+    private String name = "Klass";
     private String parent;
     private List<String> interfaces;
     private List<Attribute> attributes;
@@ -47,13 +48,57 @@ public class KlassBuilder {
     }
 
     public void addClassBody(String body) {
-        List<String> lines = Arrays.asList(body.split("\n"));
-        lines.forEach(line -> parse(line));
+        List<String> effectiveLines = filterConstructor(body);
+        methods = parseMethods(effectiveLines);
+        attributes = parseAttributes(effectiveLines);
     }
 
-    private void parse(String line) {
-        String methodRegex = "(public |private |protected )?\\w+ \\w+\\s?[(](\\w+ \\w+(, \\w+ \\w+)*)?[)]\\s?[{]?\\s?";
+    private List<Attribute> parseAttributes(List<String> lines) {
+
+        return null;
+    }
+
+    private List<Method> parseMethods(List<String> lines) {
+        String methodRegex = "(public |private |protected )?\\w([\\w+][.]?)* \\w+\\s?[(](\\w+ \\w+(, \\w+ \\w+)*)?[)]\\s?[{]?\\s?";
         Pattern methodPattern = Pattern.compile(methodRegex);
+
+        int curlyCount = 0;
+        for (String line : lines) {
+            if (methodPattern.matcher(line).matches()) {
+                if (line.contains("{")) curlyCount++;
+            }
+        }
+
+        return null;
+    }
+
+    private List<String> filterConstructor(String body) {
+        String constructorRegex = "(public |private |protected )?" + this.name + "[(].*[)]\\s?[{]";
+        Pattern constructorPattern = Pattern.compile(constructorRegex);
+        Matcher matcher;
+
+        List<String> lines = Arrays.asList(body.split("\n"));
+        boolean skip = true;
+        List<String> constructor = new ArrayList<>();
+
+        int curlyCount = 0;
+
+        for (String line : lines) {
+            if (constructorPattern.matcher(line).matches()) {
+                skip = false;
+            }
+
+            if (!skip) {
+                if (line.contains("{")) curlyCount++;
+                if (line.contains("}")) curlyCount--;
+
+                constructor.add(line);
+
+                if (curlyCount == 0) skip = true;
+            }
+        }
+
+        return lines.stream().filter(line -> constructor.stream().anyMatch(l -> l.equalsIgnoreCase(line))).collect(Collectors.toList());
     }
 
     public ClassType getClassType() {

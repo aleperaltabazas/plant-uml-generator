@@ -3,17 +3,19 @@ package klass;
 import java.util.List;
 
 public class Method {
-    private Klass returnType;
+    private String returnType;
     private List<Argument> arguments;
     private boolean visible;
+    private String name;
 
-    public Method(Klass returnType, List<Argument> arguments, boolean visible) {
+    public Method(String name, String returnType, List<Argument> arguments, boolean visible) {
+        this.name = name;
         this.returnType = returnType;
         this.arguments = arguments;
         this.visible = visible;
     }
 
-    public Klass getReturnType() {
+    public String getReturnType() {
         return returnType;
     }
 
