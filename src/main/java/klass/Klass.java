@@ -1,7 +1,6 @@
 package klass;
 
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.Optional;
 
 public class Klass {
@@ -9,9 +8,9 @@ public class Klass {
     private List<Method> methods;
     private String name;
     private ClassType type;
-    private Optional<Klass> parent;
+    private Optional<String> parent;
 
-    public Klass(List<Attribute> attributes, List<Method> methods, String name, ClassType type, Klass parent) {
+    public Klass(List<Attribute> attributes, List<Method> methods, String name, ClassType type, String parent) {
         this.attributes = attributes;
         this.methods = methods;
         this.name = name;
@@ -23,11 +22,19 @@ public class Klass {
         return name;
     }
 
-    public Klass getParent() {
-        try {
-            return parent.get();
-        } catch (NoSuchElementException e) {
-            return this;
-        }
+    public ClassType getType() {
+        return type;
+    }
+
+    public List<Attribute> getAttributes() {
+        return attributes;
+    }
+
+    public List<Method> getMethods() {
+        return methods;
+    }
+
+    public String getParent() {
+        return parent.orElse("");
     }
 }

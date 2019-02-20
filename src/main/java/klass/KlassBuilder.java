@@ -1,16 +1,16 @@
 package klass;
 
 import exceptions.NoClassDefinitionException;
-import utils.FinalButNotReallyString;
 
-import javax.swing.plaf.synth.SynthTextAreaUI;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class KlassBuilder {
     private ClassType classType;
-    private FinalButNotReallyString name = new FinalButNotReallyString();
-    private Klass parent;
+    private String name;
+    private String parent;
     private List<String> interfaces;
 
     public void addClassDefinition(String classDefinition) {
@@ -23,34 +23,24 @@ public class KlassBuilder {
         else
             throw new NoClassDefinitionException();
 
-        int nameStarting = classDefinition.indexOf(classType.javaDefinition()) + classType.javaDefinition().length() + 1;
-
-        while (classDefinition.charAt(nameStarting) != ' ') {
-            if (name == null) name = new FinalButNotReallyString();
-            name.concat("" + classDefinition.charAt(nameStarting));
-            nameStarting++;
-
-            if (nameStarting == classDefinition.length()) break;
-
-        }
+        List<String> words = Arrays.asList(classDefinition.split(" "));
+        String name = words.get(words.indexOf(words.stream().filter(w -> w.replace("\\s", "").equalsIgnoreCase("class")).findFirst().get()) + 1);
+        StringBuilder sb = new StringBuilder(name);
+        this.name = sb.toString();
 
         if (classDefinition.contains("extends")) {
-            int superStarting = classDefinition.lastIndexOf("extends") + 2;
-
-            String parentName = "";
-            while (classDefinition.charAt(superStarting) != ' ') {
-                parentName += classDefinition.charAt(superStarting);
-                superStarting++;
-            }
-
-            parent = buildSimpleKlass(parentName);
+            parent = words.get(words.indexOf(words.stream().filter(w -> w.equalsIgnoreCase("extends")).findFirst().get()) + 1);
         } else {
-            parent = Objekt.getInstance();
+            parent = Objekt.getInstance().getName();
         }
-    }
 
-    public static Klass buildSimpleKlass(String name) {
-        return new Klass(Arrays.asList(), Arrays.asList(), name, ClassType.Concrete, Objekt.getInstance());
+        if (classDefinition.contains("implements")) {
+            StringBuilder parentBUilder = new StringBuilder();
+            words.stream().filter(w -> words.indexOf(w) > words.indexOf("implements")).collect(Collectors.toList()).forEach(w -> parentBUilder.append(w));
+            interfaces = Arrays.asList(parentBUilder.toString().split(","));
+        } else {
+            interfaces = new ArrayList<>();
+        }
     }
 
     public ClassType getClassType() {
@@ -58,14 +48,21 @@ public class KlassBuilder {
     }
 
     public String getName() {
-        return name.getText();
+        return name;
     }
 
-    public Klass getParent() {
+    public String getSuperClass() {
         return parent;
     }
 
     public List<String> getInterfaces() {
         return interfaces;
+    }
+
+    public void clear() {
+        classType = null;
+        name = null;
+        parent = null;
+        interfaces = null;
     }
 }
