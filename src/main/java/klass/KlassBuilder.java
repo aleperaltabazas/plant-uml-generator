@@ -59,7 +59,7 @@ public class KlassBuilder {
     }
 
     private List<Method> parseMethods(List<String> lines) {
-        String methodRegex = "(public |private |protected )?\\w([\\w+][.]?)* \\w+\\s?[(](\\w+ \\w+(, \\w+ \\w+)*)?[)]\\s?[{]?\\s?";
+        String methodRegex = "(public |private |protected )?\\w([\\w+][.]?)* \\w+\\s?[(](\\w+ \\w+(, \\w+ \\w+)*)?[)]\\s?([{]?|;)\\s?";
         Pattern methodPattern = Pattern.compile(methodRegex);
 
         int curlyCount = 0;

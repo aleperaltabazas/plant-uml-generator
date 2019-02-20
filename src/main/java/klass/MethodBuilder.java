@@ -2,7 +2,6 @@ package klass;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.regex.Pattern;
 
 public class MethodBuilder {
     private String returnType;
@@ -11,20 +10,22 @@ public class MethodBuilder {
     private String name;
 
     public void addMethodDefinition(String definition) {
-        String nameRegex = "(public |private |protected )?\\w([\\w+][.]?) \\w+";
-        Pattern namePattern = Pattern.compile(nameRegex);
-
         parseVisibility(definition);
-        parseTypeAndName(definition, namePattern);
-        parseArguments(definition, nameRegex);
+        parseType(definition);
+        parseName(definition);
+        parseArguments(definition);
     }
 
     private void parseVisibility(String definition) {
         visible = definition.contains("public");
     }
 
-    private void parseArguments(String definition, String nameRegex) {
-        String arguments = definition.replace(nameRegex, "").replace('(', Character.MIN_VALUE).replace(')', Character.MIN_VALUE);
+    private void parseArguments(String definition) {
+        int first = definition.indexOf('(') + 1;
+        int last = definition.indexOf(')');
+
+        String arguments = definition.substring(first, last);
+
         char[] ars = arguments.toCharArray();
         List<Character> chars = new ArrayList<>();
 
@@ -36,41 +37,86 @@ public class MethodBuilder {
         List<Character> type = new ArrayList<>();
         this.arguments = new ArrayList<>();
 
+        String word = "";
+        List<String> words = new ArrayList<>();
+        StringBuilder sb = new StringBuilder();
         boolean addingType = true;
 
+        int wordCount = 0;
+
+        List<String> names = new ArrayList<>();
+        List<String> types = new ArrayList<>();
+
+        boolean skip = false;
+
         for (Character character : chars) {
+            if (skip) {
+                skip = false;
+                continue;
+            }
+
             if (character == '<') greaterOrLesserThan++;
             if (character == '>') greaterOrLesserThan--;
 
-            if (character == ' ') {
-                addingType = false;
-                continue;
-            }
-
             if (character == ',' && greaterOrLesserThan == 0) {
-                StringBuilder nameBuilder = new StringBuilder();
-                name.forEach(c -> nameBuilder.append(c));
+                skip = true;
+            }
 
-                StringBuilder typeBuilder = new StringBuilder();
-                type.forEach(c -> typeBuilder.append(c));
-                this.arguments.add(new Argument(typeBuilder.toString(), nameBuilder.toString()));
-                addingType = true;
+            if (character == ' ' && greaterOrLesserThan == 0) {
+                words.add(sb.toString());
+                sb = new StringBuilder();
                 continue;
             }
 
-            if (addingType)
-                type.add(character);
-            else
-                name.add(character);
+            sb.append(character);
         }
+
+        words.forEach(w -> {
+            if (words.indexOf(w) % 2 == 0) {
+                this.arguments.add(new Argument(w, words.get(words.indexOf(w) + 1)));
+            }
+        });
     }
 
-    private void parseTypeAndName(String definition, Pattern namePattern) {
-        if (namePattern.matcher(definition).find()) {
-            String typeAndName = namePattern.matcher(definition).group(0);
-            String[] typeAndNameArray = typeAndName.replace("(public|protected|private)", "").split("\\s");
-            returnType = typeAndNameArray[0];
-            name = typeAndNameArray[1];
+    private void parseType(String definition) {
+        String[] words = definition.split("\\s");
+        if (declaresVisibility(definition))
+            this.returnType = words[1];
+        else
+            this.returnType = words[0];
+    }
+
+    private void parseName(String definition) {
+        String[] words = definition.split("\\s");
+        String name;
+
+        if (declaresVisibility(definition)) {
+            name = words[2];
+        } else {
+            name = words[1];
         }
+
+        this.name = name.substring(0, words[2].indexOf('('));
+    }
+
+    private boolean declaresVisibility(String definition) {
+        String starting = definition.substring(0, "protected".length());
+        return starting.contains("protected") || starting.contains("private") || starting.contains("public");
+    }
+
+    public String getReturnType() {
+        return returnType;
+    }
+
+    public List<Argument> getArguments() {
+        return arguments;
+    }
+
+    public boolean isVisible() {
+        return visible;
+    }
+
+    public String getName() {
+        return name;
     }
 }
