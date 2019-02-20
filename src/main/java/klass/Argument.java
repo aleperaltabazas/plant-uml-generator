@@ -1,4 +1,4 @@
-package some.klass;
+package klass;
 
 public class Argument {
     private Klass klass;

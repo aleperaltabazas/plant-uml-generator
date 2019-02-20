@@ -1,6 +1,5 @@
-package some.klass;
+package klass;
 
-import exceptions.InvalidRegex;
 import exceptions.NoClassDefinitionException;
 
 import java.io.BufferedReader;

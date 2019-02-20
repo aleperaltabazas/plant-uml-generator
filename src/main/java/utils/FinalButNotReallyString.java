@@ -1,4 +1,4 @@
-package some;
+package utils;
 
 public class FinalButNotReallyString {
     private String text = "";

@@ -1,7 +1,6 @@
-package some.klass;
+package klass;
 
 import java.util.Arrays;
-import java.util.List;
 
 public class Objekt extends Klass {
     private static Objekt instance = new Objekt();

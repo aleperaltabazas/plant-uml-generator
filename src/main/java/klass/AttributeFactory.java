@@ -1,4 +1,4 @@
-package some.klass;
+package klass;
 
 public class AttributeFactory {
     public static Attribute getAttribute(String name, Klass klass, String file) {

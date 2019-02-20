@@ -1,4 +1,4 @@
-package some.klass;
+package klass;
 
 import java.util.List;
 import java.util.NoSuchElementException;

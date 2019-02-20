@@ -1,4 +1,4 @@
-package some.klass;
+package klass;
 
 public class Attribute {
     private String name;
