@@ -1,5 +1,8 @@
 package klass;
 
+import java.util.Arrays;
+import java.util.List;
+
 public class AttributeBuilder extends AbstractBuilder {
     private String type;
     private String name;
@@ -7,30 +10,35 @@ public class AttributeBuilder extends AbstractBuilder {
 
     public void addAttributeDefinition(String definition) {
         String[] words = definition.split("\\s");
-        String name;
-        String type;
 
-        if (declaresVisibility(definition)) {
-            name = words[2];
-            type = words[1];
-        } else {
-            name = words[1];
-            type = words[0];
-        }
-
-        this.type = type;
-
-        if (declaresValue(name)) {
-            this.name = name.substring(0, name.indexOf('=')).replace("\\s", "");
-        } else {
-            try {
-                this.name = name.substring(0, name.indexOf(';')).replace("\\s", "");
-            } catch (StringIndexOutOfBoundsException e) {
-                this.name = name;
-            }
-        }
+        parseName(definition);
+        parseType(definition);
 
         visible = definition.substring(0, "protected".length() - 1).contains("public");
+    }
+
+    private void parseType(String definition) {
+        type = definition.split("\\s")[presentModifiers(definition)];
+    }
+
+    private void parseName(String definition) {
+        String name = definition.split("\\s")[presentModifiers(definition) + 1];
+        if (declaresValue(name)) {
+            this.name = name.substring(0, name.indexOf('='));
+        } else {
+            this.name = name.replace(";", "");
+        }
+    }
+
+    private int presentModifiers(String definition) {
+        int presentModifiers = 0;
+        List<String> possibleModifiers = Arrays.asList("protected", "public", "private", "static", "final");
+
+        for (String modifier : possibleModifiers) {
+            if (definition.contains(modifier)) presentModifiers++;
+        }
+
+        return presentModifiers;
     }
 
     private boolean declaresValue(String definition) {
@@ -38,7 +46,7 @@ public class AttributeBuilder extends AbstractBuilder {
     }
 
     public void determineVisibility(String body) {
-        visible = visible || body.contains("public get" + name);
+        visible = visible || body.toLowerCase().contains("public " + type + " get" + name.toLowerCase());
     }
 
     public String getName() {

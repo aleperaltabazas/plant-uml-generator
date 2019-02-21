@@ -10,6 +10,8 @@ public class TestAttribute {
     String foo = "private int foo;";
     String bar = "public Integer bar;";
     String baz = "double baz = 2d";
+    String biz = "private int biz;";
+    String bizGetter = "public int getBiz() {";
     AttributeBuilder builder;
 
     @Before
@@ -36,5 +38,12 @@ public class TestAttribute {
         builder.addAttributeDefinition(baz);
         assertEquals("baz", builder.getName());
         assertFalse(builder.isVisible());
+    }
+
+    @Test
+    public void bizPrivateButWithGetterShouldBeVisible() {
+        builder.addAttributeDefinition(biz);
+        builder.determineVisibility(bizGetter);
+        assertTrue(builder.isVisible());
     }
 }
