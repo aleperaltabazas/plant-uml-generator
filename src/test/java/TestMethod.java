@@ -40,7 +40,7 @@ public class TestMethod {
     public void barShouldHaveTwoArguments() {
         builder.addMethodDefinition(bar);
         List<Argument> args = builder.getArguments();
-        //assertEquals(2, args.size());
+        assertEquals(2, args.size());
         assertEquals("int", args.get(0).getKlass());
         assertEquals("arg0", args.get(0).getName());
     }

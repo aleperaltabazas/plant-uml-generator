@@ -47,23 +47,19 @@ public class MethodBuilder {
         List<String> names = new ArrayList<>();
         List<String> types = new ArrayList<>();
 
-        boolean skip = false;
+        List<String> currentList = types;
 
         for (Character character : chars) {
-            if (skip) {
-                skip = false;
+            if (character == ' ') {
+                String str = sb.toString();
+                if (!str.isEmpty())
+                    types.add(str);
+                sb = new StringBuilder();
                 continue;
             }
 
-            if (character == '<') greaterOrLesserThan++;
-            if (character == '>') greaterOrLesserThan--;
-
-            if (character == ',' && greaterOrLesserThan == 0) {
-                skip = true;
-            }
-
-            if (character == ' ' && greaterOrLesserThan == 0) {
-                words.add(sb.toString());
+            if (character == ',') {
+                names.add(sb.toString());
                 sb = new StringBuilder();
                 continue;
             }
@@ -71,11 +67,16 @@ public class MethodBuilder {
             sb.append(character);
         }
 
-        words.forEach(w -> {
-            if (words.indexOf(w) % 2 == 0) {
-                this.arguments.add(new Argument(w, words.get(words.indexOf(w) + 1)));
-            }
-        });
+        String str = sb.toString();
+        if (!str.isEmpty())
+            names.add(str);
+
+        if (!names.isEmpty()) {
+            names.forEach(n -> {
+                this.arguments.add(new Argument(types.get(names.indexOf(n)), n));
+            });
+        }
+
     }
 
     private void parseType(String definition) {
