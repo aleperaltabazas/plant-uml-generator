@@ -5,7 +5,6 @@ import exceptions.NoClassDefinitionException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
@@ -54,12 +53,13 @@ public class KlassBuilder {
     }
 
     private List<Attribute> parseAttributes(List<String> lines) {
-
+        String attributeRegex = "(public |private |protected )?\\w(\\w+.?)* \\w+\\s?(=\\s?.*)?;";
+        Pattern attributePattern = Pattern.compile(attributeRegex);
         return null;
     }
 
     private List<Method> parseMethods(List<String> lines) {
-        String methodRegex = "(public |private |protected )?\\w([\\w+][.]?)* \\w+\\s?[(](\\w+ \\w+(, \\w+ \\w+)*)?[)]\\s?([{]?|;)\\s?";
+        String methodRegex = "(public |private |protected )?\\w(\\w+.?)* \\w+\\s?[(](\\w+ \\w+(, \\w+ \\w+)*)?[)]\\s?([{]?|;)\\s?";
         Pattern methodPattern = Pattern.compile(methodRegex);
 
         int curlyCount = 0;
@@ -73,9 +73,8 @@ public class KlassBuilder {
     }
 
     private List<String> filterConstructor(String body) {
-        String constructorRegex = "(public |private |protected )?" + this.name + "[(].*[)]\\s?[{]";
+        String constructorRegex = "\\s?(public |private |protected )?" + this.name + "[(].*[)]\\s?[{]";
         Pattern constructorPattern = Pattern.compile(constructorRegex);
-        Matcher matcher;
 
         List<String> lines = Arrays.asList(body.split("\n"));
         boolean skip = true;

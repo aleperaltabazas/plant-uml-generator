@@ -3,7 +3,7 @@ package klass;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MethodBuilder {
+public class MethodBuilder extends AbstractBuilder {
     private String returnType;
     private List<Argument> arguments;
     private boolean visible;
@@ -33,10 +33,7 @@ public class MethodBuilder {
             chars.add(a);
 
         int greaterOrLesserThan = 0;
-        this.arguments = new ArrayList<>();
 
-        String word = "";
-        List<String> words = new ArrayList<>();
         StringBuilder sb = new StringBuilder();
 
         List<String> names = new ArrayList<>();
@@ -67,6 +64,7 @@ public class MethodBuilder {
         if (!str.isEmpty())
             names.add(str);
 
+        this.arguments = new ArrayList<>();
         if (!names.isEmpty()) {
             names.forEach(n -> {
                 this.arguments.add(new Argument(types.get(names.indexOf(n)), n));
@@ -94,11 +92,6 @@ public class MethodBuilder {
             name = words[1];
             this.name = name.substring(0, words[1].indexOf('('));
         }
-    }
-
-    private boolean declaresVisibility(String definition) {
-        String starting = definition.substring(0, "protected".length());
-        return starting.contains("protected") || starting.contains("private") || starting.contains("public");
     }
 
     public String getReturnType() {

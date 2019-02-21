@@ -1,3 +1,5 @@
+package parsing;
+
 import klass.ClassType;
 import klass.KlassBuilder;
 import klass.Objekt;

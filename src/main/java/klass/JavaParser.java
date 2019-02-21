@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
-public class TextManager {
+public class JavaParser {
     private List<String> parseLines(String path) {
         File file = new File(path);
         List<String> lines = new ArrayList<>();
