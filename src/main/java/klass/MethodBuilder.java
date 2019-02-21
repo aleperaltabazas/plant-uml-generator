@@ -33,24 +33,20 @@ public class MethodBuilder {
             chars.add(a);
 
         int greaterOrLesserThan = 0;
-        List<Character> name = new ArrayList<>();
-        List<Character> type = new ArrayList<>();
         this.arguments = new ArrayList<>();
 
         String word = "";
         List<String> words = new ArrayList<>();
         StringBuilder sb = new StringBuilder();
-        boolean addingType = true;
-
-        int wordCount = 0;
 
         List<String> names = new ArrayList<>();
         List<String> types = new ArrayList<>();
 
-        List<String> currentList = types;
-
         for (Character character : chars) {
-            if (character == ' ') {
+            if (character == '<') greaterOrLesserThan++;
+            if (character == '>') greaterOrLesserThan--;
+
+            if (character == ' ' && greaterOrLesserThan == 0) {
                 String str = sb.toString();
                 if (!str.isEmpty())
                     types.add(str);
@@ -58,7 +54,7 @@ public class MethodBuilder {
                 continue;
             }
 
-            if (character == ',') {
+            if (character == ',' && greaterOrLesserThan == 0) {
                 names.add(sb.toString());
                 sb = new StringBuilder();
                 continue;
@@ -93,11 +89,11 @@ public class MethodBuilder {
 
         if (declaresVisibility(definition)) {
             name = words[2];
+            this.name = name.substring(0, words[2].indexOf('('));
         } else {
             name = words[1];
+            this.name = name.substring(0, words[1].indexOf('('));
         }
-
-        this.name = name.substring(0, words[2].indexOf('('));
     }
 
     private boolean declaresVisibility(String definition) {
