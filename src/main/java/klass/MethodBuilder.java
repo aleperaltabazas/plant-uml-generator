@@ -1,13 +1,16 @@
 package klass;
 
+import javafx.util.Pair;
+
 import java.util.ArrayList;
 import java.util.List;
 
 public class MethodBuilder extends AbstractBuilder {
     private String returnType;
-    private List<Argument> arguments;
     private boolean visible;
     private String name;
+    private List<Pair<String, String>> argumentsMap;
+    private List<Argument> arguments;
 
     public void addMethodDefinition(String definition) {
         parseVisibility(definition);
@@ -26,11 +29,18 @@ public class MethodBuilder extends AbstractBuilder {
 
         String arguments = definition.substring(first, last);
 
+        fillArgumentMap(arguments);
+        this.arguments = new ArrayList<>();
+
+        this.argumentsMap.forEach(a -> this.arguments.add(new Argument(a.getValue(), a.getKey())));
+    }
+
+    private void fillArgumentMap(String arguments) {
         char[] ars = arguments.toCharArray();
-        List<Character> chars = new ArrayList<>();
+        List<Character> characters = new ArrayList<>();
 
         for (char a : ars)
-            chars.add(a);
+            characters.add(a);
 
         int greaterOrLesserThan = 0;
 
@@ -39,7 +49,7 @@ public class MethodBuilder extends AbstractBuilder {
         List<String> names = new ArrayList<>();
         List<String> types = new ArrayList<>();
 
-        for (Character character : chars) {
+        for (Character character : characters) {
             if (character == '<') greaterOrLesserThan++;
             if (character == '>') greaterOrLesserThan--;
 
@@ -64,13 +74,9 @@ public class MethodBuilder extends AbstractBuilder {
         if (!str.isEmpty())
             names.add(str);
 
-        this.arguments = new ArrayList<>();
-        if (!names.isEmpty()) {
-            names.forEach(n -> {
-                this.arguments.add(new Argument(types.get(names.indexOf(n)), n));
-            });
-        }
+        argumentsMap = new ArrayList<>();
 
+        names.forEach(name -> argumentsMap.add(new Pair<>(name, types.get(names.indexOf(name)))));
     }
 
     private void parseType(String definition) {
@@ -98,7 +104,7 @@ public class MethodBuilder extends AbstractBuilder {
         return returnType;
     }
 
-    public List<Argument> getArguments() {
+    public List<Argument> getArgumentsMap() {
         return arguments;
     }
 
