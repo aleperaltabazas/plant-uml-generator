@@ -9,8 +9,6 @@ public class AttributeBuilder extends AbstractBuilder {
     private boolean visible;
 
     public void addAttributeDefinition(String definition) {
-        String[] words = definition.split("\\s");
-
         parseName(definition);
         parseType(definition);
 
@@ -59,5 +57,9 @@ public class AttributeBuilder extends AbstractBuilder {
 
     public boolean isVisible() {
         return visible;
+    }
+
+    public Attribute build() {
+        return new Attribute(name, type, visible);
     }
 }

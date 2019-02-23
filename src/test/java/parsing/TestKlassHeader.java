@@ -2,12 +2,11 @@ package parsing;
 
 import klass.ClassType;
 import klass.KlassBuilder;
-import klass.Objekt;
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class TestKlassHeader {
     String foo = "public class Foo";
@@ -23,11 +22,6 @@ public class TestKlassHeader {
         builder = new KlassBuilder();
     }
 
-    @After
-    public void clear() {
-        builder.clear();
-    }
-
     @Test
     public void fooShouldBeAConcreteClass() {
         builder.addClassDefinition(foo);
@@ -41,9 +35,9 @@ public class TestKlassHeader {
     }
 
     @Test
-    public void foosSuperClassShouldBeObjekt() {
+    public void foosSuperClassShouldBeNull() {
         builder.addClassDefinition(foo);
-        assertEquals(Objekt.getInstance().getName(), builder.getSuperClass());
+        assertEquals(null, builder.getSuperClass());
     }
 
     @Test

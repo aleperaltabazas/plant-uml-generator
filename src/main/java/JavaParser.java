@@ -1,6 +1,6 @@
-package klass;
-
 import exceptions.NoClassDefinitionException;
+import klass.Klass;
+import klass.KlassBuilder;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -22,7 +22,7 @@ public class JavaParser {
             String line;
 
             while ((line = reader.readLine()) != null) {
-                lines.add(line.replace("\\s+", " "));
+                lines.add(line.replaceAll("\\s+", " "));
             }
 
             reader.close();
@@ -33,12 +33,31 @@ public class JavaParser {
         return lines;
     }
 
-    public Klass readKlass(String path) {
+    public Klass readKlass(String path) throws Exception {
         List<String> lines = filterUnnecessary(path);
 
         String classDefinition = getClassHeader(lines);
+        String body = getBody(lines);
 
-        return null;
+        KlassBuilder kb = new KlassBuilder();
+        kb.addClassDefinition(classDefinition);
+        kb.addClassBody(body);
+
+        return kb.build();
+    }
+
+    private String getBody(List<String> lines) {
+        StringBuilder sb = new StringBuilder();
+
+        int curlyBraces = 0;
+        for (String line : lines) {
+            if (line.contains("{")) curlyBraces++;
+            if (line.contains("}")) curlyBraces--;
+
+            if (curlyBraces > 0) sb.append(line + "\n");
+        }
+
+        return sb.toString();
     }
 
     private List<String> filterUnnecessary(String path) {
@@ -53,7 +72,7 @@ public class JavaParser {
             return lines.stream().filter(line -> line.matches("" +
                     "(public )?(class|interface|abstract class) \\w+" +
                     "( extends \\w+)?" +
-                    "( implements \\w+(\\s?,\\s?\\w+)*)?")).
+                    "( implements \\w+(\\s?,\\s?\\w+)*)?\\s[{]")).
                     findFirst().get();
         } catch (NoSuchElementException e) {
             throw new NoClassDefinitionException();

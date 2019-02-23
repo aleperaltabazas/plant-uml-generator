@@ -115,4 +115,8 @@ public class MethodBuilder extends AbstractBuilder {
     public String getName() {
         return name;
     }
+
+    public Method build() {
+        return new Method(name, returnType, arguments, visible);
+    }
 }

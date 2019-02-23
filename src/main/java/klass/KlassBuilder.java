@@ -16,6 +16,14 @@ public class KlassBuilder {
     private List<Attribute> attributes;
     private List<Method> methods;
 
+    public Klass build() throws Exception {
+        if (classType == null || name == null) {
+            throw new Exception("Need parameters to build");
+        }
+
+        return new Klass(attributes, methods, name, classType, parent);
+    }
+
     public void addClassDefinition(String classDefinition) {
         if (classDefinition.contains("abstract class"))
             classType = ClassType.Abstract;
@@ -34,7 +42,7 @@ public class KlassBuilder {
         if (classDefinition.contains("extends")) {
             parent = words.get(words.indexOf(words.stream().filter(w -> w.equalsIgnoreCase("extends")).findFirst().get()) + 1);
         } else {
-            parent = Objekt.getInstance().getName();
+            parent = null;
         }
 
         if (classDefinition.contains("implements")) {
@@ -49,27 +57,59 @@ public class KlassBuilder {
     public void addClassBody(String body) {
         List<String> effectiveLines = filterConstructor(body);
         methods = parseMethods(effectiveLines);
-        attributes = parseAttributes(effectiveLines);
+        attributes = parseAttributes(effectiveLines, body);
     }
 
-    private List<Attribute> parseAttributes(List<String> lines) {
-        String attributeRegex = "(public |private |protected )?\\w(\\w+.?)* \\w+\\s?(=\\s?.*)?;";
+    private List<Attribute> parseAttributes(List<String> lines, String body) {
+        String attributeRegex = "\\s?(public |private |protected )?\\w(\\w+.?)* \\w+\\s?(=\\s?.*)?;";
         Pattern attributePattern = Pattern.compile(attributeRegex);
-        return null;
-    }
 
-    private List<Method> parseMethods(List<String> lines) {
-        String methodRegex = "(public |private |protected )?\\w(\\w+.?)* \\w+\\s?[(](\\w+ \\w+(, \\w+ \\w+)*)?[)]\\s?([{]?|;)\\s?";
-        Pattern methodPattern = Pattern.compile(methodRegex);
+        List<Attribute> attributes = new ArrayList<>();
+        AttributeBuilder attributeBuilder = new AttributeBuilder();
 
         int curlyCount = 0;
+
         for (String line : lines) {
-            if (methodPattern.matcher(line).matches()) {
-                if (line.contains("{")) curlyCount++;
+            if (line.contains("{")) curlyCount++;
+            if (line.contains("}")) curlyCount--;
+            if (attributePattern.matcher(line).matches()) {
+                if (curlyCount == 1) {
+                    attributeBuilder.addAttributeDefinition(line);
+                    attributeBuilder.determineVisibility(body);
+                    Attribute attr = attributeBuilder.build();
+                    attributes.add(attr);
+                }
             }
         }
 
-        return null;
+        return attributes;
+    }
+
+    private List<Method> parseMethods(List<String> lines) {
+        String methodRegex = "\\s?(public |private |protected )?\\w(\\w+.?)* \\w+\\s?[(](\\w+ \\w+(, \\w+ \\w+)*)?[)]\\s?([{]?|;)\\s?";
+        Pattern methodPattern = Pattern.compile(methodRegex);
+
+        List<Method> methods = new ArrayList<>();
+        MethodBuilder methodBuilder = new MethodBuilder();
+
+        int curlyCount = 1;
+        List<String> methodLines = new ArrayList<>();
+        for (String line : lines) {
+            if (line.contains("{")) curlyCount++;
+            if (lines.contains("}")) curlyCount--;
+
+            if (methodPattern.matcher(line).matches()) {
+                if (curlyCount == 1) {
+                    methodBuilder.addMethodDefinition(methodLines.get(0));
+                    methods.add(methodBuilder.build());
+                    continue;
+                }
+
+                methodLines.add(line);
+            }
+        }
+
+        return methods;
     }
 
     private List<String> filterConstructor(String body) {
@@ -80,7 +120,7 @@ public class KlassBuilder {
         boolean skip = true;
         List<String> constructor = new ArrayList<>();
 
-        int curlyCount = 0;
+        int curlyCount = 1;
 
         for (String line : lines) {
             if (constructorPattern.matcher(line).matches()) {
@@ -114,12 +154,5 @@ public class KlassBuilder {
 
     public List<String> getInterfaces() {
         return interfaces;
-    }
-
-    public void clear() {
-        classType = null;
-        name = null;
-        parent = null;
-        interfaces = null;
     }
 }

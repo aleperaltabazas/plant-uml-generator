@@ -8,6 +8,7 @@ public class Klass {
     private List<Method> methods;
     private String name;
     private ClassType type;
+    private List<Optional<String>> interfaces;
     private Optional<String> parent;
 
     public Klass(List<Attribute> attributes, List<Method> methods, String name, ClassType type, String parent) {
@@ -35,6 +36,6 @@ public class Klass {
     }
 
     public String getParent() {
-        return parent.orElse("");
+        return parent.orElse("Object");
     }
 }
