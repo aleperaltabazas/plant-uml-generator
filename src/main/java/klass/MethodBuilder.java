@@ -6,21 +6,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MethodBuilder extends AbstractBuilder {
-    private String returnType;
-    private boolean visible;
+    private Boolean visible;
     private String name;
     private List<Pair<String, String>> argumentsMap;
     private List<Argument> arguments;
 
-    public void addMethodDefinition(String definition) {
+    public void addDefinition(String definition) {
+        parseArguments(definition);
         parseVisibility(definition);
         parseType(definition);
         parseName(definition);
-        parseArguments(definition);
-    }
-
-    private void parseVisibility(String definition) {
-        visible = definition.contains("public");
     }
 
     private void parseArguments(String definition) {
@@ -79,36 +74,23 @@ public class MethodBuilder extends AbstractBuilder {
         names.forEach(name -> argumentsMap.add(new Pair<>(name, types.get(names.indexOf(name)))));
     }
 
-    private void parseType(String definition) {
-        String[] words = definition.split("\\s");
-        if (declaresVisibility(definition))
-            this.returnType = words[1];
-        else
-            this.returnType = words[0];
-    }
-
     private void parseName(String definition) {
-        String[] words = definition.split("\\s");
-        String name;
-
-        if (declaresVisibility(definition)) {
-            name = words[2];
-            this.name = name.substring(0, words[2].indexOf('('));
-        } else {
-            name = words[1];
-            this.name = name.substring(0, words[1].indexOf('('));
-        }
+        String name = definition.split("\\s")[presentModifiers(definition) + 1];
+        if (name.contains("("))
+            this.name = name.substring(0, name.indexOf('('));
+        else
+            this.name = name;
     }
 
     public String getReturnType() {
-        return returnType;
+        return type;
     }
 
     public List<Argument> getArgumentsMap() {
         return arguments;
     }
 
-    public boolean isVisible() {
+    public Boolean isVisible() {
         return visible;
     }
 
@@ -117,6 +99,13 @@ public class MethodBuilder extends AbstractBuilder {
     }
 
     public Method build() {
-        return new Method(name, returnType, arguments, visible);
+        return new Method(name, type, arguments, visible);
+    }
+
+    public void clear() {
+        name = null;
+        arguments = null;
+        visible = null;
+        argumentsMap = null;
     }
 }

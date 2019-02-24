@@ -21,7 +21,7 @@ public class TestAttribute {
 
     @Test
     public void fooShouldNoteBeVisible() {
-        builder.addAttributeDefinition(foo);
+        builder.addDefinition(foo);
         assertEquals("foo", builder.getName());
         assertEquals("int", builder.getType());
         assertFalse(builder.isVisible());
@@ -29,21 +29,20 @@ public class TestAttribute {
 
     @Test
     public void barShouldBeVisible() {
-        builder.addAttributeDefinition(bar);
+        builder.addDefinition(bar);
         assertTrue(builder.isVisible());
     }
 
     @Test
     public void bazShouldNotBeVisible() {
-        builder.addAttributeDefinition(baz);
+        builder.addDefinition(baz);
         assertEquals("baz", builder.getName());
         assertFalse(builder.isVisible());
     }
 
     @Test
     public void bizPrivateButWithGetterShouldBeVisible() {
-        builder.addAttributeDefinition(biz);
-        builder.determineVisibility(bizGetter);
+        builder.addDefinition(biz);
         assertTrue(builder.isVisible());
     }
 }

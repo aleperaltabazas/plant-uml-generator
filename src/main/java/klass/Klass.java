@@ -23,7 +23,7 @@ public class Klass {
         return name;
     }
 
-    public ClassType getType() {
+    public ClassType getClassType() {
         return type;
     }
 

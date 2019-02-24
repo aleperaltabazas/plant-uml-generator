@@ -1,19 +1,21 @@
+import klass.Klass;
+import klass.KlassBuilder;
+
 public class KlassReader {
     private final String klassDefinitionRegex = "(public )?class \\w+( extends \\w+)?( implements \\w+\\s?(,\\s?\\w+\\s?)*)?\\s?[{]";
 
-    public void readKlass(String text) {
+    public Klass readKlass(String text) throws Exception {
         text = filterImports(text);
         text = filterPackage(text);
 
         String body = getBody(text);
         String header = getHeader(text);
 
-        System.out.println(body);
-        System.out.println(header);
-    }
+        KlassBuilder kb = new KlassBuilder();
+        kb.addClassDefinition(header);
+        kb.addClassBody(body);
 
-    private String removeUselessSpaces(String text) {
-        return text.replaceAll("\\s+", " ");
+        return kb.build();
     }
 
     private String filterPackage(String text) {
@@ -48,7 +50,7 @@ public class KlassReader {
                     String effectiveLine = line.replaceAll("([{]|[}]|;)", "");
 
                     if (!effectiveLine.isEmpty())
-                        sb.append(effectiveLine + ";\n");
+                        sb.append(effectiveLine).append(";\n");
                 }
 
                 if (line.contains("}")) curlyBraces--;
