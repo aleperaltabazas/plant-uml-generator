@@ -8,25 +8,23 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class FileManager {
-    public List<String> findAllClasses(String path) {
+    public List<String> findAllClasses(String path) throws FileNotFoundException {
         File file = new File(path);
-        List<File> content = Arrays.asList(file.listFiles());
+        List<String> all = new ArrayList<>();
 
-        List<String> classes = new ArrayList<>();
-
-        content.forEach(f -> {
-            if (f.isDirectory())
-                findAllClasses(f.getAbsolutePath());
-            else if (f.getName().endsWith(".java")) {
+        if (file.isDirectory()) {
+            Arrays.asList(file.listFiles()).forEach(f -> {
                 try {
-                    classes.add(fileToText(f.getAbsolutePath()));
+                    all.addAll(findAllClasses(f.getAbsolutePath()));
                 } catch (FileNotFoundException e) {
                     e.printStackTrace();
                 }
-            }
-        });
+            });
+        } else {
+            all.add(fileToText(file.getAbsolutePath()));
+        }
 
-        return classes;
+        return all;
     }
 
     public String fileToText(String path) throws FileNotFoundException {

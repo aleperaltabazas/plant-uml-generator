@@ -39,5 +39,5 @@ public class TestAttribute {
         assertEquals("baz", builder.getName());
         assertFalse(builder.isVisible());
     }
-    
+
 }

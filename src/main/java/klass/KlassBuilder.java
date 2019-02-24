@@ -62,6 +62,7 @@ public class KlassBuilder {
     private void parseBody(List<String> lines) {
         String methodRegex = "\\s*(public |private |protected )?(static )?(\\w|[.])+ \\w+\\s?[(](\\w+ \\w+(, \\w+ \\w+)*)?[)]\\s?([{]?|;)\\s?";
         String attributeRegex = "\\s*(public |protected |private )?(static )?(final )?(\\w|[.])* \\w+\\s?;";
+        String constructorRegex = "\\s*(public |protected |private )" + name + "\\s?[(].*[)]\\s?([{]|[;])?";
 
         MethodBuilder mb = new MethodBuilder();
         AttributeBuilder ab = new AttributeBuilder();
@@ -74,6 +75,8 @@ public class KlassBuilder {
             if (spaceless.startsWith(" "))
                 spaceless = spaceless.substring(1, spaceless.length() - 1);
 
+            if (line.matches(constructorRegex))
+                continue;
 
             if (line.matches(methodRegex)) {
                 mb.addDefinition(spaceless);
