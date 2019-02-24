@@ -6,11 +6,11 @@ import java.util.List;
 public abstract class AbstractBuilder {
     protected String name;
     protected String type;
-    protected Boolean visible;
+    protected boolean visible;
 
     protected void parseVisibility(String definition) {
         String starting = definition.substring(0, "protected".length());
-        visible = starting.contains("protected") || starting.contains("private") || starting.contains("public");
+        visible = starting.contains("public");
     }
 
     protected void parseType(String definition) {

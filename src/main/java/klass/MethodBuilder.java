@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MethodBuilder extends AbstractBuilder {
-    private Boolean visible;
+    private boolean visible;
     private String name;
     private List<Pair<String, String>> argumentsMap;
     private List<Argument> arguments;
@@ -90,7 +90,7 @@ public class MethodBuilder extends AbstractBuilder {
         return arguments;
     }
 
-    public Boolean isVisible() {
+    public boolean isVisible() {
         return visible;
     }
 
@@ -105,7 +105,6 @@ public class MethodBuilder extends AbstractBuilder {
     public void clear() {
         name = null;
         arguments = null;
-        visible = null;
         argumentsMap = null;
     }
 }

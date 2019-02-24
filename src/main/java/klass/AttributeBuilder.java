@@ -1,15 +1,13 @@
 package klass;
 
 public class AttributeBuilder extends AbstractBuilder {
-    private Boolean visible;
-
     public void addDefinition(String definition) {
         parseName(definition);
         parseType(definition);
         parseVisibility(definition);
     }
 
-    private Boolean declaresValue(String definition) {
+    private boolean declaresValue(String definition) {
         return definition.contains("=");
     }
 
@@ -21,7 +19,7 @@ public class AttributeBuilder extends AbstractBuilder {
         return type;
     }
 
-    public Boolean isVisible() {
+    public boolean isVisible() {
         return visible;
     }
 
@@ -41,6 +39,5 @@ public class AttributeBuilder extends AbstractBuilder {
     public void clear() {
         type = null;
         name = null;
-        visible = null;
     }
 }

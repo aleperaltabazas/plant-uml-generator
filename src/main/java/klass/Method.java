@@ -5,10 +5,10 @@ import java.util.List;
 public class Method {
     private String returnType;
     private List<Argument> arguments;
-    private Boolean visible;
+    private boolean visible;
     private String name;
 
-    public Method(String name, String returnType, List<Argument> arguments, Boolean visible) {
+    public Method(String name, String returnType, List<Argument> arguments, boolean visible) {
         this.name = name;
         this.returnType = returnType;
         this.arguments = arguments;
@@ -23,7 +23,7 @@ public class Method {
         return arguments;
     }
 
-    public Boolean isVisible() {
+    public boolean isVisible() {
         return visible;
     }
 

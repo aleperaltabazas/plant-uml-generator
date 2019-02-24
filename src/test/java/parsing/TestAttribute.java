@@ -39,10 +39,5 @@ public class TestAttribute {
         assertEquals("baz", builder.getName());
         assertFalse(builder.isVisible());
     }
-
-    @Test
-    public void bizPrivateButWithGetterShouldBeVisible() {
-        builder.addDefinition(biz);
-        assertTrue(builder.isVisible());
-    }
+    
 }

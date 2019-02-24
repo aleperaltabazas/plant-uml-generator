@@ -3,15 +3,15 @@ package klass;
 public class Attribute {
     private String name;
     private String klass;
-    private Boolean visible;
+    private boolean visible;
 
-    public Attribute(String name, String klass, Boolean visible) {
+    public Attribute(String name, String klass, boolean visible) {
         this.name = name;
         this.klass = klass;
         this.visible = visible;
     }
 
-    public Boolean isVisible() {
+    public boolean isVisible() {
         return visible;
     }
 
