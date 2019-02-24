@@ -113,10 +113,23 @@ public class KlassBuilder {
     }
 
     private List<String> filterConstructor(String body) {
-        String constructorRegex = "\\s?(public |private |protected )?" + this.name + "[(].*[)]\\s?[{](.|\n)*[}]";
-        Pattern constructorPattern = Pattern.compile(constructorRegex);
+        String[] bodyAsStringList = body.split("\n");
+        List<String> lines = new ArrayList<>();
 
-        return Arrays.asList(body.replaceAll(constructorRegex, "").split("\n"));
+        int curlyBraces = 0;
+
+        for (String line : bodyAsStringList) {
+            if (line.contains("{")) curlyBraces++;
+            if (line.contains("}")) curlyBraces--;
+
+            if (line.matches("(public |private |protected )?" + this.name + "\\s?[(].*[)]\\s?[{]?") || curlyBraces > 0) {
+                continue;
+            }
+
+            lines.add(line);
+        }
+
+        return lines;
     }
 
     public ClassType getClassType() {
