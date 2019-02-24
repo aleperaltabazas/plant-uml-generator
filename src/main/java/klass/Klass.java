@@ -8,15 +8,16 @@ public class Klass {
     private List<Method> methods;
     private String name;
     private ClassType type;
-    private List<Optional<String>> interfaces;
+    private List<String> interfaces;
     private Optional<String> parent;
 
-    public Klass(List<Attribute> attributes, List<Method> methods, String name, ClassType type, String parent) {
+    public Klass(List<Attribute> attributes, List<Method> methods, String name, ClassType type, List<String> interfaces, String parent) {
         this.attributes = attributes;
         this.methods = methods;
         this.name = name;
         this.type = type;
         this.parent = Optional.ofNullable(parent);
+        this.interfaces = interfaces;
     }
 
     public String getName() {
@@ -33,6 +34,10 @@ public class Klass {
 
     public List<Method> getMethods() {
         return methods;
+    }
+
+    public List<String> getInterfaces() {
+        return interfaces;
     }
 
     public String getParent() {

@@ -20,7 +20,7 @@ public class KlassBuilder {
             throw new Exception("Need parameters to build");
         }
 
-        return new Klass(attributes, methods, name, classType, parent);
+        return new Klass(attributes, methods, name, classType, interfaces, parent);
     }
 
     public void addClassDefinition(String classDefinition) {
