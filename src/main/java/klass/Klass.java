@@ -40,7 +40,7 @@ public class Klass {
         return interfaces;
     }
 
-    public String getParent() {
-        return parent.orElse("Object");
+    public Optional<String> getParent() {
+        return parent;
     }
 }
