@@ -30,4 +30,18 @@ public class Method {
     public String getName() {
         return name;
     }
+
+    public boolean isGetter() {
+        String getterRegex = "get\\w+";
+        return name.matches(getterRegex);
+    }
+
+    public boolean isSetter() {
+        String setterRegex = "set\\w+";
+        return name.matches(setterRegex);
+    }
+
+    public boolean isBoilerPlate() {
+        return isSetter() || isGetter();
+    }
 }
