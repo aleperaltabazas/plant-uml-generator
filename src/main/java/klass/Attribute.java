@@ -28,7 +28,8 @@ public class Attribute {
 
     public boolean isPrimitive() {
         List<String> primivites = Arrays.asList("int", "float", "double", "char", "short", "long", "boolean", "byte");
-        List<String> almostPrimitives = Arrays.asList("Integer", "Float", "Double", "Character", "Short", "Long", "Boolean", "Byte");
+        List<String> almostPrimitives = Arrays.asList("Integer", "Float", "Double", "Character", "Short", "Long", "Boolean", "Byte", "String");
+
         return primivites.contains(klass) || almostPrimitives.contains(klass);
     }
 }
