@@ -3,17 +3,17 @@ package klass;
 public enum ClassType {
     Interface {
         public String javaDefinition() {
-            return "interface";
+            return "interface ";
         }
     },
     Abstract {
         public String javaDefinition() {
-            return "abstract class";
+            return "abstract class ";
         }
     },
     Concrete {
         public String javaDefinition() {
-            return "class";
+            return "class ";
         }
     };
 

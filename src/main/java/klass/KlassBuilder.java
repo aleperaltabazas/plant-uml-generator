@@ -60,8 +60,8 @@ public class KlassBuilder {
     }
 
     private void parseBody(List<String> lines) {
-        String methodRegex = "\\s*(public |private |protected )?(static )?(\\w|[.])+ \\w+\\s?[(].*[)]\\s?([{]?|;)\\s?";
-        String attributeRegex = "\\s*(public |protected |private )?(static )?(final )?(\\w|[.])* \\w+\\s?;";
+        String methodRegex = "\\s*(public |private |protected )?(static )?(\\w|[.]|<|>|,)+ \\w+\\s?[(].*[)]\\s?([{]?|;)\\s?";
+        String attributeRegex = "\\s*(public |protected |private )?(static )?(final )?(\\w|[.]|<|>|,)* \\w+\\s?;";
         String constructorRegex = "\\s*(public |protected |private )" + name + "\\s?[(].*[)]\\s?([{]|[;])?";
 
         MethodBuilder mb = new MethodBuilder();

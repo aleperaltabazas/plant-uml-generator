@@ -5,12 +5,10 @@ import klass.Klass;
 import klass.Method;
 
 import java.util.Arrays;
-import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Set;
 
 public class UMLMaker {
-    public Set<String> makeClassUml(Klass klass) {
+    public List<String> makeClassUml(Klass klass) {
         StringBuilder sb = new StringBuilder();
 
         sb.append(appendHeader(klass));
@@ -20,14 +18,28 @@ public class UMLMaker {
         sb.append("}" + "\n");
         sb.append(appendReferences(klass));
 
-        return new LinkedHashSet<String>(Arrays.asList(sb.toString().split("\\r?\\n")));
+        return Arrays.asList(sb.toString().split("\\r?\\n"));
     }
 
     private String appendReferences(Klass klass) {
+        String collectionRegex = "(List<.*>|Set<.*>|Map<.*,.*>)";
+
         StringBuilder sb = new StringBuilder();
-        klass.getAttributes().stream().filter(attr -> !attr.isPrimitive()).forEach(attr -> sb.append(klass.getName()).append(" --> ").append(attr.getKlass()).append("\n"));
+        klass.getAttributes().stream().filter(attr -> !attr.isIgnored()).forEach(attr -> {
+            if (attr.getKlass().matches(collectionRegex)) {
+                sb.append(klass.getName()).append(" --> \"*\" ").append(removeListWrapper(attr.getKlass())).append("\n");
+            }
+        });
 
         return sb.toString();
+    }
+
+    private String removeListWrapper(String klass) {
+        int lastIndexOf = klass.lastIndexOf('>');
+        StringBuilder sb = new StringBuilder(klass);
+        sb.replace(lastIndexOf, lastIndexOf + 1, "");
+
+        return sb.toString().replaceFirst("<", "").replaceFirst("(List|Set|Map)", "");
     }
 
     private String appendAttributes(Klass klass) {
