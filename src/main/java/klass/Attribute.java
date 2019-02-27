@@ -32,19 +32,16 @@ public class Attribute {
     }
 
     private boolean isIgnored(String type) {
-        return isPrimitive(type) || isLibrary(type) || isSimpleCollection(type);
+        return isPrimitive(type) || isSimpleGeneric(type);
     }
 
-    private boolean isSimpleCollection(String type) {
-        String listRegex = "List<.+>";
-        String setRegex = "Set<.+>";
-        String mapRegex = "Map<.+\\s?,\\s?.+>";
-
-        if (type.matches(listRegex) || type.matches(setRegex)) {
+    private boolean isSimpleGeneric(String type) {
+        if (oneGeneric().stream().anyMatch(g -> type.matches(g))) {
             String generic = type.substring(type.indexOf('<') + 1, type.lastIndexOf('>'));
 
+
             return isIgnored(generic);
-        } else if (type.matches(mapRegex)) {
+        } else if (twoGeneric().stream().anyMatch(g -> type.matches(g))) {
             String generic = type.substring(type.lastIndexOf(',') + 1, type.lastIndexOf('>')).replaceAll("\\+s", "");
 
             return isIgnored(generic);
@@ -53,10 +50,15 @@ public class Attribute {
         return false;
     }
 
-    private boolean isLibrary(String type) {
-        List<String> library = Arrays.asList("Optional<.*>", "Pair<.*,.*>");
+    private List<String> oneGeneric() {
+        return Arrays.asList("List<.+>" /* listRegex */,
+                "Set<.+>" /* setRegex */,
+                "Optional<.*>" /*optionalRegex*/);
+    }
 
-        return library.stream().anyMatch(l -> l.matches(type));
+    private List<String> twoGeneric() {
+        return Arrays.asList("Map<.+\\s?,\\s?.+>" /* mapRegex */,
+                "Pair<.*,.*>" /* pairRegex */);
     }
 
     private List<String> primitives() {
