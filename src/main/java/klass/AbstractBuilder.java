@@ -11,8 +11,6 @@ public abstract class AbstractBuilder {
     protected void parseVisibility(String definition) {
         String firstModifier = definition.split("\\s")[0];
         visible = firstModifier.equalsIgnoreCase("public");
-        System.out.println(firstModifier);
-        System.out.println(visible);
     }
 
     protected void parseType(String definition) {

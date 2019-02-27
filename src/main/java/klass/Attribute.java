@@ -28,20 +28,48 @@ public class Attribute {
     }
 
     public boolean isIgnored() {
-        List<String> primivites = Arrays.asList("int", "float", "double", "char", "short", "long", "boolean", "byte");
-        List<String> almostPrimitives = Arrays.asList("Integer", "Float", "Double", "Character", "Short", "Long", "Boolean", "Byte", "String");
-        List<String> other = Arrays.asList("Optional<.*>", "Pair<.*,.*>");
+        return isIgnored(klass);
+    }
 
-        List<String> ignored = new ArrayList<>();
-        ignored.addAll(primivites);
-        ignored.addAll(almostPrimitives);
-        ignored.addAll(other);
+    private boolean isIgnored(String type) {
+        return isPrimitive(type) || isLibrary(type) || isSimpleCollection(type);
+    }
 
-        for (String ignorable : ignored) {
-            if (klass.matches(ignorable))
-                return true;
+    private boolean isSimpleCollection(String type) {
+        String listRegex = "List<.+>";
+        String setRegex = "Set<.+>";
+        String mapRegex = "Map<.+\\s?,\\s?.+>";
+
+        if (type.matches(listRegex) || type.matches(setRegex)) {
+            String generic = type.substring(type.indexOf('<') + 1, type.lastIndexOf('>'));
+
+            return isIgnored(generic);
+        } else if (type.matches(mapRegex)) {
+            String generic = type.substring(type.lastIndexOf(',') + 1, type.lastIndexOf('>')).replaceAll("\\+s", "");
+
+            return isIgnored(generic);
         }
 
         return false;
+    }
+
+    private boolean isLibrary(String type) {
+        List<String> library = Arrays.asList("Optional<.*>", "Pair<.*,.*>");
+
+        return library.stream().anyMatch(l -> l.matches(type));
+    }
+
+    private List<String> primitives() {
+        List<String> primivites = Arrays.asList("int", "float", "double", "char", "short", "long", "boolean", "byte");
+        List<String> almostPrimitives = Arrays.asList("Integer", "Float", "Double", "Character", "Short", "Long", "Boolean", "Byte", "String");
+
+        List<String> result = new ArrayList<>(primivites);
+        result.addAll(almostPrimitives);
+
+        return result;
+    }
+
+    private boolean isPrimitive(String type) {
+        return primitives().contains(type);
     }
 }
