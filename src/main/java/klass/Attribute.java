@@ -1,5 +1,8 @@
 package klass;
 
+import java.util.Arrays;
+import java.util.List;
+
 public class Attribute {
     private String name;
     private String klass;
@@ -21,5 +24,11 @@ public class Attribute {
 
     public String getName() {
         return name;
+    }
+
+    public boolean isPrimitive() {
+        List<String> primivites = Arrays.asList("int", "float", "double", "char", "short", "long", "boolean", "byte");
+        List<String> almostPrimitives = Arrays.asList("Integer", "Float", "Double", "Character", "Short", "Long", "Boolean", "Byte");
+        return primivites.contains(klass) || almostPrimitives.contains(klass);
     }
 }

@@ -41,4 +41,9 @@ public class TestKlassParse {
         assertEquals("getKlass", klassArgument.getMethods().get(0).getName());
         assertEquals("getName", klassArgument.getMethods().get(1).getName());
     }
+
+    @Test
+    public void klassShouldHaveGetterForName() {
+        assertTrue(klassArgument.hasGetterFor("name"));
+    }
 }

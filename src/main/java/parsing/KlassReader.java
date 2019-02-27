@@ -3,8 +3,24 @@ package parsing;
 import klass.Klass;
 import klass.KlassBuilder;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class KlassReader {
     private final String klassDefinitionRegex = "(public )?class \\w+( extends \\w+)?( implements \\w+\\s?(,\\s?\\w+\\s?)*)?\\s?[{]";
+
+    public List<Klass> parseClasses(List<String> classes) {
+        List<Klass> klasses = new ArrayList<>();
+        classes.forEach(klass -> {
+            try {
+                klasses.add(readKlass(klass));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
+
+        return klasses;
+    }
 
     public Klass readKlass(String text) throws Exception {
         text = filterImports(text);

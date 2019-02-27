@@ -43,4 +43,8 @@ public class Klass {
     public Optional<String> getParent() {
         return parent;
     }
+
+    public boolean hasGetterFor(String name) {
+        return methods.stream().anyMatch(method -> method.getName().equalsIgnoreCase("get" + name));
+    }
 }
