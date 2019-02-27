@@ -9,8 +9,10 @@ public abstract class AbstractBuilder {
     protected boolean visible;
 
     protected void parseVisibility(String definition) {
-        String starting = definition.substring(0, "protected".length());
-        visible = starting.contains("public");
+        String firstModifier = definition.split("\\s")[0];
+        visible = firstModifier.equalsIgnoreCase("public");
+        System.out.println(firstModifier);
+        System.out.println(visible);
     }
 
     protected void parseType(String definition) {

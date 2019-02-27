@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MethodBuilder extends AbstractBuilder {
-    private boolean visible;
     private String name;
     private List<Pair<String, String>> argumentsMap;
     private List<Argument> arguments;

@@ -44,10 +44,6 @@ public class Klass {
         return parent;
     }
 
-    public ClassType getType() {
-        return type;
-    }
-
     public boolean hasGetterFor(String name) {
         return methods.stream().anyMatch(method -> method.getName().equalsIgnoreCase("get" + name));
     }
