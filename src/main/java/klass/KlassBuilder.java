@@ -1,10 +1,12 @@
 package klass;
 
+import exceptions.BuildError;
 import exceptions.NoClassDefinitionException;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 public class KlassBuilder {
@@ -15,9 +17,9 @@ public class KlassBuilder {
     private List<Attribute> attributes;
     private List<Method> methods;
 
-    public Klass build() throws Exception {
+    public Klass build() throws BuildError {
         if (classType == null || name == null) {
-            throw new Exception("Need parameters to build");
+            throw new BuildError("Need parameters to build");
         }
 
         return new Klass(attributes, methods, name, classType, interfaces, parent);
@@ -34,7 +36,15 @@ public class KlassBuilder {
             throw new NoClassDefinitionException();
 
         List<String> words = Arrays.asList(classDefinition.split("\\s"));
-        this.name = words.get(words.indexOf(words.stream().filter(w -> w.replace("\\s", "").equalsIgnoreCase("class")).findFirst().get()) + 1);
+        try {
+            this.name = words.get(words.indexOf(words.stream().filter(w -> {
+                String noSpaces = w.replaceAll("\\s+", "");
+                return w.equalsIgnoreCase("class") || w.equalsIgnoreCase("abstract class") || w.equalsIgnoreCase("interface");
+            }).findFirst().get()) + 1);
+        } catch (NoSuchElementException e) {
+            System.out.println(words);
+            throw e;
+        }
 
         if (classDefinition.contains("extends")) {
             parent = words.get(words.indexOf(words.stream().filter(w -> w.equalsIgnoreCase("extends")).findFirst().get()) + 1);

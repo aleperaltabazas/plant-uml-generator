@@ -39,7 +39,6 @@ public class Attribute {
         if (oneGeneric().stream().anyMatch(g -> type.matches(g))) {
             String generic = type.substring(type.indexOf('<') + 1, type.lastIndexOf('>'));
 
-
             return isIgnored(generic);
         } else if (twoGeneric().stream().anyMatch(g -> type.matches(g))) {
             String generic = type.substring(type.lastIndexOf(',') + 1, type.lastIndexOf('>')).replaceAll("\\+s", "");
