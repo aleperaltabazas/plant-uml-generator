@@ -8,10 +8,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class KlassReader {
-    private final String klassDefinitionRegex = "(public )?((abstract )?class|interface) \\w+( extends \\w+)?( implements \\w+\\s?(,\\s?\\w+\\s?)*)?\\s?[{]";
+    private final String klassDefinitionRegex = "(public )?((abstract )?class|interface) \\w+(<.*>)?( extends \\w+(<.*>)?)?( implements \\w+(<.*>)?\\s?(,\\s?\\w+(<.*>)?\\s?)*)?\\s?[{]";
+
+    //basically: (public )?class <className>( extends <parent>)?( implements <interface>, <interface>...)? {
     private final String classRegex = "(public )?class \\w+( extends \\w+)?( implements \\w+\\s?(,\\s?\\w+\\s?)*)?\\s?[{]";
-    private final String abstractRegex = "(public )?abstract class \\w+ (extends \\w+)?( implements \\w+\\s?(,\\s?\\w+\\s?)*)?\\s?[{]";
-    private final String interfaceRegex = "(public )?interface \\w+( extends  \\w+\\s?(,\\s?\\w+\\s?)*)?\\s?[{]";
+
+    //basically: (public )?abstract class <className>( extends <parent>)?( implements <interface>, <interface>...)? {
+    private final String abstractRegex = "(public )?abstract class \\w+(<.*>)? (extends \\w+(<.*>)?)?( implements \\w+(<.*>)?\\s?(,\\s?\\w+(<.*>)?\\s?)*)?\\s?[{]";
+
+    //basically: (public )?interface <interfaceName>(extends <parentInterface>)? {
+    private final String interfaceRegex = "(public )?interface \\w+(<.*>)?( extends \\w+(<.*>)?\\s?(,\\s?\\w+(<.*>)?\\s?)*)?\\s?[{]";
 
     public List<Klass> parseClasses(List<String> classes) throws BuildError {
         List<Klass> klasses = new ArrayList<>();
