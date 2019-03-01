@@ -47,4 +47,23 @@ public class Klass {
     public boolean hasGetterFor(String name) {
         return methods.stream().anyMatch(method -> method.getName().equalsIgnoreCase("get" + name));
     }
+
+    public boolean isIgnorable() {
+        return isCreationalPattern() || isException();
+    }
+
+    private boolean isCreationalPattern() {
+        String lowerCaseName = name.toLowerCase();
+
+        return lowerCaseName.contains("builder") || lowerCaseName.contains("factory");
+    }
+
+    private boolean isException() {
+        if (parent.isPresent()) {
+            String parent = this.parent.get().toLowerCase();
+            return parent.contains("exception") || parent.contains("runtimeexception") || parent.contains("throwable");
+        }
+
+        return false;
+    }
 }

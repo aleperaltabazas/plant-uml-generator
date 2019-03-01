@@ -37,7 +37,7 @@ public class Main {
                 StringBuilder sb = new StringBuilder();
                 sb.append("@startuml\n");
 
-                klasses.forEach(klass -> maker.makeClassUml(klass).forEach(line -> sb.append(line).append("\n")));
+                klasses.stream().filter(klass -> !klass.isIgnorable()).forEach(klass -> maker.makeClassUml(klass).forEach(line -> sb.append(line).append("\n")));
 
                 sb.append("@enduml");
                 manager.writeFile(fileName, Arrays.asList(sb.toString()));
