@@ -76,7 +76,7 @@ public class UMLMaker {
         }
 
         if (!klass.getInterfaces().isEmpty()) {
-            klass.getInterfaces().forEach(i -> System.out.println(klass.getName() + " implements " + i));
+            sb.append(" implements ").append(klass.getInterfaces().get(0));
             klass.getInterfaces().forEach(i -> {
                 if (klass.getInterfaces().indexOf(i) > 0)
                     sb.append(", ").append(i);
