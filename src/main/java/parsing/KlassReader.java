@@ -52,7 +52,6 @@ public class KlassReader {
         String header = "";
 
         for (String line : text.split("\n")) {
-            System.out.println(line);
             if (line.matches(classRegex) || line.matches(abstractRegex) || line.matches(interfaceRegex)) header = line;
         }
 

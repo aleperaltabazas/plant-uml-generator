@@ -54,7 +54,10 @@ public class KlassBuilder {
 
         if (classDefinition.contains("implements")) {
             StringBuilder parentBuilder = new StringBuilder();
-            words.stream().filter(w -> words.indexOf(w) > words.indexOf("implements")).collect(Collectors.toList()).forEach(parentBuilder::append);
+            words.stream().filter(w -> words.indexOf(w) > words.indexOf("implements") && !w.equals("{")).collect(Collectors.toSet()).forEach(str -> {
+                System.out.println(str);
+                parentBuilder.append(str);
+            });
             interfaces = Arrays.asList(parentBuilder.toString().replaceAll("\\s", "").split(","));
         } else {
             interfaces = new ArrayList<>();
