@@ -29,7 +29,8 @@ public class FileManager {
                 }
             });
         } else {
-            all.add(fileToText(file.getAbsolutePath()));
+            if (file.getName().endsWith(".java"))
+                all.add(fileToText(file.getAbsolutePath()));
         }
 
         return all;

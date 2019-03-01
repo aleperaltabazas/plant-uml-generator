@@ -28,6 +28,8 @@ public class UMLMaker {
         klass.getAttributes().stream().filter(attr -> !attr.isIgnored()).forEach(attr -> {
             if (attr.getKlass().matches(collectionRegex)) {
                 sb.append(klass.getName()).append(" --> \"*\" ").append(removeListWrapper(attr.getKlass())).append("\n");
+            } else {
+                sb.append(klass.getName()).append(" --> ").append(attr.getKlass()).append("\n");
             }
         });
 
@@ -74,8 +76,11 @@ public class UMLMaker {
         }
 
         if (!klass.getInterfaces().isEmpty()) {
-            sb.append(" implements ").append(klass.getInterfaces().get(0));
-            klass.getInterfaces().forEach(i -> sb.append(", ").append(i));
+            klass.getInterfaces().forEach(i -> System.out.println(klass.getName() + " implements " + i));
+            klass.getInterfaces().forEach(i -> {
+                if (klass.getInterfaces().indexOf(i) > 0)
+                    sb.append(", ").append(i);
+            });
         }
 
         return sb.toString();

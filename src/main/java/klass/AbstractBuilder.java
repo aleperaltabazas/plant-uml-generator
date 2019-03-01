@@ -19,10 +19,11 @@ public abstract class AbstractBuilder {
 
     protected int presentModifiers(String definition) {
         int presentModifiers = 0;
-        List<String> possibleModifiers = Arrays.asList("protected", "public", "private", "static", "final");
+        List<String> possibleModifiers = Arrays.asList("protected", "public", "private", "static", "final", "<.*>");
+        List<String> words = Arrays.asList(definition.split("\\s"));
 
         for (String modifier : possibleModifiers) {
-            if (definition.contains(modifier)) presentModifiers++;
+            if (words.stream().anyMatch(word -> word.matches(modifier))) presentModifiers++;
         }
 
         return presentModifiers;

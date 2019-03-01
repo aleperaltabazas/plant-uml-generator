@@ -32,7 +32,13 @@ public class Attribute {
     }
 
     private boolean isIgnored(String type) {
-        return isPrimitive(type) || isSimpleGeneric(type);
+        return isPrimitive(type) || isSimpleGeneric(type) || isLibrary(type);
+    }
+
+    private boolean isLibrary(String type) {
+        List<String> libraries = Arrays.asList("LocalDate", "LocalDateTime", "Date");
+
+        return libraries.stream().anyMatch(library -> type.matches(library));
     }
 
     private boolean isSimpleGeneric(String type) {
