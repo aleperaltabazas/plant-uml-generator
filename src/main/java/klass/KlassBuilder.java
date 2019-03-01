@@ -19,7 +19,7 @@ public class KlassBuilder {
 
     public Klass build() throws BuildError {
         if (classType == null || name == null) {
-            throw new BuildError("Need parameters to build");
+            throw new BuildError("Need parameters to build. Name: " + name + ", type: " + classType);
         }
 
         return new Klass(attributes, methods, name, classType, interfaces, parent);
@@ -42,7 +42,6 @@ public class KlassBuilder {
                 return w.equalsIgnoreCase("class") || w.equalsIgnoreCase("abstract class") || w.equalsIgnoreCase("interface");
             }).findFirst().get()) + 1);
         } catch (NoSuchElementException e) {
-            System.out.println(words);
             throw e;
         }
 
@@ -55,7 +54,6 @@ public class KlassBuilder {
         if (classDefinition.contains("implements")) {
             StringBuilder parentBuilder = new StringBuilder();
             words.stream().filter(w -> words.indexOf(w) > words.indexOf("implements") && !w.equals("{")).collect(Collectors.toSet()).forEach(str -> {
-                System.out.println(str);
                 parentBuilder.append(str);
             });
             interfaces = Arrays.asList(parentBuilder.toString().replaceAll("\\s", "").split(","));
@@ -66,13 +64,13 @@ public class KlassBuilder {
 
     }
 
-    public void addClassBody(String body) {
+    public void addClassBody(String body) throws BuildError {
         List<String> lines = Arrays.asList(body.split("\n"));
 
         parseBody(lines);
     }
 
-    private void parseBody(List<String> lines) {
+    private void parseBody(List<String> lines) throws BuildError {
         String methodRegex = "\\s*(public |private |protected )?(static )?(\\w|[.]|<|>|,)+ \\w+\\s?[(].*[)]\\s?([{]?|;)\\s?";
         String attributeRegex = "\\s*(public |protected |private )?(static )?(final )?(\\w|[.]|<|>|,)* \\w+\\s?;";
         String constructorRegex = "\\s*(public |protected |private )" + name + "\\s?[(].*[)]\\s?([{]|[;])?";

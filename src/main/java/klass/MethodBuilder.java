@@ -1,5 +1,6 @@
 package klass;
 
+import exceptions.BuildError;
 import javafx.util.Pair;
 
 import java.util.ArrayList;
@@ -97,7 +98,11 @@ public class MethodBuilder extends AbstractBuilder {
         return name;
     }
 
-    public Method build() {
+    public Method build() throws BuildError {
+        if (name == null || type == null || arguments == null) {
+            throw new BuildError("Need parameters to build. Name: " + name + ", type: " + type + ", arguments: " + arguments);
+        }
+
         return new Method(name, type, arguments, visible);
     }
 

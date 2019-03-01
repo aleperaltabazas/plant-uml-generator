@@ -1,5 +1,7 @@
 package klass;
 
+import exceptions.BuildError;
+
 public class AttributeBuilder extends AbstractBuilder {
     public void addDefinition(String definition) {
         parseName(definition);
@@ -23,7 +25,11 @@ public class AttributeBuilder extends AbstractBuilder {
         return visible;
     }
 
-    public Attribute build() {
+    public Attribute build() throws BuildError {
+        if (name == null || type == null) {
+            throw new BuildError("Need parameters to build. Name: " + name + ", type: " + type);
+        }
+
         return new Attribute(name, type, visible);
     }
 

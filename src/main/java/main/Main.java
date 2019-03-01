@@ -1,17 +1,19 @@
 package main;
 
+import exceptions.BuildError;
 import klass.Klass;
 import parsing.FileManager;
 import parsing.KlassReader;
 import parsing.UMLMaker;
 
 import java.io.File;
+import java.io.IOException;
 import java.nio.file.NoSuchFileException;
 import java.util.Arrays;
 import java.util.List;
 
 public class Main {
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args) throws IOException, BuildError {
         FileManager manager = new FileManager();
         KlassReader reader = new KlassReader();
         UMLMaker maker = new UMLMaker();
@@ -33,9 +35,9 @@ public class Main {
                 List<Klass> klasses = reader.parseClasses(klassesText);
 
                 StringBuilder sb = new StringBuilder();
-                sb.append("@startuml");
+                sb.append("@startuml\n");
 
-                klasses.forEach(klass -> maker.makeClassUml(klass).forEach(line -> sb.append(line + "\n")));
+                klasses.forEach(klass -> maker.makeClassUml(klass).forEach(line -> sb.append(line).append("\n")));
 
                 sb.append("@enduml");
                 manager.writeFile(fileName, Arrays.asList(sb.toString()));
