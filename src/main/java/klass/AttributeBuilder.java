@@ -30,7 +30,7 @@ public class AttributeBuilder extends AbstractBuilder {
             throw new BuildError("Need parameters to build. Name: " + name + ", type: " + type);
         }
 
-        return new Attribute(name, type, visible);
+        return new Attribute(name, type, visible, modifiers);
     }
 
     protected void parseName(String definition) {

@@ -103,7 +103,7 @@ public class MethodBuilder extends AbstractBuilder {
             throw new BuildError("Need parameters to build. Name: " + name + ", type: " + type + ", arguments: " + arguments);
         }
 
-        return new Method(name, type, arguments, visible);
+        return new Method(name, type, arguments, visible, modifiers);
     }
 
     public void clear() {

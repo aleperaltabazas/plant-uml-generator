@@ -1,5 +1,6 @@
 package klass;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -7,6 +8,7 @@ public abstract class AbstractBuilder {
     protected String name;
     protected String type;
     protected boolean visible;
+    protected List<Modifier> modifiers = new ArrayList<>();
 
     protected void parseVisibility(String definition) {
         String firstModifier = definition.split("\\s")[0];

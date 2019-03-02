@@ -16,26 +16,30 @@ public class KlassBuilder {
     private List<String> interfaces;
     private List<Attribute> attributes;
     private List<Method> methods;
+    private List<Modifier> modifiers = new ArrayList<>();
 
     public Klass build() throws BuildError {
         if (classType == null || name == null) {
             throw new BuildError("Need parameters to build. Name: " + name + ", type: " + classType);
         }
 
-        return new Klass(attributes, methods, name, classType, interfaces, parent);
+        return new Klass(attributes, methods, name, classType, interfaces, parent, modifiers);
     }
 
     public void addClassDefinition(String classDefinition) {
-        if (classDefinition.contains(" abstract class "))
+        if (classDefinition.contains(" abstract class ")) {
             classType = ClassType.Abstract;
-        else if (classDefinition.contains(" interface "))
-            classType = ClassType.Interface;
-        else if (classDefinition.contains(" class "))
+        } else if (classDefinition.contains(" class ")) {
             classType = ClassType.Concrete;
-        else
+        } else if (classDefinition.contains(" interface ")) {
+            classType = ClassType.Interface;
+        } else {
             throw new NoClassDefinitionException();
+        }
 
         List<String> words = Arrays.asList(classDefinition.split("\\s"));
+        parseModifiers(words);
+
         try {
             this.name = words.get(words.indexOf(words.stream().filter(w -> {
                 String noSpaces = w.replaceAll("\\s+", "");
@@ -62,6 +66,22 @@ public class KlassBuilder {
         }
 
 
+    }
+
+    private void parseModifiers(List<String> words) {
+        if (words.get(0).equals("public"))
+            modifiers.add(Modifier.Public);
+        else
+            modifiers.add(Modifier.PackagePrivate);
+
+        for (String word : words) {
+            if (word.equals("abstract"))
+                modifiers.add(Modifier.Abstract);
+            if (word.equals("final"))
+                modifiers.add(Modifier.Final);
+            if (word.matches("\\w+<.*>"))
+                modifiers.add(Modifier.Generic);
+        }
     }
 
     public void addClassBody(String body) throws BuildError {

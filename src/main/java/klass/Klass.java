@@ -10,14 +10,16 @@ public class Klass {
     private ClassType type;
     private List<String> interfaces;
     private Optional<String> parent;
+    private List<Modifier> modifiers;
 
-    public Klass(List<Attribute> attributes, List<Method> methods, String name, ClassType type, List<String> interfaces, String parent) {
+    public Klass(List<Attribute> attributes, List<Method> methods, String name, ClassType type, List<String> interfaces, String parent, List<Modifier> modifiers) {
         this.attributes = attributes;
         this.methods = methods;
         this.name = name;
         this.type = type;
         this.parent = Optional.ofNullable(parent);
         this.interfaces = interfaces;
+        this.modifiers = modifiers;
     }
 
     public String getName() {

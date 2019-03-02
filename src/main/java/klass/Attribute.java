@@ -8,11 +8,13 @@ public class Attribute {
     private String name;
     private String klass;
     private boolean visible;
+    private List<Modifier> modifiers;
 
-    public Attribute(String name, String klass, boolean visible) {
+    public Attribute(String name, String klass, boolean visible, List<Modifier> modifiers) {
         this.name = name;
         this.klass = klass;
         this.visible = visible;
+        this.modifiers = modifiers;
     }
 
     public boolean isVisible() {

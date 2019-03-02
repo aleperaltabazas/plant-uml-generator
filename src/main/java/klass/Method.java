@@ -7,12 +7,14 @@ public class Method {
     private List<Argument> arguments;
     private boolean visible;
     private String name;
+    private List<Modifier> modifiers;
 
-    public Method(String name, String returnType, List<Argument> arguments, boolean visible) {
+    public Method(String name, String returnType, List<Argument> arguments, boolean visible, List<Modifier> modifiers) {
         this.name = name;
         this.returnType = returnType;
         this.arguments = arguments;
         this.visible = visible;
+        this.modifiers = modifiers;
     }
 
     public String getReturnType() {
