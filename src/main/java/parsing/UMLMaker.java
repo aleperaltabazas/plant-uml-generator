@@ -1,6 +1,7 @@
 package parsing;
 
 import klass.Attribute;
+import klass.ClassType;
 import klass.Klass;
 import klass.Method;
 
@@ -57,7 +58,7 @@ public class UMLMaker {
         List<Method> methods = klass.getMethods();
         StringBuilder sb = new StringBuilder();
 
-        methods.stream().filter(method -> method.isVisible() && !method.isBoilerPlate()).forEach(met -> {
+        methods.stream().filter(method -> method.isVisible() && !method.isBoilerPlate() || klass.getClassType().equals(ClassType.Interface)).forEach(met -> {
             sb.append(met.getName()).append("(");
             met.getArguments().forEach(arg -> sb.append(arg.getName()).append(": ").append(arg.getKlass()));
             sb.append("): ").append(met.getReturnType()).append("\n");

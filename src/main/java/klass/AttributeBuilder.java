@@ -6,6 +6,7 @@ public class AttributeBuilder extends AbstractBuilder {
     public void addDefinition(String definition) {
         parseName(definition);
         parseType(definition);
+        parseModifiers(definition);
         parseVisibility(definition);
     }
 
