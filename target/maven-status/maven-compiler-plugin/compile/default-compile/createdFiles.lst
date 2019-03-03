@@ -15,3 +15,4 @@ klass/KlassBuilder.class
 klass/MethodBuilder.class
 exceptions/NoClassDefinitionException.class
 klass/ClassType$1.class
+
