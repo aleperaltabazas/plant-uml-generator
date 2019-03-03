@@ -24,4 +24,8 @@ hs_err_pid*
 /.idea/
 target/generated-sources/
 
-/src/main/java/some/
+
+*.iml
+
+*.uml
+
