@@ -37,14 +37,14 @@ public class Main {
                 StringBuilder sb = new StringBuilder();
                 sb.append("@startuml\n");
 
-                klasses.stream().filter(klass -> !klass.isIgnorable()).forEach(klass -> maker.makeClassUml(klass).forEach(line -> sb.append(line).append("\n")));
+                klasses.stream().filter(klass -> !klass.isIgnorable()).forEach(klass -> maker.writeClassDiagram(klass).forEach(line -> sb.append(line).append("\n")));
 
                 sb.append("@enduml");
                 manager.writeFile(fileName, Arrays.asList(sb.toString()));
             } else {
                 String text = manager.fileToText(file.getAbsolutePath());
                 Klass klass = reader.readKlass(text);
-                List<String> umlLines = maker.makeClassUml(klass);
+                List<String> umlLines = maker.writeClassDiagram(klass);
 
                 manager.writeFile(fileName, umlLines);
             }

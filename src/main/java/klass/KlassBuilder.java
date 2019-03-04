@@ -27,7 +27,7 @@ public class KlassBuilder {
             throw new BuildError("Need parameters to build. Name: " + name + ", type: " + classType);
         }
 
-        return new Klass(attributes, methods, name, classType, interfaces, parent, modifiers);
+        return new Klass(attributes, methods, name, classType, interfaces, parent, modifiers, annotations);
     }
 
     public void addClassDefinition(String classDefinition) {

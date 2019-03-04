@@ -26,7 +26,7 @@ public class Method {
     }
 
     public boolean isVisible() {
-        return visible || modifiers.contains(Modifier.Default);
+        return visible || hasModifier(Modifier.Default);
     }
 
     public String getName() {

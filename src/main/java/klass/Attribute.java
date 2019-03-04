@@ -83,4 +83,8 @@ public class Attribute {
     private boolean isPrimitive(String type) {
         return primitives().contains(type);
     }
+
+    public List<String> getAnnotations() {
+        return annotations;
+    }
 }
