@@ -25,6 +25,7 @@ public abstract class AbstractBuilder {
 
     protected void parseAnnotations(String definition) {
         annotations = Arrays.asList(definition.split("\\s")).stream().filter(word -> word.matches(annotationRegex)).collect(Collectors.toList());
+        annotations.forEach(System.out::println);
     }
 
     protected int presentModifiers(String definition) {
@@ -65,6 +66,23 @@ public abstract class AbstractBuilder {
             if (word.matches("<.*>"))
                 modifiers.add(Modifier.Generic);
         }
+    }
+
+    public void addAnotations(List<String> annotations) {
+        if (this.annotations == null)
+            this.annotations = new ArrayList<>();
+
+        annotations.forEach(System.out::println);
+
+        this.annotations.addAll(annotations);
+    }
+
+    protected String removeAnnotations(String definition) {
+        StringBuilder sb = new StringBuilder();
+
+        Arrays.stream(definition.split("\\s|\n")).filter(word -> !word.matches(annotationRegex)).forEach(word -> sb.append(word).append(" "));
+
+        return sb.toString();
     }
 
     public abstract void clear();

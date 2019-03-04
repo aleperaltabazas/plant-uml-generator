@@ -92,8 +92,9 @@ public class KlassBuilder {
     }
 
     private void parseBody(List<String> lines) throws BuildError {
+        String annotationRegex = "\\s*@\\w+([(].*[)])?(\\s|\n)?\\s?";
         String methodRegex = "\\s*(public |private |protected )?(static )?(\\w|[.]|<|>|,)+ \\w+\\s?[(].*[)]\\s?([{]?|;)\\s?";
-        String attributeRegex = "\\s*(@\\w+([(].*[)])?\\s?\n?)*\\s?(public |protected |private )?(static )?(final )?(\\w|[.]|<|>|,)* \\w+\\s?;";
+        String attributeRegex = "\\s*(@\\w+([(].*[)])?\\s?\n?)*\\s*(public |protected |private )?(static )?(final )?(\\w|[.]|<|>|,)* \\w+\\s?;";
         String constructorRegex = "\\s*(public |protected |private )" + name + "\\s?[(].*[)]\\s?([{]|[;])?";
 
         MethodBuilder mb = new MethodBuilder();
@@ -101,6 +102,7 @@ public class KlassBuilder {
 
         methods = new ArrayList<>();
         attributes = new ArrayList<>();
+        List<String> annotations = new ArrayList<>();
 
         for (String line : lines) {
             String spaceless = line.replaceAll("\\s+", " ");
@@ -110,14 +112,22 @@ public class KlassBuilder {
             if (line.matches(constructorRegex))
                 continue;
 
+            if (spaceless.matches(annotationRegex)) {
+                annotations.add(spaceless);
+            }
+
             if (line.matches(methodRegex)) {
                 mb.addDefinition(spaceless);
+                mb.addAnotations(annotations);
                 methods.add(mb.build());
+                annotations.clear();
                 mb.clear();
             } else if (line.matches(attributeRegex)) {
                 ab.addDefinition(spaceless);
+                ab.addAnotations(annotations);
                 attributes.add(ab.build());
                 ab.clear();
+                annotations.clear();
             }
         }
     }

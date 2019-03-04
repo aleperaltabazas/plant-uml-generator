@@ -2,8 +2,6 @@ package klass;
 
 import exceptions.BuildError;
 
-import java.util.Arrays;
-
 public class AttributeBuilder extends AbstractBuilder {
     public void addDefinition(String definition) {
         parseAnnotations(definition);
@@ -12,14 +10,6 @@ public class AttributeBuilder extends AbstractBuilder {
         parseType(definition);
         parseModifiers(definition);
         parseVisibility(definition);
-    }
-
-    private String removeAnnotations(String definition) {
-        StringBuilder sb = new StringBuilder();
-
-        Arrays.stream(definition.split("\\s|\n")).filter(word -> !word.matches(annotationRegex)).forEach(word -> sb.append(word).append(" "));
-
-        return sb.toString();
     }
 
     private boolean declaresValue(String definition) {
