@@ -3,7 +3,9 @@ package parsing;
 import klass.Attribute;
 import klass.Klass;
 import klass.Method;
+import klass.Modifier;
 import klass.classtype.EnumKlass;
+import klass.classtype.Interfase;
 
 import java.util.Arrays;
 import java.util.List;
@@ -62,7 +64,7 @@ public class UMLMaker {
         List<Method> methods = klass.getMethods();
         StringBuilder sb = new StringBuilder();
 
-        methods.stream().filter(method -> method.isVisible() && !method.isBoilerPlate()).forEach(met -> {
+        methods.stream().filter(method -> (method.isVisible() && !method.isBoilerPlate()) || (klass.getClassType() instanceof Interfase && !method.hasModifier(Modifier.Private))).forEach(met -> {
             sb.append(met.getName()).append("(");
             met.getArguments().forEach(arg -> sb.append(arg.getName()).append(": ").append(arg.getKlass()));
             sb.append("): ").append(met.getReturnType()).append("\n");

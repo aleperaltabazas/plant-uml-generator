@@ -26,7 +26,7 @@ public class Method {
     }
 
     public boolean isVisible() {
-        return visible;
+        return visible || modifiers.contains(Modifier.Default);
     }
 
     public String getName() {
@@ -45,5 +45,9 @@ public class Method {
 
     public boolean isBoilerPlate() {
         return isSetter() || isGetter();
+    }
+
+    public boolean hasModifier(Modifier modifier) {
+        return modifiers.contains(modifier);
     }
 }
