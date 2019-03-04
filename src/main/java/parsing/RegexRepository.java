@@ -10,5 +10,5 @@ public class RegexRepository {
     public static final String methodRegex = "\\s*(public |private |protected )?(static )?(\\w|[.]|<|>|,)+ \\w+\\s?[(].*[)]\\s?([{]?|;)\\s?";
     public static final String attributeRegex = "\\s*(@\\w+([(].*[)])?\\s?\n?)*\\s*(public |protected |private )?(static )?(final )?\\w(\\w|[.]|<|>|,)*\\s\\w+( ?);";
     public static final String enumConstantRegex = "(" + annotationRegex + ")?" + "\\s*\\w+,?;?";
-    public static final String enumConstantWithBehaviorRegex = "(" + annotationRegex + ")?" + "\\s*\\w+(\\s?)([(].*[)])?\\s?([{]|\n)";
+    public static final String enumConstantWithBehaviorRegex = "(" + annotationRegex + ")?" + "\\s*\\w+(\\s?)([(].*[)])?\\s?[{]?;?\n?";
 }

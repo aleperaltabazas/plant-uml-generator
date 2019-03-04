@@ -84,15 +84,12 @@ public class KlassBuilder {
             if (line.matches(enumConstantRegex)) {
                 constant = line.replaceAll("(\\s+|,|;)", "");
             } else if (line.matches(enumConstantWithBehaviorRegex)) {
-                if (line.contains("("))
-                    constant = line.substring(0, line.indexOf("("));
-                else
-                    constant = line.substring(0, line.indexOf("{"));
-
+                constant = line.substring(0, line.indexOf(";")).replaceAll("\\s+", "");
             }
 
-            if (!constant.isEmpty())
+            if (!constant.isEmpty()) {
                 constants.add(constant);
+            }
         }
 
         return constants;
