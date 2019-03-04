@@ -3,20 +3,27 @@ package parsing;
 import klass.Attribute;
 import klass.Klass;
 import klass.Method;
+import klass.classtype.EnumKlass;
 
 import java.util.Arrays;
 import java.util.List;
 
 public class UMLMaker {
     public List<String> makeClassUml(Klass klass) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(appendHeader(klass));
+        sb.append("{\n");
+        if (klass.getClassType() instanceof EnumKlass) sb.append(appendEnumConstants(klass));
+        sb.append(appendAttributes(klass));
+        sb.append(appendMethods(klass));
+        sb.append("}\n");
+        sb.append(appendReferences(klass));
 
-        String umlText = appendHeader(klass) +
-                " {" + "\n" +
-                appendAttributes(klass) +
-                appendMethods(klass) +
-                "}" + "\n" +
-                appendReferences(klass);
-        return Arrays.asList(umlText.split("\\r?\\n"));
+        return Arrays.asList(sb.toString().split("\\r?\\n"));
+    }
+
+    private String appendEnumConstants(Klass klass) {
+        return klass.getClassType().enumConstants() + "\n";
     }
 
     private String appendReferences(Klass klass) {

@@ -28,7 +28,7 @@ public class KlassReader {
         String header = getHeader(text);
 
         KlassBuilder kb = new KlassBuilder();
-        kb.addClassDefinition(header);
+        kb.addClassDefinition(header, body);
         kb.addClassBody(body);
         kb.addAnnotations(klassAnnotations);
 

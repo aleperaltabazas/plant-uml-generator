@@ -31,6 +31,10 @@ public class KlassBuilder {
     }
 
     public void addClassDefinition(String classDefinition) {
+        addClassDefinition(classDefinition, null);
+    }
+
+    public void addClassDefinition(String classDefinition, String body) {
         if (classDefinition.contains(" abstract class ")) {
             classType = new AbstractKlass();
         } else if (classDefinition.contains(" class ")) {
@@ -38,7 +42,7 @@ public class KlassBuilder {
         } else if (classDefinition.contains(" interface ")) {
             classType = new Interfase();
         } else if (classDefinition.contains(" enum ")) {
-            classType = new EnumKlass(null);
+            classType = new EnumKlass(parseEnumConstants(body));
         } else {
             throw new NoClassDefinitionException();
         }
@@ -47,7 +51,7 @@ public class KlassBuilder {
         parseModifiers(words);
 
         try {
-            this.name = words.get(words.indexOf(words.stream().filter(w -> w.equalsIgnoreCase("class") || w.equalsIgnoreCase("abstract class") || w.equalsIgnoreCase("interface")).findFirst().get()) + 1);
+            this.name = words.get(words.indexOf(words.stream().filter(w -> classType(w)).findFirst().get()) + 1);
         } catch (NoSuchElementException e) {
             throw e;
         }
@@ -65,6 +69,33 @@ public class KlassBuilder {
                 interfaces.add(str.replaceAll("(\\s+|,)", ""));
             });
         }
+    }
+
+    private boolean classType(String word) {
+        return word.equalsIgnoreCase("class") || word.equalsIgnoreCase("abstract class") || word.equalsIgnoreCase("interface") || word.equalsIgnoreCase("enum");
+    }
+
+    private List<String> parseEnumConstants(String body) {
+        List<String> lines = Arrays.asList(body.split("\n"));
+        List<String> constants = new ArrayList<>();
+
+        for (String line : lines) {
+            String constant = "";
+            if (line.matches(enumConstantRegex)) {
+                constant = line.replaceAll("(\\s+|,|;)", "");
+            } else if (line.matches(enumConstantWithBehaviorRegex)) {
+                if (line.contains("("))
+                    constant = line.substring(0, line.indexOf("("));
+                else
+                    constant = line.substring(0, line.indexOf("{"));
+
+            }
+
+            if (!constant.isEmpty())
+                constants.add(constant);
+        }
+
+        return constants;
     }
 
     private void parseModifiers(List<String> words) {

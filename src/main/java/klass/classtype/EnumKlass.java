@@ -10,10 +10,15 @@ public class EnumKlass implements ClassType {
     }
 
     public String javaDefinition() {
-        return null;
+        return "enum ";
     }
 
-    public List<String> enumConstants() {
-        return enumerated;
+    public String enumConstants() {
+        StringBuilder sb = new StringBuilder();
+
+        sb.append(enumerated.get(0));
+        enumerated.stream().skip(1).forEach(e -> sb.append(", ").append(e));
+
+        return sb.toString();
     }
 }

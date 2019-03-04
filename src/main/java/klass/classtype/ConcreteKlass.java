@@ -1,11 +1,8 @@
 package klass.classtype;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class ConcreteKlass implements ClassType {
-    public List<String> enumConstants() {
-        return new ArrayList<>();
+    public String enumConstants() {
+        return "";
     }
 
     public String javaDefinition() {

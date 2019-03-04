@@ -41,7 +41,6 @@ public class Main {
 
                 sb.append("@enduml");
                 manager.writeFile(fileName, Arrays.asList(sb.toString()));
-                System.out.println("Saved into " + System.getProperty("user.dir"));
             } else {
                 String text = manager.fileToText(file.getAbsolutePath());
                 Klass klass = reader.readKlass(text);
@@ -49,6 +48,7 @@ public class Main {
 
                 manager.writeFile(fileName, umlLines);
             }
+            System.out.println("Saved into " + System.getProperty("user.dir"));
 
         } catch (ArrayIndexOutOfBoundsException e) {
             throw new NoSuchFileException("Include either the directory from which to find the classes or a single java file to parse");
