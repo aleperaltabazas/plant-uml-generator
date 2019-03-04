@@ -2,6 +2,10 @@ package klass;
 
 import exceptions.BuildError;
 import exceptions.NoClassDefinitionException;
+import klass.classtype.AbstractKlass;
+import klass.classtype.ClassType;
+import klass.classtype.Interfase;
+import klass.classtype.ConcreteKlass;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -29,11 +33,11 @@ public class KlassBuilder {
 
     public void addClassDefinition(String classDefinition) {
         if (classDefinition.contains(" abstract class ")) {
-            classType = ClassType.Abstract;
+            classType = new AbstractKlass();
         } else if (classDefinition.contains(" class ")) {
-            classType = ClassType.Concrete;
+            classType = new ConcreteKlass();
         } else if (classDefinition.contains(" interface ")) {
-            classType = ClassType.Interface;
+            classType = new Interfase();
         } else {
             throw new NoClassDefinitionException();
         }

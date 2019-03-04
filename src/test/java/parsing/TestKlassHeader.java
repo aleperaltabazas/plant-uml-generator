@@ -1,7 +1,7 @@
 package parsing;
 
-import klass.ClassType;
 import klass.KlassBuilder;
+import klass.classtype.ConcreteKlass;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -25,7 +25,7 @@ public class TestKlassHeader {
     @Test
     public void fooShouldBeAConcreteClass() {
         builder.addClassDefinition(foo);
-        assertEquals(ClassType.Concrete, builder.getClassType());
+        assertTrue(builder.getClassType() instanceof ConcreteKlass);
     }
 
     @Test
