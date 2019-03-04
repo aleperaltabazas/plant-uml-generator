@@ -155,4 +155,11 @@ public class KlassBuilder {
     public List<Method> getMethods() {
         return methods;
     }
+
+    public void addAnnotations(List<String> annotations) {
+        if (this.annotations == null)
+            this.annotations = new ArrayList<>();
+
+        this.annotations.addAll(annotations);
+    }
 }
