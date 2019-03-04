@@ -5,14 +5,14 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static parsing.RegexRepository.*;
+
 public abstract class AbstractBuilder {
     protected String name;
     protected String type;
     protected boolean visible;
     protected List<Modifier> modifiers = new ArrayList<>();
     protected List<String> annotations;
-
-    protected final String annotationRegex = "@\\w+([(].*[)])?(\\s\n)?";
 
     protected void parseVisibility(String definition) {
         String firstModifier = definition.split("\\s")[0];
@@ -24,7 +24,7 @@ public abstract class AbstractBuilder {
     }
 
     protected void parseAnnotations(String definition) {
-        annotations = Arrays.asList(definition.split("\\s")).stream().filter(word -> word.matches(annotationRegex)).collect(Collectors.toList());
+        annotations = Arrays.stream(definition.split("\\s")).filter(word -> word.matches(annotationRegex)).collect(Collectors.toList());
     }
 
     protected int presentModifiers(String definition) {

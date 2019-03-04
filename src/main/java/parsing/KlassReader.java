@@ -9,20 +9,9 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static parsing.RegexRepository.*;
+
 public class KlassReader {
-    private final String klassDefinitionRegex = "(public )?((abstract )?class|interface) \\w+(<.*>)?( extends \\w+(<.*>)?)?( implements \\w+(<.*>)?\\s?(,\\s?\\w+(<.*>)?\\s?)*)?\\s?[{]";
-
-    //basically: (public )?class <className>( extends <parent>)?( implements <interface>, <interface>...)? {
-    private final String classRegex = "(\\s*@\\w+([(].*[)])?(\\s|\n)?\\s?)*(public )?class \\w+( extends \\w+)?( implements \\w+\\s?(,\\s?\\w+\\s?)*)?\\s?[{]";
-
-    //basically: (public )?abstract class <className>( extends <parent>)?( implements <interface>, <interface>...)? {
-    private final String abstractRegex = "(\\s*@\\w+([(].*[)])?(\\s|\n)?\\s?)*(public )?abstract class \\w+(<.*>)? (extends \\w+(<.*>)?)?( implements \\w+(<.*>)?\\s?(,\\s?\\w+(<.*>)?\\s?)*)?\\s?[{]";
-
-    //basically: (public )?interface <interfaceName>(extends <parentInterface>)? {
-    private final String interfaceRegex = "(\\s*@\\w+([(].*[)])?(\\s|\n)?\\s?)*(public )?interface \\w+(<.*>)?( extends \\w+(<.*>)?\\s?(,\\s?\\w+(<.*>)?\\s?)*)?\\s?[{]";
-
-    private final String annotationRegex = "\\s*@\\w+([(].*[)])?(\\s|\n)?\\s?";
-
     public List<Klass> parseClasses(List<String> classes) throws BuildError {
         List<Klass> klasses = new ArrayList<>();
         classes.forEach(klass -> klasses.add(readKlass(klass)));
@@ -51,7 +40,7 @@ public class KlassReader {
         String definition = "";
 
         for (String line : text.split("\n")) {
-            if (line.matches(classRegex) || line.matches(abstractRegex) || line.matches(interfaceRegex)) {
+            if (isClassDefinition(line)) {
                 definition = line;
                 break;
             }
@@ -69,6 +58,10 @@ public class KlassReader {
         return annotations;
     }
 
+    private boolean isClassDefinition(String line) {
+        return line.matches(classRegex) || line.matches(abstractRegex) || line.matches(interfaceRegex) || line.matches(enumRegex);
+    }
+
     private String filterPackage(String text) {
         return text.replaceAll("package .*;", "");
     }
@@ -81,7 +74,8 @@ public class KlassReader {
         String header = "";
 
         for (String line : text.split("\n")) {
-            if (line.matches(classRegex) || line.matches(abstractRegex) || line.matches(interfaceRegex)) header = line;
+            if (isClassDefinition(line))
+                header = line;
         }
 
         return header;
@@ -110,7 +104,7 @@ public class KlassReader {
                 continue;
             }
 
-            inClassBody = line.matches(klassDefinitionRegex);
+            inClassBody = line.matches(RegexRepository.klassDefinitionRegex);
         }
 
         return sb.toString();

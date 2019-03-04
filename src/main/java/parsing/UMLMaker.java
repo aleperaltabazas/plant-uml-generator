@@ -75,10 +75,9 @@ public class UMLMaker {
 
         if (!klass.getInterfaces().isEmpty()) {
             sb.append(" implements ").append(klass.getInterfaces().get(0));
-            klass.getInterfaces().forEach(i -> {
-                if (klass.getInterfaces().indexOf(i) > 0)
-                    sb.append(", ").append(i);
-            });
+            klass.getInterfaces().stream().skip(1).forEach(i ->
+                    sb.append(", ").append(i)
+            );
         }
 
         return sb.toString();

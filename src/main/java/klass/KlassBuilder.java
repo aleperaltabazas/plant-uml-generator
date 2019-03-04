@@ -2,16 +2,15 @@ package klass;
 
 import exceptions.BuildError;
 import exceptions.NoClassDefinitionException;
-import klass.classtype.AbstractKlass;
-import klass.classtype.ClassType;
-import klass.classtype.Interfase;
-import klass.classtype.ConcreteKlass;
+import klass.classtype.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
+
+import static parsing.RegexRepository.*;
 
 public class KlassBuilder {
     private ClassType classType;
@@ -38,6 +37,8 @@ public class KlassBuilder {
             classType = new ConcreteKlass();
         } else if (classDefinition.contains(" interface ")) {
             classType = new Interfase();
+        } else if (classDefinition.contains(" enum ")) {
+            classType = new EnumKlass(null);
         } else {
             throw new NoClassDefinitionException();
         }
@@ -46,10 +47,7 @@ public class KlassBuilder {
         parseModifiers(words);
 
         try {
-            this.name = words.get(words.indexOf(words.stream().filter(w -> {
-                String noSpaces = w.replaceAll("\\s+", "");
-                return w.equalsIgnoreCase("class") || w.equalsIgnoreCase("abstract class") || w.equalsIgnoreCase("interface");
-            }).findFirst().get()) + 1);
+            this.name = words.get(words.indexOf(words.stream().filter(w -> w.equalsIgnoreCase("class") || w.equalsIgnoreCase("abstract class") || w.equalsIgnoreCase("interface")).findFirst().get()) + 1);
         } catch (NoSuchElementException e) {
             throw e;
         }
@@ -92,9 +90,6 @@ public class KlassBuilder {
     }
 
     private void parseBody(List<String> lines) throws BuildError {
-        String annotationRegex = "\\s*@\\w+([(].*[)])?(\\s|\n)?\\s?";
-        String methodRegex = "\\s*(public |private |protected )?(static )?(\\w|[.]|<|>|,)+ \\w+\\s?[(].*[)]\\s?([{]?|;)\\s?";
-        String attributeRegex = "\\s*(@\\w+([(].*[)])?\\s?\n?)*\\s*(public |protected |private )?(static )?(final )?(\\w|[.]|<|>|,)* \\w+\\s?;";
         String constructorRegex = "\\s*(public |protected |private )" + name + "\\s?[(].*[)]\\s?([{]|[;])?";
 
         MethodBuilder mb = new MethodBuilder();
