@@ -17,6 +17,7 @@ public class KlassBuilder {
     private List<Attribute> attributes;
     private List<Method> methods;
     private List<Modifier> modifiers = new ArrayList<>();
+    private List<String> annotations;
 
     public Klass build() throws BuildError {
         if (classType == null || name == null) {
@@ -92,7 +93,7 @@ public class KlassBuilder {
 
     private void parseBody(List<String> lines) throws BuildError {
         String methodRegex = "\\s*(public |private |protected )?(static )?(\\w|[.]|<|>|,)+ \\w+\\s?[(].*[)]\\s?([{]?|;)\\s?";
-        String attributeRegex = "\\s*(public |protected |private )?(static )?(final )?(\\w|[.]|<|>|,)* \\w+\\s?;";
+        String attributeRegex = "\\s*(@\\w+([(].*[)])?\\s?\n?)*\\s?(public |protected |private )?(static )?(final )?(\\w|[.]|<|>|,)* \\w+\\s?;";
         String constructorRegex = "\\s*(public |protected |private )" + name + "\\s?[(].*[)]\\s?([{]|[;])?";
 
         MethodBuilder mb = new MethodBuilder();

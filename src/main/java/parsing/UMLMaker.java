@@ -1,7 +1,6 @@
 package parsing;
 
 import klass.Attribute;
-import klass.ClassType;
 import klass.Klass;
 import klass.Method;
 
@@ -10,16 +9,14 @@ import java.util.List;
 
 public class UMLMaker {
     public List<String> makeClassUml(Klass klass) {
-        StringBuilder sb = new StringBuilder();
 
-        sb.append(appendHeader(klass));
-        sb.append(" {" + "\n");
-        sb.append(appendAttributes(klass));
-        sb.append(appendMethods(klass));
-        sb.append("}" + "\n");
-        sb.append(appendReferences(klass));
-
-        return Arrays.asList(sb.toString().split("\\r?\\n"));
+        String umlText = appendHeader(klass) +
+                " {" + "\n" +
+                appendAttributes(klass) +
+                appendMethods(klass) +
+                "}" + "\n" +
+                appendReferences(klass);
+        return Arrays.asList(umlText.split("\\r?\\n"));
     }
 
     private String appendReferences(Klass klass) {
@@ -58,7 +55,7 @@ public class UMLMaker {
         List<Method> methods = klass.getMethods();
         StringBuilder sb = new StringBuilder();
 
-        methods.stream().filter(method -> method.isVisible() && !method.isBoilerPlate() || klass.getClassType().equals(ClassType.Interface)).forEach(met -> {
+        methods.stream().filter(method -> method.isVisible() && !method.isBoilerPlate()).forEach(met -> {
             sb.append(met.getName()).append("(");
             met.getArguments().forEach(arg -> sb.append(arg.getName()).append(": ").append(arg.getKlass()));
             sb.append("): ").append(met.getReturnType()).append("\n");
