@@ -4,6 +4,8 @@ import exceptions.BuildError;
 
 public class AttributeBuilder extends AbstractBuilder {
     public void addDefinition(String definition) {
+        parseAnnotations(definition);
+        definition = removeAnnotations(definition);
         parseName(definition);
         parseType(definition);
         parseModifiers(definition);
@@ -31,7 +33,7 @@ public class AttributeBuilder extends AbstractBuilder {
             throw new BuildError("Need parameters to build. Name: " + name + ", type: " + type);
         }
 
-        return new Attribute(name, type, visible, modifiers);
+        return new Attribute(name, type, visible, modifiers, annotations);
     }
 
     protected void parseName(String definition) {

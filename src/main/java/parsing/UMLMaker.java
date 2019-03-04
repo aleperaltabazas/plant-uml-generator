@@ -1,9 +1,9 @@
 package parsing;
 
 import klass.Attribute;
-import klass.ClassType;
 import klass.Klass;
 import klass.Method;
+import klass.classtype.EnumKlass;
 
 import java.util.Arrays;
 import java.util.List;
@@ -11,15 +11,19 @@ import java.util.List;
 public class UMLMaker {
     public List<String> makeClassUml(Klass klass) {
         StringBuilder sb = new StringBuilder();
-
         sb.append(appendHeader(klass));
-        sb.append(" {" + "\n");
+        sb.append("{\n");
+        if (klass.getClassType() instanceof EnumKlass) sb.append(appendEnumConstants(klass));
         sb.append(appendAttributes(klass));
         sb.append(appendMethods(klass));
-        sb.append("}" + "\n");
+        sb.append("}\n");
         sb.append(appendReferences(klass));
 
         return Arrays.asList(sb.toString().split("\\r?\\n"));
+    }
+
+    private String appendEnumConstants(Klass klass) {
+        return klass.getClassType().enumConstants() + "\n";
     }
 
     private String appendReferences(Klass klass) {
@@ -58,7 +62,7 @@ public class UMLMaker {
         List<Method> methods = klass.getMethods();
         StringBuilder sb = new StringBuilder();
 
-        methods.stream().filter(method -> method.isVisible() && !method.isBoilerPlate() || klass.getClassType().equals(ClassType.Interface)).forEach(met -> {
+        methods.stream().filter(method -> method.isVisible() && !method.isBoilerPlate()).forEach(met -> {
             sb.append(met.getName()).append("(");
             met.getArguments().forEach(arg -> sb.append(arg.getName()).append(": ").append(arg.getKlass()));
             sb.append("): ").append(met.getReturnType()).append("\n");
@@ -78,10 +82,9 @@ public class UMLMaker {
 
         if (!klass.getInterfaces().isEmpty()) {
             sb.append(" implements ").append(klass.getInterfaces().get(0));
-            klass.getInterfaces().forEach(i -> {
-                if (klass.getInterfaces().indexOf(i) > 0)
-                    sb.append(", ").append(i);
-            });
+            klass.getInterfaces().stream().skip(1).forEach(i ->
+                    sb.append(", ").append(i)
+            );
         }
 
         return sb.toString();

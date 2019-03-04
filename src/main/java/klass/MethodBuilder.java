@@ -12,6 +12,8 @@ public class MethodBuilder extends AbstractBuilder {
     private List<Argument> arguments;
 
     public void addDefinition(String definition) {
+        parseAnnotations(definition);
+        definition = removeAnnotations(definition);
         parseArguments(definition);
         parseVisibility(definition);
         parseType(definition);

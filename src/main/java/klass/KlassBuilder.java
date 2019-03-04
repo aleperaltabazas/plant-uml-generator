@@ -2,12 +2,15 @@ package klass;
 
 import exceptions.BuildError;
 import exceptions.NoClassDefinitionException;
+import klass.classtype.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
+
+import static parsing.RegexRepository.*;
 
 public class KlassBuilder {
     private ClassType classType;
@@ -17,6 +20,7 @@ public class KlassBuilder {
     private List<Attribute> attributes;
     private List<Method> methods;
     private List<Modifier> modifiers = new ArrayList<>();
+    private List<String> annotations;
 
     public Klass build() throws BuildError {
         if (classType == null || name == null) {
@@ -27,12 +31,18 @@ public class KlassBuilder {
     }
 
     public void addClassDefinition(String classDefinition) {
+        addClassDefinition(classDefinition, null);
+    }
+
+    public void addClassDefinition(String classDefinition, String body) {
         if (classDefinition.contains(" abstract class ")) {
-            classType = ClassType.Abstract;
+            classType = new AbstractKlass();
         } else if (classDefinition.contains(" class ")) {
-            classType = ClassType.Concrete;
+            classType = new ConcreteKlass();
         } else if (classDefinition.contains(" interface ")) {
-            classType = ClassType.Interface;
+            classType = new Interfase();
+        } else if (classDefinition.contains(" enum ")) {
+            classType = new EnumKlass(parseEnumConstants(body));
         } else {
             throw new NoClassDefinitionException();
         }
@@ -41,10 +51,7 @@ public class KlassBuilder {
         parseModifiers(words);
 
         try {
-            this.name = words.get(words.indexOf(words.stream().filter(w -> {
-                String noSpaces = w.replaceAll("\\s+", "");
-                return w.equalsIgnoreCase("class") || w.equalsIgnoreCase("abstract class") || w.equalsIgnoreCase("interface");
-            }).findFirst().get()) + 1);
+            this.name = words.get(words.indexOf(words.stream().filter(w -> classType(w)).findFirst().get()) + 1);
         } catch (NoSuchElementException e) {
             throw e;
         }
@@ -55,17 +62,37 @@ public class KlassBuilder {
             parent = null;
         }
 
+        interfaces = new ArrayList<>();
+
         if (classDefinition.contains("implements")) {
-            StringBuilder parentBuilder = new StringBuilder();
             words.stream().filter(w -> words.indexOf(w) > words.indexOf("implements") && !w.equals("{")).collect(Collectors.toSet()).forEach(str -> {
-                parentBuilder.append(str);
+                interfaces.add(str.replaceAll("(\\s+|,)", ""));
             });
-            interfaces = Arrays.asList(parentBuilder.toString().replaceAll("\\s", "").split(","));
-        } else {
-            interfaces = new ArrayList<>();
+        }
+    }
+
+    private boolean classType(String word) {
+        return word.equalsIgnoreCase("class") || word.equalsIgnoreCase("abstract class") || word.equalsIgnoreCase("interface") || word.equalsIgnoreCase("enum");
+    }
+
+    private List<String> parseEnumConstants(String body) {
+        List<String> lines = Arrays.asList(body.split("\n"));
+        List<String> constants = new ArrayList<>();
+
+        for (String line : lines) {
+            String constant = "";
+            if (line.matches(enumConstantRegex)) {
+                constant = line.replaceAll("(\\s+|,|;)", "");
+            } else if (line.matches(enumConstantWithBehaviorRegex)) {
+                constant = line.substring(0, line.indexOf(";")).replaceAll("\\s+", "");
+            }
+
+            if (!constant.isEmpty()) {
+                constants.add(constant);
+            }
         }
 
-
+        return constants;
     }
 
     private void parseModifiers(List<String> words) {
@@ -91,8 +118,6 @@ public class KlassBuilder {
     }
 
     private void parseBody(List<String> lines) throws BuildError {
-        String methodRegex = "\\s*(public |private |protected )?(static )?(\\w|[.]|<|>|,)+ \\w+\\s?[(].*[)]\\s?([{]?|;)\\s?";
-        String attributeRegex = "\\s*(public |protected |private )?(static )?(final )?(\\w|[.]|<|>|,)* \\w+\\s?;";
         String constructorRegex = "\\s*(public |protected |private )" + name + "\\s?[(].*[)]\\s?([{]|[;])?";
 
         MethodBuilder mb = new MethodBuilder();
@@ -100,6 +125,7 @@ public class KlassBuilder {
 
         methods = new ArrayList<>();
         attributes = new ArrayList<>();
+        List<String> annotations = new ArrayList<>();
 
         for (String line : lines) {
             String spaceless = line.replaceAll("\\s+", " ");
@@ -109,14 +135,22 @@ public class KlassBuilder {
             if (line.matches(constructorRegex))
                 continue;
 
+            if (spaceless.matches(annotationRegex)) {
+                annotations.add(spaceless);
+            }
+
             if (line.matches(methodRegex)) {
                 mb.addDefinition(spaceless);
+                mb.addAnotations(annotations);
                 methods.add(mb.build());
+                annotations.clear();
                 mb.clear();
             } else if (line.matches(attributeRegex)) {
                 ab.addDefinition(spaceless);
+                ab.addAnotations(annotations);
                 attributes.add(ab.build());
                 ab.clear();
+                annotations.clear();
             }
         }
     }
@@ -143,5 +177,12 @@ public class KlassBuilder {
 
     public List<Method> getMethods() {
         return methods;
+    }
+
+    public void addAnnotations(List<String> annotations) {
+        if (this.annotations == null)
+            this.annotations = new ArrayList<>();
+
+        this.annotations.addAll(annotations);
     }
 }

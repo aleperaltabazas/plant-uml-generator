@@ -6,7 +6,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -21,13 +20,13 @@ public class FileManager {
         List<String> all = new ArrayList<>();
 
         if (file.isDirectory()) {
-            Arrays.asList(file.listFiles()).forEach(f -> {
+            for (File f : file.listFiles()) {
                 try {
                     all.addAll(findAllClasses(f.getAbsolutePath()));
                 } catch (FileNotFoundException e) {
-                    e.printStackTrace();
+                    throw e;
                 }
-            });
+            }
         } else {
             if (file.getName().endsWith(".java"))
                 all.add(fileToText(file.getAbsolutePath()));

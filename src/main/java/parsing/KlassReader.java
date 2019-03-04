@@ -5,29 +5,16 @@ import klass.Klass;
 import klass.KlassBuilder;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
+
+import static parsing.RegexRepository.*;
 
 public class KlassReader {
-    private final String klassDefinitionRegex = "(public )?((abstract )?class|interface) \\w+(<.*>)?( extends \\w+(<.*>)?)?( implements \\w+(<.*>)?\\s?(,\\s?\\w+(<.*>)?\\s?)*)?\\s?[{]";
-
-    //basically: (public )?class <className>( extends <parent>)?( implements <interface>, <interface>...)? {
-    private final String classRegex = "(public )?class \\w+( extends \\w+)?( implements \\w+\\s?(,\\s?\\w+\\s?)*)?\\s?[{]";
-
-    //basically: (public )?abstract class <className>( extends <parent>)?( implements <interface>, <interface>...)? {
-    private final String abstractRegex = "(public )?abstract class \\w+(<.*>)? (extends \\w+(<.*>)?)?( implements \\w+(<.*>)?\\s?(,\\s?\\w+(<.*>)?\\s?)*)?\\s?[{]";
-
-    //basically: (public )?interface <interfaceName>(extends <parentInterface>)? {
-    private final String interfaceRegex = "(public )?interface \\w+(<.*>)?( extends \\w+(<.*>)?\\s?(,\\s?\\w+(<.*>)?\\s?)*)?\\s?[{]";
-
     public List<Klass> parseClasses(List<String> classes) throws BuildError {
         List<Klass> klasses = new ArrayList<>();
-        classes.forEach(klass -> {
-            try {
-                klasses.add(readKlass(klass));
-            } catch (BuildError e) {
-                e.printStackTrace();
-            }
-        });
+        classes.forEach(klass -> klasses.add(readKlass(klass)));
 
         return klasses;
     }
@@ -36,14 +23,43 @@ public class KlassReader {
         text = filterImports(text);
         text = filterPackage(text);
 
+        List<String> klassAnnotations = getAnnotations(text);
         String body = getBody(text);
         String header = getHeader(text);
 
         KlassBuilder kb = new KlassBuilder();
-        kb.addClassDefinition(header);
+        kb.addClassDefinition(header, body);
         kb.addClassBody(body);
+        kb.addAnnotations(klassAnnotations);
 
         return kb.build();
+    }
+
+    private List<String> getAnnotations(String text) {
+        List<String> annotations = new ArrayList<>();
+        String definition = "";
+
+        for (String line : text.split("\n")) {
+            if (isClassDefinition(line)) {
+                definition = line;
+                break;
+            }
+
+            if (line.matches(annotationRegex)) {
+                annotations.add(line.replaceAll("\\s+", " "));
+            }
+        }
+
+        annotations.addAll(Arrays
+                .stream(definition.split("\\s"))
+                .filter(word -> word.matches(annotationRegex))
+                .collect(Collectors.toList()));
+
+        return annotations;
+    }
+
+    private boolean isClassDefinition(String line) {
+        return line.matches(classRegex) || line.matches(abstractRegex) || line.matches(interfaceRegex) || line.matches(enumRegex);
     }
 
     private String filterPackage(String text) {
@@ -58,7 +74,8 @@ public class KlassReader {
         String header = "";
 
         for (String line : text.split("\n")) {
-            if (line.matches(classRegex) || line.matches(abstractRegex) || line.matches(interfaceRegex)) header = line;
+            if (isClassDefinition(line))
+                header = line;
         }
 
         return header;
@@ -87,7 +104,7 @@ public class KlassReader {
                 continue;
             }
 
-            inClassBody = line.matches(klassDefinitionRegex);
+            inClassBody = line.matches(RegexRepository.klassDefinitionRegex);
         }
 
         return sb.toString();

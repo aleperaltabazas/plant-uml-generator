@@ -1,5 +1,7 @@
 package klass;
 
+import klass.classtype.ClassType;
+
 import java.util.List;
 import java.util.Optional;
 

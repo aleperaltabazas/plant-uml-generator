@@ -3,12 +3,16 @@ package klass;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
+
+import static parsing.RegexRepository.*;
 
 public abstract class AbstractBuilder {
     protected String name;
     protected String type;
     protected boolean visible;
     protected List<Modifier> modifiers = new ArrayList<>();
+    protected List<String> annotations;
 
     protected void parseVisibility(String definition) {
         String firstModifier = definition.split("\\s")[0];
@@ -17,6 +21,10 @@ public abstract class AbstractBuilder {
 
     protected void parseType(String definition) {
         type = definition.split("\\s")[presentModifiers(definition)];
+    }
+
+    protected void parseAnnotations(String definition) {
+        annotations = Arrays.stream(definition.split("\\s")).filter(word -> word.matches(annotationRegex)).collect(Collectors.toList());
     }
 
     protected int presentModifiers(String definition) {
@@ -57,6 +65,21 @@ public abstract class AbstractBuilder {
             if (word.matches("<.*>"))
                 modifiers.add(Modifier.Generic);
         }
+    }
+
+    public void addAnotations(List<String> annotations) {
+        if (this.annotations == null)
+            this.annotations = new ArrayList<>();
+
+        this.annotations.addAll(annotations);
+    }
+
+    protected String removeAnnotations(String definition) {
+        StringBuilder sb = new StringBuilder();
+
+        Arrays.stream(definition.split("\\s|\n")).filter(word -> !word.matches(annotationRegex)).forEach(word -> sb.append(word).append(" "));
+
+        return sb.toString();
     }
 
     public abstract void clear();
