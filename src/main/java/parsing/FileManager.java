@@ -20,14 +20,16 @@ public class FileManager {
         File file = new File(path);
         List<String> all = new ArrayList<>();
 
+        Boolean exception = false;
+
         if (file.isDirectory()) {
-            Arrays.asList(file.listFiles()).forEach(f -> {
+            for (File f : Arrays.asList(file.listFiles())) {
                 try {
                     all.addAll(findAllClasses(f.getAbsolutePath()));
                 } catch (FileNotFoundException e) {
-                    e.printStackTrace();
+                    throw e;
                 }
-            });
+            }
         } else {
             if (file.getName().endsWith(".java"))
                 all.add(fileToText(file.getAbsolutePath()));

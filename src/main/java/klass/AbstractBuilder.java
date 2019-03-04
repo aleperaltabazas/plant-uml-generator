@@ -25,7 +25,6 @@ public abstract class AbstractBuilder {
 
     protected void parseAnnotations(String definition) {
         annotations = Arrays.asList(definition.split("\\s")).stream().filter(word -> word.matches(annotationRegex)).collect(Collectors.toList());
-        annotations.forEach(System.out::println);
     }
 
     protected int presentModifiers(String definition) {
@@ -71,8 +70,6 @@ public abstract class AbstractBuilder {
     public void addAnotations(List<String> annotations) {
         if (this.annotations == null)
             this.annotations = new ArrayList<>();
-
-        annotations.forEach(System.out::println);
 
         this.annotations.addAll(annotations);
     }

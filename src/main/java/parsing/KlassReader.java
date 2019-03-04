@@ -25,13 +25,7 @@ public class KlassReader {
 
     public List<Klass> parseClasses(List<String> classes) throws BuildError {
         List<Klass> klasses = new ArrayList<>();
-        classes.forEach(klass -> {
-            try {
-                klasses.add(readKlass(klass));
-            } catch (BuildError e) {
-                e.printStackTrace();
-            }
-        });
+        classes.forEach(klass -> klasses.add(readKlass(klass)));
 
         return klasses;
     }

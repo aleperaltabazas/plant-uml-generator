@@ -56,17 +56,13 @@ public class KlassBuilder {
             parent = null;
         }
 
+        interfaces = new ArrayList<>();
+
         if (classDefinition.contains("implements")) {
-            StringBuilder parentBuilder = new StringBuilder();
             words.stream().filter(w -> words.indexOf(w) > words.indexOf("implements") && !w.equals("{")).collect(Collectors.toSet()).forEach(str -> {
-                parentBuilder.append(str);
+                interfaces.add(str.replaceAll("(\\s+|,)", ""));
             });
-            interfaces = Arrays.asList(parentBuilder.toString().replaceAll("\\s", "").split(","));
-        } else {
-            interfaces = new ArrayList<>();
         }
-
-
     }
 
     private void parseModifiers(List<String> words) {
