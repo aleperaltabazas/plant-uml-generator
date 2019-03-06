@@ -1,7 +1,5 @@
 package parsing;
 
-import exceptions.MultiplePrimaryKeyError;
-import exceptions.NoPrimaryKeyError;
 import klass.Attribute;
 import klass.Klass;
 import klass.Method;
@@ -12,33 +10,55 @@ import persistence.Table;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class UMLMaker {
-    public Table writeERD(Klass klass) {
-        String pk = getPK(klass);
+    public List<String> writeERD(Table table) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(appendTableName(table));
+        sb.append("{\n");
+        sb.append(appendTableAttributes(table));
+        sb.append("}\n");
+        sb.append(appendRelations(table));
 
-        return null;
+        return Arrays.asList(sb.toString().split("\\r?\\n"));
     }
 
-    private String getPK(Klass klass) {
-        List<Attribute> posiblePks = klass.getAttributes().stream().filter(a -> a.getAnnotations().stream().anyMatch(an -> an.equalsIgnoreCase("entity"))).collect(Collectors.toList());
+    private String appendTableAttributes(Table table) {
+        StringBuilder sb = new StringBuilder();
 
-        if (posiblePks.size() > 1) {
-            StringBuilder sb = new StringBuilder();
-            sb.append("There should only exist one Primary Key within class ").append(klass.getName()).append(". Found following PKs: ");
-            sb.append(posiblePks.get(0));
+        sb.append(table.getPk() + "\n");
+        sb.append("--\n");
+        table.getAttributes().forEach(attr -> sb.append(attr).append("\n"));
+        table.getFks().forEach(fk -> sb.append(fk.getName()).append("\n"));
 
-            posiblePks.stream().skip(1).forEach(pk -> sb.append(", ").append(pk));
+        return sb.toString();
+    }
 
-            throw new MultiplePrimaryKeyError(sb.toString());
-        }
+    private String appendTableName(Table table) {
+        return "entity " + table.getName();
+    }
 
-        if (posiblePks.isEmpty()) {
-            throw new NoPrimaryKeyError(klass.getName());
-        }
+    private String appendRelations(Table table) {
+        StringBuilder sb = new StringBuilder();
 
-        return posiblePks.get(0).getName();
+        table.getFks().forEach(fk -> {
+            String relation = "";
+
+            switch (fk.getType()) {
+                case OneToOne:
+                    relation = " |o--o| ";
+                case OneToMany:
+                    relation = " |o--o{ ";
+                case ManyToOne:
+                    relation = " }o--o| ";
+                case ManyToMany:
+                    relation = " }o--o{ ";
+            }
+
+            sb.append(fk.getOriginTable()).append(relation).append(fk.getDestinationTable()).append("\n");
+        });
+
+        return sb.toString();
     }
 
     public List<String> writeClassDiagram(Klass klass) {
@@ -64,7 +84,8 @@ public class UMLMaker {
         StringBuilder sb = new StringBuilder();
         klass.getAttributes().stream().filter(attr -> !attr.isIgnored()).forEach(attr -> {
             if (attr.getKlass().matches(collectionRegex)) {
-                sb.append(klass.getName()).append(" --> \"*\" ").append(removeListWrapper(attr.getKlass())).append("\n");
+                sb.append(klass.getName()).append(" --> \"*\" ").append(removeListWrapper(attr.getKlass())).append(
+                        "\n");
             } else {
                 sb.append(klass.getName()).append(" --> ").append(attr.getKlass()).append("\n");
             }
