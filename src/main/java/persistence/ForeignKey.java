@@ -1,12 +1,17 @@
 package persistence;
 
-import klass.Klass;
-
 public class ForeignKey {
     private String name;
     private FKType type;
-    private Klass originTable;
-    private Klass destinationTable;
+    private String originTable;
+    private String destinationTable;
+
+    public ForeignKey(String name, FKType type, String originTable, String destinationTable) {
+        this.name = name;
+        this.type = type;
+        this.originTable = originTable;
+        this.destinationTable = destinationTable;
+    }
 
     public String getName() {
         return name + " (FK)";
@@ -16,11 +21,11 @@ public class ForeignKey {
         return type;
     }
 
-    public Klass getOriginTable() {
+    public String getOriginTable() {
         return originTable;
     }
 
-    public Klass getDestinationTable() {
+    public String getDestinationTable() {
         return destinationTable;
     }
 }

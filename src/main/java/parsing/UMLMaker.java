@@ -1,11 +1,13 @@
 package parsing;
 
+import exceptions.NoFKTypeException;
 import klass.Attribute;
 import klass.Klass;
 import klass.Method;
 import klass.Modifier;
 import klass.classtype.EnumKlass;
 import klass.classtype.Interfase;
+import persistence.ForeignKey;
 import persistence.Table;
 
 import java.util.Arrays;
@@ -14,7 +16,7 @@ import java.util.List;
 public class UMLMaker {
     public List<String> writeERD(Table table) {
         StringBuilder sb = new StringBuilder();
-        sb.append(appendTableName(table));
+        sb.append(appendTableHeader(table));
         sb.append("{\n");
         sb.append(appendTableAttributes(table));
         sb.append("}\n");
@@ -26,37 +28,43 @@ public class UMLMaker {
     private String appendTableAttributes(Table table) {
         StringBuilder sb = new StringBuilder();
 
-        sb.append(table.getPk() + "\n");
+        sb.append(table.getPk()).append("\n");
         sb.append("--\n");
-        table.getAttributes().forEach(attr -> sb.append(attr).append("\n"));
+        table.getAttributes().forEach(attr -> sb.append(attr.getName()).append("\n"));
         table.getFks().forEach(fk -> sb.append(fk.getName()).append("\n"));
 
         return sb.toString();
     }
 
-    private String appendTableName(Table table) {
+    private String appendTableHeader(Table table) {
         return "entity " + table.getName();
     }
 
     private String appendRelations(Table table) {
         StringBuilder sb = new StringBuilder();
 
-        table.getFks().forEach(fk -> {
-            String relation = "";
+        for (ForeignKey fk : table.getFks()) {
+            String relation;
 
             switch (fk.getType()) {
                 case OneToOne:
                     relation = " |o--o| ";
+                    break;
                 case OneToMany:
                     relation = " |o--o{ ";
+                    break;
                 case ManyToOne:
                     relation = " }o--o| ";
+                    break;
                 case ManyToMany:
                     relation = " }o--o{ ";
+                    break;
+                default:
+                    throw new NoFKTypeException(fk);
             }
 
             sb.append(fk.getOriginTable()).append(relation).append(fk.getDestinationTable()).append("\n");
-        });
+        }
 
         return sb.toString();
     }
