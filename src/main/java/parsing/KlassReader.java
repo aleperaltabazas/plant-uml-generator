@@ -19,7 +19,7 @@ public class KlassReader {
             try {
                 klasses.add(readKlass(klass));
             } catch (NoClassDefinitionException e) {
-                e.printStackTrace();
+
             }
         });
 

@@ -50,7 +50,8 @@ public class Main {
                 StringBuilder tableSB = new StringBuilder();
                 tableSB.append("@startuml\nhide circle\nhide emtpy members\n");
 
-                tables.forEach(table -> maker.writeERD(table).forEach(line -> classSB.append(line).append("\n")));
+                tables.forEach(table -> maker.writeERD(table, new TableReader().readAllFks(klasses)).forEach(line -> tableSB.append(line).append(
+                        "\n")));
 
                 tableSB.append("@enduml\n");
 

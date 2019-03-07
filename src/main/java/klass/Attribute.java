@@ -72,7 +72,8 @@ public class Attribute {
 
     private List<String> primitives() {
         List<String> primivites = Arrays.asList("int", "float", "double", "char", "short", "long", "boolean", "byte");
-        List<String> almostPrimitives = Arrays.asList("Integer", "Float", "Double", "Character", "Short", "Long", "Boolean", "Byte", "String");
+        List<String> almostPrimitives = Arrays.asList("Integer", "Float", "Double", "Character", "Short", "Long",
+                "Boolean", "Byte", "String");
 
         List<String> result = new ArrayList<>(primivites);
         result.addAll(almostPrimitives);
@@ -86,5 +87,9 @@ public class Attribute {
 
     public List<String> getAnnotations() {
         return annotations;
+    }
+
+    public boolean isPrimaryKey() {
+        return annotations.stream().anyMatch(annotation -> annotation.matches("@Id"));
     }
 }

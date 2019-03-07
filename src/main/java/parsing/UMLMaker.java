@@ -14,13 +14,13 @@ import java.util.Arrays;
 import java.util.List;
 
 public class UMLMaker {
-    public List<String> writeERD(Table table) {
+    public List<String> writeERD(Table table, List<ForeignKey> fks) {
         StringBuilder sb = new StringBuilder();
         sb.append(appendTableHeader(table));
         sb.append("{\n");
         sb.append(appendTableAttributes(table));
         sb.append("}\n");
-        sb.append(appendRelations(table));
+        sb.append(appendRelations(fks));
 
         return Arrays.asList(sb.toString().split("\\r?\\n"));
     }
@@ -40,10 +40,10 @@ public class UMLMaker {
         return "entity " + table.getName();
     }
 
-    private String appendRelations(Table table) {
+    private String appendRelations(List<ForeignKey> fks) {
         StringBuilder sb = new StringBuilder();
 
-        for (ForeignKey fk : table.getFks()) {
+        for (ForeignKey fk : fks) {
             String relation;
 
             switch (fk.getType()) {

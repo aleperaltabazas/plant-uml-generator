@@ -20,12 +20,12 @@ public class TableReader {
     public List<Table> readAllTables(List<Klass> klasses) {
         List<Table> tables = new ArrayList<>();
 
-        klasses.stream().filter(klass -> klass.isEntity()).forEach(k -> {
+        klasses.stream().filter(Klass::isEntity).forEach(k -> {
             try {
-                tables.add(new TableManager().tableOf(k,
-                        readAllFks(klasses)));
+                Table table = new TableManager().tableOf(k,
+                        readAllFks(klasses));
+                tables.add(table);
             } catch (NoPrimaryKeyError e) {
-                e.printStackTrace();
             }
         });
 

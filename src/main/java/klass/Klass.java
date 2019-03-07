@@ -79,6 +79,6 @@ public class Klass {
     }
 
     public boolean isEntity() {
-        return annotaions.contains("Entity");
+        return annotaions.stream().anyMatch(a -> a.matches("@Entity([(].*[)])?"));
     }
 }

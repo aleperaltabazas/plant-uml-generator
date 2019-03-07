@@ -185,6 +185,6 @@ public class KlassBuilder {
         if (this.annotations == null)
             this.annotations = new ArrayList<>();
 
-        annotations.forEach(a -> this.annotations.add(a.replaceAll("@", "")));
+        this.annotations.addAll(annotations);
     }
 }

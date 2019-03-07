@@ -22,9 +22,12 @@ public class TableManager {
     }
 
     private List<TableAttribute> getAttributes(Klass klass) {
-        List<TableAttribute> attributes = getAttributes(klass);
-
-        klass.getAttributes().forEach(attr -> attributes.add(new TableAttribute(attr.getName(), attr.getKlass())));
+        List<TableAttribute> attributes = new ArrayList<>();
+        klass.getAttributes().forEach(attr -> {
+            if (!attr.isPrimaryKey())
+                attributes.add(new TableAttribute(attr.getName(),
+                        attr.getKlass()));
+        });
 
         return attributes;
     }
@@ -35,7 +38,7 @@ public class TableManager {
 
     private String getPk(Klass klass) {
         try {
-            return klass.getAttributes().stream().filter(attr -> attr.getAnnotations().contains("Id")).findFirst().get().getName();
+            return klass.getAttributes().stream().filter(Attribute::isPrimaryKey).findFirst().get().getName();
         } catch (NoSuchElementException e) {
             throw new NoPrimaryKeyError(klass.getName());
         }
@@ -46,8 +49,8 @@ public class TableManager {
 
         klass.getAttributes().stream().filter(attr -> {
             List<String> annotaions = attr.getAnnotations();
-            return annotaions.contains("OneToOne") || annotaions.contains("OneToMany") || annotaions.contains(
-                    "ManyToOne") || annotaions.contains("ManyToMany");
+            return annotaions.stream().anyMatch(a -> a.matches("@OneToOne") || a.matches("@OneToMany") || a.matches(
+                    "@ManyToOne") || a.matches("@ManyToMany"));
         }).forEach(attr -> fks.add(new ForeignKey(attr.getName(), parseType(attr.getAnnotations()), klass.getName(),
                 attr.getKlass())));
 
@@ -55,13 +58,13 @@ public class TableManager {
     }
 
     private FKType parseType(List<String> annotations) {
-        if (annotations.contains("OneToOne"))
+        if (annotations.contains("@OneToOne"))
             return FKType.OneToOne;
-        if (annotations.contains("OneToMany"))
+        if (annotations.contains("@OneToMany"))
             return FKType.OneToMany;
-        if (annotations.contains("ManyToOne"))
+        if (annotations.contains("@ManyToOne"))
             return FKType.ManyToOne;
-        if (annotations.contains("ManyToMany"))
+        if (annotations.contains("@ManyToMany"))
             return FKType.ManyToMany;
 
         throw new NoFkFoundException();
