@@ -1,6 +1,7 @@
 package parsing;
 
 import exceptions.BuildError;
+import exceptions.NoClassDefinitionException;
 import klass.Klass;
 import klass.KlassBuilder;
 
@@ -14,7 +15,13 @@ import static parsing.RegexRepository.*;
 public class KlassReader {
     public List<Klass> parseClasses(List<String> classes) throws BuildError {
         List<Klass> klasses = new ArrayList<>();
-        classes.forEach(klass -> klasses.add(readKlass(klass)));
+        classes.forEach(klass -> {
+            try {
+                klasses.add(readKlass(klass));
+            } catch (NoClassDefinitionException e) {
+                e.printStackTrace();
+            }
+        });
 
         return klasses;
     }

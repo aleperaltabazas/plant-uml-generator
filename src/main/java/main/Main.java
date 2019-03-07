@@ -4,7 +4,9 @@ import exceptions.BuildError;
 import klass.Klass;
 import parsing.FileManager;
 import parsing.KlassReader;
+import parsing.TableReader;
 import parsing.UMLMaker;
+import persistence.Table;
 
 import java.io.File;
 import java.io.IOException;
@@ -34,13 +36,26 @@ public class Main {
                 List<String> klassesText = manager.findAllClasses(file.getAbsolutePath());
                 List<Klass> klasses = reader.parseClasses(klassesText);
 
-                StringBuilder sb = new StringBuilder();
-                sb.append("@startuml\n");
+                StringBuilder classSB = new StringBuilder();
+                classSB.append("@startuml\n");
 
-                klasses.stream().filter(klass -> !klass.isIgnorable()).forEach(klass -> maker.writeClassDiagram(klass).forEach(line -> sb.append(line).append("\n")));
+                klasses.stream().filter(klass -> !klass.isIgnorable()).forEach(klass -> maker.writeClassDiagram(klass).
+                        forEach(line -> classSB.append(line).append("\n")));
 
-                sb.append("@enduml");
-                manager.writeFile(fileName, Arrays.asList(sb.toString()));
+                classSB.append("@enduml");
+                manager.writeFile(fileName, Arrays.asList(classSB.toString()));
+
+                List<Table> tables = new TableReader().readAllTables(klasses);
+
+                StringBuilder tableSB = new StringBuilder();
+                tableSB.append("@startuml\nhide circle\nhide emtpy members\n");
+
+                tables.forEach(table -> maker.writeERD(table).forEach(line -> classSB.append(line).append("\n")));
+
+                tableSB.append("@enduml\n");
+
+                manager.writeFile("erd.uml", Arrays.asList(tableSB.toString()));
+
             } else {
                 String text = manager.fileToText(file.getAbsolutePath());
                 Klass klass = reader.readKlass(text);
@@ -51,7 +66,8 @@ public class Main {
             System.out.println("Saved into " + System.getProperty("user.dir"));
 
         } catch (ArrayIndexOutOfBoundsException e) {
-            throw new NoSuchFileException("Include either the directory from which to find the classes or a single java file to parse");
+            throw new NoSuchFileException("Include either the directory from which to find the classes or a single " +
+                    "java file to parse");
         }
 
     }

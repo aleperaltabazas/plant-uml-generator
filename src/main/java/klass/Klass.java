@@ -15,7 +15,8 @@ public class Klass {
     private List<Modifier> modifiers;
     private List<String> annotaions;
 
-    public Klass(List<Attribute> attributes, List<Method> methods, String name, ClassType type, List<String> interfaces, String parent, List<Modifier> modifiers, List<String> annotaions) {
+    public Klass(List<Attribute> attributes, List<Method> methods, String name, ClassType type,
+                 List<String> interfaces, String parent, List<Modifier> modifiers, List<String> annotaions) {
         this.attributes = attributes;
         this.methods = methods;
         this.name = name;
@@ -71,5 +72,13 @@ public class Klass {
         }
 
         return false;
+    }
+
+    public List<String> getAnnotaions() {
+        return annotaions;
+    }
+
+    public boolean isEntity() {
+        return annotaions.contains("Entity");
     }
 }

@@ -44,7 +44,7 @@ public class KlassBuilder {
         } else if (classDefinition.contains(" enum ")) {
             classType = new EnumKlass(parseEnumConstants(body));
         } else {
-            throw new NoClassDefinitionException();
+            throw new NoClassDefinitionException(classDefinition);
         }
 
         List<String> words = Arrays.asList(classDefinition.split("\\s"));
@@ -57,7 +57,8 @@ public class KlassBuilder {
         }
 
         if (classDefinition.contains("extends")) {
-            parent = words.get(words.indexOf(words.stream().filter(w -> w.equalsIgnoreCase("extends")).findFirst().get()) + 1);
+            parent =
+                    words.get(words.indexOf(words.stream().filter(w -> w.equalsIgnoreCase("extends")).findFirst().get()) + 1);
         } else {
             parent = null;
         }
@@ -72,7 +73,8 @@ public class KlassBuilder {
     }
 
     private boolean classType(String word) {
-        return word.equalsIgnoreCase("class") || word.equalsIgnoreCase("abstract class") || word.equalsIgnoreCase("interface") || word.equalsIgnoreCase("enum");
+        return word.equalsIgnoreCase("class") || word.equalsIgnoreCase("abstract class") || word.equalsIgnoreCase(
+                "interface") || word.equalsIgnoreCase("enum");
     }
 
     private List<String> parseEnumConstants(String body) {
@@ -183,6 +185,6 @@ public class KlassBuilder {
         if (this.annotations == null)
             this.annotations = new ArrayList<>();
 
-        this.annotations.addAll(annotations);
+        annotations.forEach(a -> this.annotations.add(a.replaceAll("@", "")));
     }
 }

@@ -8,6 +8,7 @@ import klass.Klass;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 public class TableManager {
@@ -33,7 +34,11 @@ public class TableManager {
     }
 
     private String getPk(Klass klass) {
-        return klass.getAttributes().stream().filter(attr -> attr.getAnnotations().contains("Id")).findFirst().get().getName();
+        try {
+            return klass.getAttributes().stream().filter(attr -> attr.getAnnotations().contains("Id")).findFirst().get().getName();
+        } catch (NoSuchElementException e) {
+            throw new NoPrimaryKeyError(klass.getName());
+        }
     }
 
     public List<ForeignKey> readFKs(Klass klass) {
