@@ -47,6 +47,7 @@ public class TestTableParse {
     @Test
     public void tableOfKlassWhileParsingForeignKeys() {
         List<ForeignKey> foreignKeys = ForeignKeyFactory.foreignKeysOf(klass);
+
         TableBuilder tb = new TableBuilder();
         tb.parse(klass);
         tb.takeForeignKeys(foreignKeys);
@@ -55,5 +56,24 @@ public class TestTableParse {
         assertEquals(2, table.getFks().size());
         assertTrue(table.getFks().contains(ForeignKey.of(klass.getName(), oneToOne)));
         assertTrue(table.getFks().contains(ForeignKey.of(klass.getName(), manyToOne)));
+    }
+
+    @Test
+    public void takingForeignKeysShouldReduceListSize() {
+        List<ForeignKey> foreignKeys = ForeignKeyFactory.foreignKeysOf(klass);
+        int initialSize = foreignKeys.size();
+
+        TableBuilder tb = new TableBuilder();
+        tb.parse(klass);
+        tb.takeForeignKeys(foreignKeys);
+
+        Table table = tb.build();
+
+        int finalSize = foreignKeys.size();
+
+        assertEquals(3, initialSize);
+        assertEquals(1, finalSize);
+        assertTrue(table.getFks().contains(ForeignKey.of(klass.getName(), oneToOne)));
+        assertFalse(table.getFks().contains(ForeignKey.of(klass.getName(), oneToMany)));
     }
 }

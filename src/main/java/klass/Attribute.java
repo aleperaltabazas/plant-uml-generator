@@ -102,6 +102,6 @@ public class Attribute {
     }
 
     public boolean hasAnnotation(String regex) {
-        return annotations.stream().anyMatch(annotation -> annotation.matches(regex));
+        return annotations.stream().anyMatch(annotation -> annotation.matches(regex + "([(].*[)])?"));
     }
 }

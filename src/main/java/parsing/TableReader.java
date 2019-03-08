@@ -27,7 +27,7 @@ public class TableReader {
             try {
                 tables.add(readTable(klass, foreignKeys));
             } catch (NoPrimaryKeyError e) {
-                e.printStackTrace();
+                System.out.println(e.getMessage());
             }
         });
 
@@ -37,7 +37,7 @@ public class TableReader {
 
     public List<ForeignKey> readAllFks(List<Klass> klasses) {
         List<ForeignKey> foreignKeys = new ArrayList<>();
-        klasses.forEach(fk -> foreignKeys.addAll(ForeignKeyFactory.foreignKeysOf(fk)));
+        klasses.forEach(klass -> foreignKeys.addAll(ForeignKeyFactory.foreignKeysOf(klass)));
 
         return foreignKeys;
     }
