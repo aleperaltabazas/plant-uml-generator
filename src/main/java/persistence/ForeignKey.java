@@ -3,7 +3,8 @@ package persistence;
 import exceptions.NotAForeignKeyException;
 import klass.Attribute;
 
-import static utils.SnakeCaser.camelToSnake;
+import static utils.ObjectToEntity.camelToSnake;
+import static utils.StringEditor.removeListWrapper;
 
 public class ForeignKey {
     private String name;
@@ -51,7 +52,7 @@ public class ForeignKey {
                 destinationTable = attribute.getKlass();
                 break;
             case OneToMany:
-                originTable = attribute.getKlass();
+                originTable = removeListWrapper(attribute.getKlass());
                 destinationTable = holderKlass;
                 keyType = FKType.ManyToOne;
                 break;

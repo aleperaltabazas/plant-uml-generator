@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static utils.SnakeCaser.camelToSnake;
+import static utils.ObjectToEntity.camelToSnake;
 
 public class TableBuilder {
     private Klass entity;

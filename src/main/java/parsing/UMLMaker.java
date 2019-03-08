@@ -7,12 +7,16 @@ import klass.Method;
 import klass.Modifier;
 import klass.classtype.EnumKlass;
 import klass.classtype.Interfase;
+import persistence.FKType;
 import persistence.ForeignKey;
 import persistence.Table;
-import utils.SnakeCaser;
+import utils.ObjectToEntity;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
+import static utils.StringEditor.removeListWrapper;
 
 public class UMLMaker {
     public List<String> writeERD(Table table, List<ForeignKey> fks) {
@@ -44,30 +48,63 @@ public class UMLMaker {
         StringBuilder sb = new StringBuilder();
 
         for (ForeignKey fk : fks) {
-            String relation;
+            String relation = getRelation(fk);
 
-            switch (fk.getType()) {
-                case OneToOne:
-                    relation = " |o--o| ";
-                    break;
-                case OneToMany:
-                    relation = " |o--o{ ";
-                    break;
-                case ManyToOne:
-                    relation = " }o--o| ";
-                    break;
-                case ManyToMany:
-                    relation = " }o--o{ ";
-                    break;
-                default:
-                    throw new NoFKTypeException(fk);
-            }
-
-            sb.append(SnakeCaser.camelToSnake(fk.getOriginTable())).append(relation).append(SnakeCaser.
-                    camelToSnake(fk.getDestinationTable())).append("\n");
+            sb.append(relation).append("\n");
         }
 
         return sb.toString();
+    }
+
+    private String getRelation(ForeignKey fk) {
+        String relation;
+
+        switch (fk.getType()) {
+            case OneToOne:
+                relation =
+                        ObjectToEntity.camelToSnake(fk.getOriginTable()) + " |o--o| " + ObjectToEntity.camelToSnake(fk.getDestinationTable());
+                break;
+            case OneToMany:
+                relation =
+                        ObjectToEntity.camelToSnake(fk.getOriginTable()) + " |o--o{ " + ObjectToEntity.camelToSnake(fk.getDestinationTable());
+                break;
+            case ManyToOne:
+                relation =
+                        ObjectToEntity.camelToSnake(fk.getOriginTable()) + " }o--o| " + ObjectToEntity.camelToSnake(fk.getDestinationTable());
+                break;
+            case ManyToMany:
+                Table middleTable = middleTable(fk);
+                relation = appendMiddleTable(middleTable);
+                break;
+            default:
+                throw new NoFKTypeException(fk);
+        }
+
+        return relation;
+    }
+
+    private String appendMiddleTable(Table middleTable) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("entity ").append(middleTable.getName()).append("{\n");
+        middleTable.getFks().forEach(fk -> sb.append(fk.getName()).append("\n"));
+        sb.append("--\n");
+        sb.append("}\n");
+
+        middleTable.getFks().forEach(fk -> sb.append(fk.getOriginTable()).append(" }o--o| ")
+                .append(fk.getDestinationTable()).append("\n"));
+
+        return sb.toString();
+    }
+
+    private Table middleTable(ForeignKey fk) {
+        String tableName = ObjectToEntity.camelToSnake(fk.getOriginTable() + "" + fk.getDestinationTable());
+
+        ForeignKey originConnection = new ForeignKey("id_" + fk.getOriginTable(), FKType.ManyToOne, tableName,
+                ObjectToEntity.camelToSnake(fk.getOriginTable()));
+        ForeignKey destinationConnection = new ForeignKey("id_" + fk.getDestinationTable(), FKType.ManyToOne,
+                tableName, ObjectToEntity.camelToSnake(fk.getDestinationTable()));
+
+        return new Table(tableName, null, new ArrayList<>(), Arrays.asList(originConnection, destinationConnection));
     }
 
     public List<String> writeClassDiagram(Klass klass) {
@@ -101,14 +138,6 @@ public class UMLMaker {
         });
 
         return sb.toString();
-    }
-
-    private String removeListWrapper(String klass) {
-        int lastIndexOf = klass.lastIndexOf('>');
-        StringBuilder sb = new StringBuilder(klass);
-        sb.replace(lastIndexOf, lastIndexOf + 1, "");
-
-        return sb.toString().replaceFirst("<", "").replaceFirst("(List|Set|Map)", "");
     }
 
     private String appendAttributes(Klass klass) {
