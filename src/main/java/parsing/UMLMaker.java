@@ -9,6 +9,7 @@ import klass.classtype.EnumKlass;
 import klass.classtype.Interfase;
 import persistence.ForeignKey;
 import persistence.Table;
+import utils.SnakeCaser;
 
 import java.util.Arrays;
 import java.util.List;
@@ -20,7 +21,6 @@ public class UMLMaker {
         sb.append("{\n");
         sb.append(appendTableAttributes(table));
         sb.append("}\n");
-        sb.append(appendRelations(fks));
 
         return Arrays.asList(sb.toString().split("\\r?\\n"));
     }
@@ -40,7 +40,7 @@ public class UMLMaker {
         return "entity " + table.getName();
     }
 
-    private String appendRelations(List<ForeignKey> fks) {
+    public String appendRelations(List<ForeignKey> fks) {
         StringBuilder sb = new StringBuilder();
 
         for (ForeignKey fk : fks) {
@@ -63,7 +63,8 @@ public class UMLMaker {
                     throw new NoFKTypeException(fk);
             }
 
-            sb.append(fk.getOriginTable()).append(relation).append(fk.getDestinationTable()).append("\n");
+            sb.append(SnakeCaser.camelToSnake(fk.getOriginTable())).append(relation).append(SnakeCaser.
+                    camelToSnake(fk.getDestinationTable())).append("\n");
         }
 
         return sb.toString();

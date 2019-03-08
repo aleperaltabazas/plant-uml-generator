@@ -42,16 +42,14 @@ public class TableBuilder {
         List<ForeignKey> localOriginFKs =
                 foreignKeys.stream().filter(fk -> fk.getOriginTable().equals(entity.getInterfaces())).collect(Collectors.toList());
 
-        localOriginFKs.forEach(fk -> {
-            this.foreignKeys.add(fk);
-            foreignKeys.remove(fk);
-        });
+        this.foreignKeys.addAll(localOriginFKs);
     }
 
     private void parseAttributes(Klass klass) {
         List<Attribute> klassAttributes = filterTransients(klass);
         parseSimpleAttributes(klassAttributes);
         parsePrimaryKey(klass, klassAttributes);
+
     }
 
     private List<Attribute> filterTransients(Klass klass) {

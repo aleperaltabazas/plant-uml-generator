@@ -1,5 +1,6 @@
 package parsing;
 
+import exceptions.NoPrimaryKeyError;
 import klass.Klass;
 import persistence.ForeignKey;
 import persistence.ForeignKeyFactory;
@@ -21,7 +22,15 @@ public class TableReader {
     public List<Table> readAllTables(List<Klass> klasses, List<ForeignKey> foreignKeys) {
         List<Table> tables = new ArrayList<>();
 
-        klasses.forEach(klass -> tables.add(readTable(klass, foreignKeys)));
+
+        klasses.stream().filter(Klass::isEntity).forEach(klass -> {
+            try {
+                tables.add(readTable(klass, foreignKeys));
+            } catch (NoPrimaryKeyError e) {
+                System.out.println(e.getMessage());
+            }
+        });
+
 
         return tables;
     }
