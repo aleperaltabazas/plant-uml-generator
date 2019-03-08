@@ -90,6 +90,18 @@ public class Attribute {
     }
 
     public boolean isPrimaryKey() {
-        return annotations.stream().anyMatch(annotation -> annotation.matches("@Id"));
+        return hasAnnotation("@Id");
+    }
+
+    public boolean isForeignKey() {
+        return hasAnnotation("(@ManyToOne|@OneToOne)");
+    }
+
+    public boolean isTransient() {
+        return hasAnnotation("@Transient");
+    }
+
+    public boolean hasAnnotation(String regex) {
+        return annotations.stream().anyMatch(annotation -> annotation.matches(regex));
     }
 }
