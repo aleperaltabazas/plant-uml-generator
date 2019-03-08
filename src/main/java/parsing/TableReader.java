@@ -27,7 +27,7 @@ public class TableReader {
             try {
                 tables.add(readTable(klass, foreignKeys));
             } catch (NoPrimaryKeyError e) {
-                System.out.println(e.getMessage());
+                e.printStackTrace();
             }
         });
 

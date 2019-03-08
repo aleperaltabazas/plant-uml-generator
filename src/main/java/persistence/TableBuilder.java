@@ -28,6 +28,9 @@ public class TableBuilder {
     private void checkNull() {
         if (tableName == null || primaryKey == null)
             throw new BuildError("Need parameters to build. tableName: " + tableName + ", primaryKey: " + primaryKey);
+
+        if (attributes == null) attributes = new ArrayList<>();
+        if (foreignKeys == null) foreignKeys = new ArrayList<>();
     }
 
     public void parse(Klass klass) {
@@ -40,7 +43,7 @@ public class TableBuilder {
         if (this.foreignKeys == null) this.foreignKeys = new ArrayList<>();
 
         List<ForeignKey> localOriginFKs =
-                foreignKeys.stream().filter(fk -> fk.getOriginTable().equals(entity.getInterfaces())).collect(Collectors.toList());
+                foreignKeys.stream().filter(fk -> fk.getOriginTable().equals(entity.getName())).collect(Collectors.toList());
 
         this.foreignKeys.addAll(localOriginFKs);
     }

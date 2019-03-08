@@ -94,7 +94,7 @@ public class Attribute {
     }
 
     public boolean isForeignKey() {
-        return hasAnnotation("(@ManyToOne|@OneToOne)");
+        return hasAnnotation("(@ManyToOne|@OneToOne|@OneToMany|@ManyToMany)");
     }
 
     public boolean isTransient() {
