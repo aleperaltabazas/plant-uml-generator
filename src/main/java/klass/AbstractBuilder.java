@@ -24,12 +24,14 @@ public abstract class AbstractBuilder {
     }
 
     protected void parseAnnotations(String definition) {
-        annotations = Arrays.stream(definition.split("\\s")).filter(word -> word.matches(annotationRegex)).collect(Collectors.toList());
+        annotations =
+                Arrays.stream(definition.split("\\s")).filter(word -> word.matches(annotationRegex)).collect(Collectors.toList());
     }
 
     protected int presentModifiers(String definition) {
         int presentModifiers = 0;
-        List<String> possibleModifiers = Arrays.asList("protected", "public", "private", "static", "final", "<.*>");
+        List<String> possibleModifiers = Arrays.asList("protected", "public", "abstract", "private", "static", "final",
+                "<.*>");
         List<String> words = Arrays.asList(definition.split("\\s"));
 
         for (String modifier : possibleModifiers) {
