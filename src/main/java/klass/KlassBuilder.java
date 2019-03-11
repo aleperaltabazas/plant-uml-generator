@@ -51,13 +51,17 @@ public class KlassBuilder {
         parseModifiers(words);
 
         try {
-            this.name = words.get(words.indexOf(words.stream().filter(w -> classType(w)).findFirst().get()) + 1);
+            this.name =
+                    words.get(words.indexOf(words.stream().filter(w -> classType(w)).
+                            findFirst().orElseThrow(NoClassDefinitionException::new)) + 1);
         } catch (NoSuchElementException e) {
-            throw e;
+            throw new NoClassDefinitionException();
         }
 
         if (classDefinition.contains("extends")) {
-            parent = words.get(words.indexOf(words.stream().filter(w -> w.equalsIgnoreCase("extends")).findFirst().get()) + 1);
+            parent =
+                    words.get(words.indexOf(words.stream().filter(w -> w.equalsIgnoreCase("extends")).
+                            findFirst().orElseThrow(NoClassDefinitionException::new)) + 1);
         } else {
             parent = null;
         }
@@ -65,14 +69,17 @@ public class KlassBuilder {
         interfaces = new ArrayList<>();
 
         if (classDefinition.contains("implements")) {
-            words.stream().filter(w -> words.indexOf(w) > words.indexOf("implements") && !w.equals("{")).collect(Collectors.toSet()).forEach(str -> {
-                interfaces.add(str.replaceAll("(\\s+|,)", ""));
-            });
+            words.stream().filter(w -> words.indexOf(w) > words.indexOf("implements")
+                    && !w.equals("{")).collect(Collectors.toSet()).forEach(str -> interfaces.add(str.replaceAll("(\\s" +
+                    "+|,)", "")));
         }
     }
 
     private boolean classType(String word) {
-        return word.equalsIgnoreCase("class") || word.equalsIgnoreCase("abstract class") || word.equalsIgnoreCase("interface") || word.equalsIgnoreCase("enum");
+        String lowerCase = word.toLowerCase();
+
+        return lowerCase.equals("class") || lowerCase.equals("abstract class") || lowerCase.equals("interface")
+                || lowerCase.equals("enum");
     }
 
     private List<String> parseEnumConstants(String body) {
