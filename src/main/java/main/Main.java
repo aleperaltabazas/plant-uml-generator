@@ -31,6 +31,8 @@ public class Main {
                 fileName = args[1];
             } catch (ArrayIndexOutOfBoundsException e) {
                 fileName = "classes.uml";
+                Process proc = Runtime.getRuntime().exec("java -jar /home/alejandroperalta/Downloads/plantuml.jar " +
+                        "classes.uml");
             }
 
             if (file.isDirectory()) {

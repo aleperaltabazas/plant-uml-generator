@@ -1,5 +1,6 @@
 package klass;
 
+import java.util.Arrays;
 import java.util.List;
 
 public class Method {
@@ -44,7 +45,12 @@ public class Method {
     }
 
     public boolean isBoilerPlate() {
-        return isSetter() || isGetter();
+        return isSetter() || isGetter() || redefinition();
+    }
+
+    private boolean redefinition() {
+        List<String> redefinables = Arrays.asList("equals", "hashCode", "clone");
+        return redefinables.contains(name);
     }
 
     public boolean hasModifier(Modifier modifier) {

@@ -56,7 +56,13 @@ public class Klass {
     }
 
     public boolean isIgnorable() {
-        return isCreationalPattern() || isException();
+        return isCreationalPattern() || isException() || isSpringStuff();
+    }
+
+    private boolean isSpringStuff() {
+        String lowerCase = name.toLowerCase();
+        return annotaions.contains("@Service") || annotaions.contains("@Controller") || annotaions.contains(
+                "@Configuration");
     }
 
     private boolean isCreationalPattern() {

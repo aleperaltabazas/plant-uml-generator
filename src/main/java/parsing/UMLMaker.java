@@ -155,7 +155,10 @@ public class UMLMaker {
 
         methods.stream().filter(method -> (method.isVisible() && !method.isBoilerPlate()) || (klass.getClassType() instanceof Interfase && !method.hasModifier(Modifier.Private))).forEach(met -> {
             sb.append(met.getName()).append("(");
-            met.getArguments().forEach(arg -> sb.append(arg.getName()).append(": ").append(arg.getKlass()));
+            met.getArguments().forEach(arg -> {
+                if (met.getArguments().indexOf(arg) > 0) sb.append(", ");
+                sb.append(arg.getName()).append(": ").append(arg.getKlass());
+            });
             sb.append("): ").append(met.getReturnType()).append("\n");
         });
 
