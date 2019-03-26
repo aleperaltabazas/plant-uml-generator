@@ -26,6 +26,8 @@ target/generated-sources/
 
 *.iml
 
+*.png
+*.puml
 *.uml
 
 target/
