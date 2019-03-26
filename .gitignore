@@ -26,7 +26,9 @@ target/generated-sources/
 
 *.iml
 
+*.puml
 *.uml
+*.png
 
 target/
 pom.xml.tag

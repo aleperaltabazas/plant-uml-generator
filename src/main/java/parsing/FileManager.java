@@ -1,5 +1,8 @@
 package parsing;
 
+import exceptions.NoSuchFileException;
+import exceptions.WriteError;
+
 import java.io.*;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
@@ -10,26 +13,31 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class FileManager {
-    public void writeFile(String fileName, List<String> lines) throws IOException {
+    public Path writeFile(String fileName, List<String> lines) {
         Path file = Paths.get(System.getProperty("user.dir") + "/" + fileName);
-        Files.write(file, lines, Charset.forName("UTF-8"));
+        try {
+            return Files.write(file, lines, Charset.forName("UTF-8"));
+        } catch (IOException e) {
+            throw new WriteError("Error writing file");
+        }
     }
 
-    public List<String> findAllClasses(String path) throws FileNotFoundException {
+    public List<String> findAllClasses(String path) {
         File file = new File(path);
         List<String> all = new ArrayList<>();
 
         if (file.isDirectory()) {
             for (File f : file.listFiles()) {
-                try {
-                    all.addAll(findAllClasses(f.getAbsolutePath()));
-                } catch (FileNotFoundException e) {
-                    throw e;
-                }
+                all.addAll(findAllClasses(f.getAbsolutePath()));
             }
         } else {
-            if (file.getName().endsWith(".java"))
-                all.add(fileToText(file.getAbsolutePath()));
+            if (file.getName().endsWith(".java")) {
+                try {
+                    all.add(fileToText(file.getAbsolutePath()));
+                } catch (FileNotFoundException e) {
+                    throw new NoSuchFileException(file.getAbsolutePath());
+                }
+            }
         }
 
         return all;

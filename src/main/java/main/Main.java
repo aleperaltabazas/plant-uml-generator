@@ -1,58 +1,24 @@
 package main;
 
 import exceptions.BuildError;
-import klass.Klass;
-import parsing.FileManager;
-import parsing.KlassReader;
-import parsing.UMLMaker;
+import exceptions.ImageCreatingError;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.NoSuchFileException;
-import java.util.Arrays;
-import java.util.List;
 
 public class Main {
     public static void main(String[] args) throws IOException, BuildError {
-        FileManager manager = new FileManager();
-        KlassReader reader = new KlassReader();
-        UMLMaker maker = new UMLMaker();
+        if (args.length < 1)
+            throw new NoSuchFileException("Run with the path to the model as argument");
 
+        String path = args[0];
         try {
-            String path = args[0];
-            File file = new File(path);
-
-            String fileName;
-
-            try {
-                fileName = args[1];
-            } catch (ArrayIndexOutOfBoundsException e) {
-                fileName = "classes.uml";
-            }
-
-            if (file.isDirectory()) {
-                List<String> klassesText = manager.findAllClasses(file.getAbsolutePath());
-                List<Klass> klasses = reader.parseClasses(klassesText);
-
-                StringBuilder sb = new StringBuilder();
-                sb.append("@startuml\n");
-
-                klasses.stream().filter(klass -> !klass.isIgnorable()).forEach(klass -> maker.writeClassDiagram(klass).forEach(line -> sb.append(line).append("\n")));
-
-                sb.append("@enduml");
-                manager.writeFile(fileName, Arrays.asList(sb.toString()));
-            } else {
-                String text = manager.fileToText(file.getAbsolutePath());
-                Klass klass = reader.readKlass(text);
-                List<String> umlLines = maker.writeClassDiagram(klass);
-
-                manager.writeFile(fileName, umlLines);
-            }
-            System.out.println("Saved into " + System.getProperty("user.dir"));
-
-        } catch (ArrayIndexOutOfBoundsException e) {
-            throw new NoSuchFileException("Include either the directory from which to find the classes or a single java file to parse");
+            new ClassDiagram().create(path);
+        } catch (ImageCreatingError e) {
+            System.out.println("Error converting .puml to image.");
+            System.out.println("Please, compile the .puml by yourself (for example, in www.planttext.com). Sorry!");
         }
 
+        System.out.println("Saved into " + System.getProperty("user.dir"));
     }
 }
