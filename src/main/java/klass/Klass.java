@@ -1,8 +1,10 @@
 package klass;
 
 import klass.classtype.ClassType;
+import klass.objekt.Objekt;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 public class Klass {
@@ -13,10 +15,35 @@ public class Klass {
     private List<String> interfaces;
     private Optional<String> parent;
     private List<Modifier> modifiers;
-    private List<String> annotaions;
+    private List<String> annotations;
+    private Klass superKlass;
 
     public Klass(List<Attribute> attributes, List<Method> methods, String name, ClassType type,
-                 List<String> interfaces, String parent, List<Modifier> modifiers, List<String> annotaions) {
+                 List<String> interfaces, List<Modifier> modifiers, List<String> annotations) {
+        this.attributes = attributes;
+        this.methods = methods;
+        this.name = name;
+        this.type = type;
+        this.superKlass = Objekt.getInstance();
+        this.interfaces = interfaces;
+        this.modifiers = modifiers;
+        this.annotations = annotations;
+    }
+
+    public Klass(List<Attribute> attributes, List<Method> methods, String name, ClassType type, Klass superKlass,
+                 List<String> interfaces, List<Modifier> modifiers, List<String> annotations) {
+        this.attributes = attributes;
+        this.methods = methods;
+        this.name = name;
+        this.type = type;
+        this.superKlass = superKlass;
+        this.interfaces = interfaces;
+        this.modifiers = modifiers;
+        this.annotations = annotations;
+    }
+
+    public Klass(List<Attribute> attributes, List<Method> methods, String name, ClassType type,
+                 List<String> interfaces, String parent, List<Modifier> modifiers, List<String> annotations) {
         this.attributes = attributes;
         this.methods = methods;
         this.name = name;
@@ -24,7 +51,7 @@ public class Klass {
         this.parent = Optional.ofNullable(parent);
         this.interfaces = interfaces;
         this.modifiers = modifiers;
-        this.annotaions = annotaions;
+        this.annotations = annotations;
     }
 
     public String getName() {
@@ -61,7 +88,7 @@ public class Klass {
 
     private boolean isSpringStuff() {
         String lowerCase = name.toLowerCase();
-        return annotaions.contains("@Service") || annotaions.contains("@Controller") || annotaions.contains(
+        return annotations.contains("@Service") || annotations.contains("@Controller") || annotations.contains(
                 "@Configuration");
     }
 
@@ -80,11 +107,32 @@ public class Klass {
         return false;
     }
 
-    public List<String> getAnnotaions() {
-        return annotaions;
+    public List<String> getAnnotations() {
+        return annotations;
     }
 
     public boolean isEntity() {
-        return annotaions.stream().anyMatch(a -> a.matches("@Entity([(].*[)])?"));
+        return annotations.stream().anyMatch(a -> a.matches("@Entity([(].*[)])?"));
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Klass klass = (Klass) o;
+        return Objects.equals(attributes, klass.attributes) &&
+                Objects.equals(methods, klass.methods) &&
+                Objects.equals(name, klass.name) &&
+                Objects.equals(type, klass.type) &&
+                Objects.equals(interfaces, klass.interfaces) &&
+                Objects.equals(parent, klass.parent) &&
+                Objects.equals(modifiers, klass.modifiers) &&
+                Objects.equals(annotations, klass.annotations) &&
+                Objects.equals(superKlass, klass.superKlass);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(attributes, methods, name, type, interfaces, parent, modifiers, annotations, superKlass);
     }
 }

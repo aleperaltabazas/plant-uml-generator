@@ -3,6 +3,7 @@ package klass;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 public class Attribute {
     private String name;
@@ -103,5 +104,22 @@ public class Attribute {
 
     public boolean hasAnnotation(String regex) {
         return annotations.stream().anyMatch(annotation -> annotation.matches(regex + "([(].*[)])?"));
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Attribute attribute = (Attribute) o;
+        return visible == attribute.visible &&
+                Objects.equals(name, attribute.name) &&
+                Objects.equals(klass, attribute.klass) &&
+                Objects.equals(modifiers, attribute.modifiers) &&
+                Objects.equals(annotations, attribute.annotations);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name, klass, visible, modifiers, annotations);
     }
 }

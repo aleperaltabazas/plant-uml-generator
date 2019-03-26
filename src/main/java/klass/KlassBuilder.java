@@ -15,12 +15,13 @@ import static parsing.RegexRepository.*;
 public class KlassBuilder {
     private ClassType classType;
     private String name = "Klass";
-    private String parent;
+    private String parent = "";
     private List<String> interfaces;
     private List<Attribute> attributes;
     private List<Method> methods;
     private List<Modifier> modifiers = new ArrayList<>();
     private List<String> annotations;
+    private Klass superKlass;
 
     public Klass build() throws BuildError {
         if (classType == null || name == null) {
@@ -162,6 +163,19 @@ public class KlassBuilder {
         }
     }
 
+    public KlassBuilder addAnnotations(List<String> annotations) {
+        if (this.annotations == null)
+            this.annotations = new ArrayList<>();
+
+        this.annotations.addAll(annotations);
+        return this;
+    }
+
+    public KlassBuilder setSuperKlass(Klass superKlass) {
+        this.superKlass = superKlass;
+        return this;
+    }
+
     public ClassType getClassType() {
         return classType;
     }
@@ -186,10 +200,55 @@ public class KlassBuilder {
         return methods;
     }
 
-    public void addAnnotations(List<String> annotations) {
-        if (this.annotations == null)
-            this.annotations = new ArrayList<>();
+    public KlassBuilder setClassType(ClassType classType) {
+        this.classType = classType;
+        return this;
+    }
 
-        this.annotations.addAll(annotations);
+    public KlassBuilder setName(String name) {
+        this.name = name;
+        return this;
+    }
+
+    public KlassBuilder setParent(String parent) {
+        this.parent = parent;
+        return this;
+    }
+
+    public KlassBuilder setInterfaces(List<String> interfaces) {
+        this.interfaces = interfaces;
+        return this;
+    }
+
+    public KlassBuilder setAttributes(List<Attribute> attributes) {
+        this.attributes = attributes;
+        return this;
+    }
+
+    public KlassBuilder setMethods(List<Method> methods) {
+        this.methods = methods;
+        return this;
+    }
+
+    public KlassBuilder setModifiers(List<Modifier> modifiers) {
+        this.modifiers = modifiers;
+        return this;
+    }
+
+    public KlassBuilder setAnnotations(List<String> annotations) {
+        this.annotations = annotations;
+        return this;
+    }
+
+    public boolean hasParent() {
+        return !parent.isEmpty();
+    }
+
+    public Klass buildWithSuperclass() {
+        return new Klass(attributes, methods, name, classType, superKlass, interfaces, modifiers, annotations);
+    }
+
+    public Klass buildWithObjectSuperclass() {
+        return new Klass(attributes, methods, name, classType, interfaces, modifiers, annotations);
     }
 }

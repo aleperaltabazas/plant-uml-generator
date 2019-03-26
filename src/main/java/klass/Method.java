@@ -2,12 +2,13 @@ package klass;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 public class Method {
+    private String name;
     private String returnType;
     private List<Argument> arguments;
     private boolean visible;
-    private String name;
     private List<Modifier> modifiers;
 
     public Method(String name, String returnType, List<Argument> arguments, boolean visible, List<Modifier> modifiers) {
@@ -55,5 +56,22 @@ public class Method {
 
     public boolean hasModifier(Modifier modifier) {
         return modifiers.contains(modifier);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Method method = (Method) o;
+        return visible == method.visible &&
+                Objects.equals(name, method.name) &&
+                Objects.equals(returnType, method.returnType) &&
+                Objects.equals(arguments, method.arguments) &&
+                Objects.equals(modifiers, method.modifiers);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name, returnType, arguments, visible, modifiers);
     }
 }

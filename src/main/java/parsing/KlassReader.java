@@ -2,6 +2,7 @@ package parsing;
 
 import exceptions.BuildError;
 import exceptions.NoClassDefinitionException;
+import exceptions.NoSuchClassException;
 import klass.Klass;
 import klass.KlassBuilder;
 import org.slf4j.Logger;
@@ -16,6 +17,41 @@ import static parsing.RegexRepository.*;
 
 public class KlassReader {
     private static final Logger LOGGER = LoggerFactory.getLogger(KlassReader.class);
+
+    public List<Klass> createKlasses(List<KlassBuilder> builders) {
+        List<Klass> klasses = new ArrayList<>();
+        builders.forEach(builder -> {
+            Klass newKlass = createKlass(builder, builders, klasses);
+            klasses.add(newKlass);
+
+            if (!klasses.contains(newKlass)) {
+                klasses.add(newKlass);
+            }
+        });
+
+        return klasses;
+    }
+
+    public Klass createKlass(KlassBuilder klassBuilder, List<KlassBuilder> others, List<Klass> klasses) {
+        if (klassBuilder.hasParent()) {
+            Klass superClass;
+
+            if (klasses.stream().anyMatch(klass -> klass.getName().equalsIgnoreCase(klassBuilder.getSuperClass()))) {
+                superClass =
+                        klasses.stream().filter(klass -> klass.getName().equals(klassBuilder.getSuperClass()))
+                                .findFirst().orElseThrow(() -> new NoSuchClassException(klassBuilder.getSuperClass()));
+            } else {
+                KlassBuilder other =
+                        others.stream().filter(otherBuilder -> otherBuilder.getName().equalsIgnoreCase(klassBuilder.getSuperClass()))
+                                .findFirst().orElseThrow(() -> new NoSuchClassException(klassBuilder.getSuperClass()));
+                superClass = createKlass(other, others, klasses);
+                if (!klasses.contains(superClass)) klasses.add(superClass);
+            }
+            return klassBuilder.setSuperKlass(superClass).buildWithSuperclass();
+        }
+
+        return klassBuilder.buildWithObjectSuperclass();
+    }
 
     public List<Klass> parseClasses(List<String> classes) throws BuildError {
         List<Klass> klasses = new ArrayList<>();
