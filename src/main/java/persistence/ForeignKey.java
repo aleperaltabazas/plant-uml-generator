@@ -52,7 +52,8 @@ public class ForeignKey {
                 destinationTable = attribute.getKlass();
                 break;
             case OneToMany:
-                originTable = removeListWrapper(attribute.getKlass());
+                originTable = attribute.getKlass().matches("\\w+<.*>") ? removeListWrapper(attribute.getKlass()) :
+                        attribute.getKlass();
                 destinationTable = holderKlass;
                 keyType = FKType.ManyToOne;
                 break;
