@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -29,7 +30,7 @@ public class KlassReader {
             }
         });
 
-        return klasses;
+        return new ArrayList<>(new LinkedHashSet<>(klasses));
     }
 
     public Klass createKlass(KlassBuilder klassBuilder, List<KlassBuilder> others, List<Klass> klasses) {

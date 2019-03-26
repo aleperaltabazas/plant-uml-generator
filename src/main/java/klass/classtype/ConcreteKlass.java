@@ -12,12 +12,12 @@ public class ConcreteKlass implements ClassType {
     }
 
     @Override
-    public int hashCode() {
-        return Objects.hash(this);
+    public boolean equals(Object obj) {
+        return obj instanceof ConcreteKlass;
     }
 
     @Override
-    public boolean equals(Object obj) {
-        return obj instanceof ConcreteKlass;
+    public int hashCode() {
+        return Objects.hash();
     }
 }

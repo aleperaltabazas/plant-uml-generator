@@ -26,4 +26,15 @@ public class Objekt extends Klass {
 
         return instance;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        boolean equals = super.equals(o);
+        return equals;
+    }
+
+    @Override
+    public int hashCode() {
+        return super.hashCode();
+    }
 }

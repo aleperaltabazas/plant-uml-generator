@@ -13,7 +13,7 @@ public class AbstractKlass implements ClassType {
 
     @Override
     public int hashCode() {
-        return Objects.hash(this);
+        return Objects.hash();
     }
 
     @Override

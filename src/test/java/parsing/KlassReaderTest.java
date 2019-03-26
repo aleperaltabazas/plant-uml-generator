@@ -2,6 +2,7 @@ package parsing;
 
 import klass.Klass;
 import klass.KlassBuilder;
+import klass.classtype.ConcreteKlass;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -27,12 +28,14 @@ public class KlassReaderTest {
         b4.setName("D").setParent("A");
         b5.setName("E");
 
-        builders = Arrays.asList(b1, b2, b3, b4, b5);
+        builders = Arrays.asList(b3, b4, b5, b1, b2);
     }
 
     @Test
     public void saraza() {
         List<Klass> klasses = reader.createKlasses(builders);
+        ConcreteKlass c1 = new ConcreteKlass(), c2 = new ConcreteKlass();
+
         System.out.println("saraza");
     }
 }
