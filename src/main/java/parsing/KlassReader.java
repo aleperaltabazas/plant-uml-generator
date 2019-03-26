@@ -23,7 +23,7 @@ public class KlassReader {
             try {
                 klasses.add(readKlass(klass));
             } catch (NoClassDefinitionException e) {
-                LOGGER.info("Error when reading klass: ", e);
+                LOGGER.error("No class was found.", e);
             }
         });
 
