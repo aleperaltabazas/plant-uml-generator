@@ -5,8 +5,8 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>alesaurio</groupId>
-    <artifactId>uml-text-generator</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <artifactId>uml-fertilizer</artifactId>
+    <version>1.2</version>
 
     <dependencies>
         <dependency>
@@ -21,6 +21,7 @@
             <version>RELEASE</version>
             <scope>test</scope>
         </dependency>
+
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
@@ -32,6 +33,12 @@
             <groupId>net.sourceforge.plantuml</groupId>
             <artifactId>plantuml</artifactId>
             <version>6703</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>1.7.25</version>
         </dependency>
     </dependencies>
 
@@ -80,6 +87,4 @@
             </plugin>
         </plugins>
     </build>
-
-
 </project>

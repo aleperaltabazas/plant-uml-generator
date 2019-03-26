@@ -16,8 +16,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static utils.StringEditor.removeListWrapper;
-
 public class UMLMaker {
     public List<String> writeERD(Table table, List<ForeignKey> fks) {
         StringBuilder sb = new StringBuilder();
@@ -107,24 +105,25 @@ public class UMLMaker {
         return new Table(tableName, null, new ArrayList<>(), Arrays.asList(originConnection, destinationConnection));
     }
 
+
     public List<String> writeClassDiagram(Klass klass) {
         StringBuilder sb = new StringBuilder();
-        sb.append(appendHeader(klass));
-        sb.append("{\n");
-        if (klass.getClassType() instanceof EnumKlass) sb.append(appendEnumConstants(klass));
-        sb.append(appendAttributes(klass));
-        sb.append(appendMethods(klass));
-        sb.append("}\n");
-        sb.append(appendReferences(klass));
+        sb.append(klassDefinition(klass));
+        sb.append(" { \n");
+        if (klass.getClassType() instanceof EnumKlass) sb.append(enumConstants(klass));
+        sb.append(usableKlassAttributes(klass));
+        sb.append(usableKlassMethods(klass));
+        sb.append("} \n");
+        sb.append(klassReferences(klass));
 
         return Arrays.asList(sb.toString().split("\\r?\\n"));
     }
 
-    private String appendEnumConstants(Klass klass) {
+    private String enumConstants(Klass klass) {
         return klass.getClassType().enumConstants() + "\n";
     }
 
-    private String appendReferences(Klass klass) {
+    private String klassReferences(Klass klass) {
         String collectionRegex = "(List<.*>|Set<.*>|Map<.*,.*>)";
 
         StringBuilder sb = new StringBuilder();
@@ -140,20 +139,30 @@ public class UMLMaker {
         return sb.toString();
     }
 
-    private String appendAttributes(Klass klass) {
+    private String removeListWrapper(String klass) {
+        int lastIndexOf = klass.lastIndexOf('>');
+        StringBuilder sb = new StringBuilder(klass);
+        sb.replace(lastIndexOf, lastIndexOf + 1, "");
+
+        return sb.toString().replaceFirst("<", "").replaceFirst("(List|Set|Map)", "");
+    }
+
+    private String usableKlassAttributes(Klass klass) {
         List<Attribute> attributes = klass.getAttributes();
         StringBuilder sb = new StringBuilder();
 
-        attributes.stream().filter(attr -> attr.isVisible() || klass.hasGetterFor(attr.getName())).forEach(attr -> sb.append(attr.getName()).append(": ").append(attr.getKlass()).append("\n"));
+        attributes.stream().filter(attr -> attr.isVisible() || klass.hasGetterFor(attr.getName())).forEach(attr ->
+                sb.append(attr.getName()).append(": ").append(attr.getKlass()).append("\n"));
 
         return sb.toString();
     }
 
-    private String appendMethods(Klass klass) {
+    private String usableKlassMethods(Klass klass) {
         List<Method> methods = klass.getMethods();
         StringBuilder sb = new StringBuilder();
 
-        methods.stream().filter(method -> (method.isVisible() && !method.isBoilerPlate()) || (klass.getClassType() instanceof Interfase && !method.hasModifier(Modifier.Private))).forEach(met -> {
+        methods.stream().filter(method -> (method.isVisible() && !method.isBoilerPlate()) || (klass.getClassType()
+                instanceof Interfase && !method.hasModifier(Modifier.Private))).forEach(met -> {
             sb.append(met.getName()).append("(");
             met.getArguments().forEach(arg -> {
                 if (met.getArguments().indexOf(arg) > 0) sb.append(", ");
@@ -165,22 +174,19 @@ public class UMLMaker {
         return sb.toString();
     }
 
-    private String appendHeader(Klass klass) {
+    private String klassDefinition(Klass klass) {
         StringBuilder sb = new StringBuilder();
 
-        sb.append(klass.getClassType().javaDefinition()).append(klass.getName());
+        String withNameAndDefinition = klass.getClassType().javaDefinition() + " " + klass.getName() + " ";
 
         if (klass.getParent().isPresent()) {
-            sb.append(" extends ").append(klass.getParent().get());
+            sb.append(withNameAndDefinition).append("extends ").append(klass.getParent().get()).append("\n");
         }
 
         if (!klass.getInterfaces().isEmpty()) {
-            sb.append(" implements ").append(klass.getInterfaces().get(0));
-            klass.getInterfaces().stream().skip(1).forEach(i ->
-                    sb.append(", ").append(i)
-            );
+            klass.getInterfaces().forEach(i -> sb.append(withNameAndDefinition).append("implements ").append(i).append("\n"));
         }
 
-        return sb.toString();
+        return sb.append(withNameAndDefinition).toString().replaceAll("[{]", "");
     }
 }

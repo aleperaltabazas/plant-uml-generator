@@ -4,6 +4,8 @@ import exceptions.BuildError;
 import exceptions.NoClassDefinitionException;
 import klass.Klass;
 import klass.KlassBuilder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -13,13 +15,15 @@ import java.util.stream.Collectors;
 import static parsing.RegexRepository.*;
 
 public class KlassReader {
+    private static final Logger LOGGER = LoggerFactory.getLogger(KlassReader.class);
+
     public List<Klass> parseClasses(List<String> classes) throws BuildError {
         List<Klass> klasses = new ArrayList<>();
         classes.forEach(klass -> {
             try {
                 klasses.add(readKlass(klass));
             } catch (NoClassDefinitionException e) {
-
+                LOGGER.error("No class was found.", e);
             }
         });
 
