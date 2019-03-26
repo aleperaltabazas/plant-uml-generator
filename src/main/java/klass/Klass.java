@@ -13,8 +13,9 @@ public class Klass {
     private List<String> interfaces;
     private Optional<String> parent;
     private List<Modifier> modifiers;
+    private List<String> annotaions;
 
-    public Klass(List<Attribute> attributes, List<Method> methods, String name, ClassType type, List<String> interfaces, String parent, List<Modifier> modifiers) {
+    public Klass(List<Attribute> attributes, List<Method> methods, String name, ClassType type, List<String> interfaces, String parent, List<Modifier> modifiers, List<String> annotaions) {
         this.attributes = attributes;
         this.methods = methods;
         this.name = name;
@@ -22,6 +23,7 @@ public class Klass {
         this.parent = Optional.ofNullable(parent);
         this.interfaces = interfaces;
         this.modifiers = modifiers;
+        this.annotaions = annotaions;
     }
 
     public String getName() {

@@ -9,6 +9,7 @@ import parsing.UMLMaker;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.NoSuchFileException;
+import java.nio.file.NotDirectoryException;
 import java.util.Arrays;
 import java.util.List;
 
@@ -22,37 +23,43 @@ public class Main {
             String path = args[0];
             File file = new File(path);
 
-            String fileName;
-
-            try {
-                fileName = args[1];
-            } catch (ArrayIndexOutOfBoundsException e) {
-                fileName = "classes.uml";
-            }
+            String fileName = getFileName(args);
 
             if (file.isDirectory()) {
-                List<String> klassesText = manager.findAllClasses(file.getAbsolutePath());
-                List<Klass> klasses = reader.parseClasses(klassesText);
-
-                StringBuilder sb = new StringBuilder();
-                sb.append("@startuml\n");
-
-                klasses.stream().filter(klass -> !klass.isIgnorable()).forEach(klass -> maker.makeClassUml(klass).forEach(line -> sb.append(line).append("\n")));
-
-                sb.append("@enduml");
-                manager.writeFile(fileName, Arrays.asList(sb.toString()));
+                makeClassDiagram(manager, reader, maker, file, fileName);
+                System.out.println("Saved into " + System.getProperty("user.dir"));
             } else {
-                String text = manager.fileToText(file.getAbsolutePath());
-                Klass klass = reader.readKlass(text);
-                List<String> umlLines = maker.makeClassUml(klass);
-
-                manager.writeFile(fileName, umlLines);
+                throw new NotDirectoryException(fileName + " is not a directory.");
             }
-            System.out.println("Saved into " + System.getProperty("user.dir"));
 
         } catch (ArrayIndexOutOfBoundsException e) {
-            throw new NoSuchFileException("Include either the directory from which to find the classes or a single java file to parse");
+            throw new NoSuchFileException("Need a directory to create class diagram.");
         }
 
+    }
+
+    private static void makeClassDiagram(FileManager manager, KlassReader reader, UMLMaker maker, File file,
+                                         String fileName) throws IOException {
+        List<String> klassesText = manager.findAllClasses(file.getAbsolutePath());
+        List<Klass> klasses = reader.parseClasses(klassesText);
+
+        StringBuilder sb = new StringBuilder();
+        sb.append("@startuml\n");
+
+        klasses.stream().filter(klass -> !klass.isIgnorable()).forEach(klass -> maker.writeClassDiagram(klass).forEach(line -> sb.append(line).append("\n")));
+
+        sb.append("@enduml");
+        manager.writeFile(fileName, Arrays.asList(sb.toString()));
+    }
+
+    private static String getFileName(String[] args) {
+        String fileName;
+
+        try {
+            fileName = args[1];
+        } catch (ArrayIndexOutOfBoundsException e) {
+            fileName = "classes.uml";
+        }
+        return fileName;
     }
 }
