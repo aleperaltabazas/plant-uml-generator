@@ -5,6 +5,7 @@ import exceptions.NoClassDefinitionException;
 import exceptions.NoSuchClassException;
 import klass.Klass;
 import klass.KlassBuilder;
+import klass.objekt.Objekt;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -30,28 +31,49 @@ public class KlassReader {
             }
         });
 
-        return new ArrayList<>(new LinkedHashSet<>(klasses));
+
+        ArrayList<Klass> finalList = new ArrayList<>(new LinkedHashSet<>(klasses));
+
+        return finalList.stream().filter(klass -> !klass.getName().equalsIgnoreCase("klass")).collect(Collectors.toList());
     }
 
     public Klass createKlass(KlassBuilder klassBuilder, List<KlassBuilder> others, List<Klass> klasses) {
         if (klassBuilder.hasParent()) {
             Klass superClass;
 
-            if (klasses.stream().anyMatch(klass -> klass.getName().equalsIgnoreCase(klassBuilder.getSuperClass()))) {
-                superClass =
-                        klasses.stream().filter(klass -> klass.getName().equals(klassBuilder.getSuperClass()))
-                                .findFirst().orElseThrow(() -> new NoSuchClassException(klassBuilder.getSuperClass()));
-            } else {
-                KlassBuilder other =
-                        others.stream().filter(otherBuilder -> otherBuilder.getName().equalsIgnoreCase(klassBuilder.getSuperClass()))
-                                .findFirst().orElseThrow(() -> new NoSuchClassException(klassBuilder.getSuperClass()));
-                superClass = createKlass(other, others, klasses);
-                if (!klasses.contains(superClass)) klasses.add(superClass);
+            try {
+                if (klasses.stream().anyMatch(klass -> klass.getName().equalsIgnoreCase(klassBuilder.getSuperClass()))) {
+                    superClass =
+                            klasses.stream().filter(klass -> klass.getName().equals(klassBuilder.getSuperClass()))
+                                    .findFirst().orElseThrow(() -> new NoSuchClassException(klassBuilder.getSuperClass()));
+                } else {
+                    KlassBuilder other =
+                            others.stream().filter(otherBuilder -> otherBuilder.getName().equalsIgnoreCase(klassBuilder.getSuperClass()))
+                                    .findFirst().orElseGet(() -> new KlassBuilder());
+                    superClass = createKlass(other, others, klasses);
+                    if (!klasses.contains(superClass)) klasses.add(superClass);
+                }
+            } catch (NoClassDefinitionException e) {
+                LOGGER.info("Error finding superclass, defaulting to Object", e);
+                superClass = Objekt.getInstance();
             }
             return klassBuilder.setSuperKlass(superClass).buildWithSuperclass();
         }
 
         return klassBuilder.buildWithObjectSuperclass();
+    }
+
+    public List<KlassBuilder> getBuilders(List<String> classes) {
+        List<KlassBuilder> builders = new ArrayList<>();
+        classes.forEach(klass -> {
+            try {
+                builders.add(getKlassBuilder(klass));
+            } catch (NoClassDefinitionException e) {
+                LOGGER.error("No class was found", e);
+            }
+        });
+
+        return builders;
     }
 
     public List<Klass> parseClasses(List<String> classes) throws BuildError {
@@ -68,6 +90,12 @@ public class KlassReader {
     }
 
     public Klass readKlass(String text) throws BuildError {
+        KlassBuilder kb = getKlassBuilder(text);
+
+        return kb.build();
+    }
+
+    private KlassBuilder getKlassBuilder(String text) {
         text = filterImports(text);
         text = filterPackage(text);
 
@@ -79,8 +107,7 @@ public class KlassReader {
         kb.addClassDefinition(header, body);
         kb.addClassBody(body);
         kb.addAnnotations(klassAnnotations);
-
-        return kb.build();
+        return kb;
     }
 
     private List<String> getAnnotations(String text) {

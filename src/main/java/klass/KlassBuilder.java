@@ -16,11 +16,11 @@ public class KlassBuilder {
     private ClassType classType;
     private String name = "Klass";
     private String parent = "";
-    private List<String> interfaces;
-    private List<Attribute> attributes;
-    private List<Method> methods;
+    private List<String> interfaces = new ArrayList<>();
+    private List<Attribute> attributes = new ArrayList<>();
+    private List<Method> methods = new ArrayList<>();
     private List<Modifier> modifiers = new ArrayList<>();
-    private List<String> annotations;
+    private List<String> annotations = new ArrayList<>();
     private Klass superKlass;
 
     public Klass build() throws BuildError {
@@ -54,7 +54,7 @@ public class KlassBuilder {
         try {
             this.name =
                     words.get(words.indexOf(words.stream().filter(w -> classType(w)).
-                            findFirst().orElseThrow(() -> new NoClassDefinitionException(classDefinition))) + 1);
+                            findFirst().orElseThrow(() -> new NoClassDefinitionException(classDefinition))) + 1).replaceAll("[{]", "");
         } catch (NoSuchElementException e) {
             throw new NoClassDefinitionException(classDefinition);
         }
@@ -62,7 +62,7 @@ public class KlassBuilder {
         if (classDefinition.contains("extends")) {
             parent =
                     words.get(words.indexOf(words.stream().filter(w -> w.equalsIgnoreCase("extends")).
-                            findFirst().orElseThrow(() -> new NoClassDefinitionException(classDefinition))) + 1);
+                            findFirst().orElseThrow(() -> new NoClassDefinitionException(classDefinition))) + 1).replaceAll("[{]", "");
         } else {
             parent = null;
         }
@@ -241,6 +241,8 @@ public class KlassBuilder {
     }
 
     public boolean hasParent() {
+        if (parent == null) return false;
+
         return !parent.isEmpty();
     }
 
