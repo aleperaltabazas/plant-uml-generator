@@ -49,14 +49,15 @@ public class KlassReader {
                 } else {
                     KlassBuilder other =
                             others.stream().filter(otherBuilder -> otherBuilder.getName().equalsIgnoreCase(klassBuilder.getSuperClass()))
-                                    .findFirst().orElseGet(() -> new KlassBuilder());
+                                    .findFirst().orElseThrow(() -> new NoSuchClassException(klassBuilder.getSuperClass()));
                     superClass = createKlass(other, others, klasses);
                     if (!klasses.contains(superClass)) klasses.add(superClass);
                 }
-            } catch (NoClassDefinitionException e) {
+            } catch (NoClassDefinitionException | NoSuchClassException | BuildError e) {
                 LOGGER.info("Error finding superclass, defaulting to Object", e);
                 superClass = Objekt.getInstance();
             }
+
             return klassBuilder.setSuperKlass(superClass).buildWithSuperclass();
         }
 
@@ -76,7 +77,7 @@ public class KlassReader {
         return builders;
     }
 
-    public List<Klass> parseClasses(List<String> classes) throws BuildError {
+    public List<Klass> parseClasses(List<String> classes) {
         List<Klass> klasses = new ArrayList<>();
         classes.forEach(klass -> {
             try {
@@ -89,7 +90,7 @@ public class KlassReader {
         return klasses;
     }
 
-    public Klass readKlass(String text) throws BuildError {
+    public Klass readKlass(String text) {
         KlassBuilder kb = getKlassBuilder(text);
 
         return kb.build();

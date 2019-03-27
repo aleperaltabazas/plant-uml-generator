@@ -14,7 +14,7 @@ import static parsing.RegexRepository.*;
 
 public class KlassBuilder {
     private ClassType classType;
-    private String name = "Klass";
+    private String name;
     private String parent = "";
     private List<String> interfaces = new ArrayList<>();
     private List<Attribute> attributes = new ArrayList<>();
@@ -23,12 +23,15 @@ public class KlassBuilder {
     private List<String> annotations = new ArrayList<>();
     private Klass superKlass;
 
-    public Klass build() throws BuildError {
+    public Klass build() {
+        checkNull();
+        return new Klass(attributes, methods, name, classType, interfaces, parent, modifiers, annotations);
+    }
+
+    private void checkNull() {
         if (classType == null || name == null) {
             throw new BuildError("Need parameters to build. Name: " + name + ", type: " + classType);
         }
-
-        return new Klass(attributes, methods, name, classType, interfaces, parent, modifiers, annotations);
     }
 
     public void addClassDefinition(String classDefinition) {
@@ -247,10 +250,12 @@ public class KlassBuilder {
     }
 
     public Klass buildWithSuperclass() {
+        checkNull();
         return new Klass(attributes, methods, name, classType, superKlass, interfaces, modifiers, annotations);
     }
 
     public Klass buildWithObjectSuperclass() {
+        checkNull();
         return new Klass(attributes, methods, name, classType, interfaces, modifiers, annotations);
     }
 }

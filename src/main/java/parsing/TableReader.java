@@ -2,6 +2,8 @@ package parsing;
 
 import exceptions.NoPrimaryKeyError;
 import klass.Klass;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import persistence.ForeignKey;
 import persistence.ForeignKeyFactory;
 import persistence.Table;
@@ -11,6 +13,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class TableReader {
+    private static final Logger LOGGER = LoggerFactory.getLogger(TableReader.class);
+
     public Table readTable(Klass klass, List<ForeignKey> foreignKeys) {
         TableBuilder tb = new TableBuilder();
         tb.parse(klass);
@@ -27,10 +31,9 @@ public class TableReader {
             try {
                 tables.add(readTable(klass, foreignKeys));
             } catch (NoPrimaryKeyError e) {
-                System.out.println(e.getMessage());
+                LOGGER.error("No PK found for Class " + klass.getName(), e);
             }
         });
-
 
         return tables;
     }

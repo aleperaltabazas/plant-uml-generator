@@ -135,4 +135,8 @@ public class Klass {
     public int hashCode() {
         return Objects.hash(attributes, methods, name, type, interfaces, parent, modifiers, annotations, superKlass);
     }
+
+    public Klass getSuperKlass() {
+        return superKlass;
+    }
 }
