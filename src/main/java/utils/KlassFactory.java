@@ -28,7 +28,7 @@ public class KlassFactory {
 
     private static Klass withAttributesAndAnnotations(String name, List<Attribute> attributes,
                                                       List<String> annotations) {
-        return new Klass(attributes, new ArrayList<>(), name, new ConcreteKlass(), new ArrayList<>(), null,
+        return new Klass(attributes, new ArrayList<>(), name, new ConcreteKlass(), null, new ArrayList<>(),
                 Arrays.asList(Modifier.Public), annotations);
     }
 }

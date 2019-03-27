@@ -2,6 +2,7 @@ package main;
 
 import exceptions.NoSuchDirectoryException;
 import klass.Klass;
+import klass.KlassBuilder;
 import net.sourceforge.plantuml.SourceFileReader;
 import parsing.FileManager;
 import parsing.KlassReader;
@@ -27,12 +28,14 @@ public class ClassDiagram {
         UMLMaker maker = new UMLMaker();
 
         List<String> klassesText = manager.findAllClasses(file.getAbsolutePath());
-        List<Klass> klasses = reader.parseClasses(klassesText);
+        List<KlassBuilder> builders = reader.getBuilders(klassesText);
+        List<Klass> klasses = reader.createKlasses(builders);
 
         StringBuilder sb = new StringBuilder();
         sb.append("@startuml\n");
 
-        klasses.stream().filter(klass -> !klass.isIgnorable()).forEach(klass -> maker.writeClassDiagram(klass).forEach(line -> sb.append(line).append("\n")));
+        klasses.stream().filter(klass -> !klass.isIgnorable()).forEach(klass ->
+                maker.writeClassDiagram(klass).forEach(line -> sb.append(line).append("\n")));
 
         sb.append("@enduml");
         String text = sb.toString();

@@ -179,8 +179,8 @@ public class UMLMaker {
 
         String withNameAndDefinition = klass.getClassType().javaDefinition() + " " + klass.getName() + " ";
 
-        if (klass.getParent().isPresent()) {
-            sb.append(withNameAndDefinition).append("extends ").append(klass.getParent().get()).append("\n");
+        if (klass.hasParent()) {
+            sb.append(withNameAndDefinition).append("extends ").append(klass.getSuperKlass().getName()).append("\n");
         }
 
         if (!klass.getInterfaces().isEmpty()) {

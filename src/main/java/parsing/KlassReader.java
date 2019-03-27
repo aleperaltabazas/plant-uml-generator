@@ -77,25 +77,6 @@ public class KlassReader {
         return builders;
     }
 
-    public List<Klass> parseClasses(List<String> classes) {
-        List<Klass> klasses = new ArrayList<>();
-        classes.forEach(klass -> {
-            try {
-                klasses.add(readKlass(klass));
-            } catch (NoClassDefinitionException e) {
-                LOGGER.error("No class was found.", e);
-            }
-        });
-
-        return klasses;
-    }
-
-    public Klass readKlass(String text) {
-        KlassBuilder kb = getKlassBuilder(text);
-
-        return kb.build();
-    }
-
     private KlassBuilder getKlassBuilder(String text) {
         text = filterImports(text);
         text = filterPackage(text);

@@ -3,6 +3,7 @@ package main;
 import exceptions.NoSuchDirectoryException;
 import klass.Klass;
 import klass.KlassBuilder;
+import klass.objekt.Objekt;
 import parsing.FileManager;
 import parsing.KlassReader;
 import parsing.UMLMaker;
@@ -29,11 +30,15 @@ public class TestMain {
         List<Klass> ks = reader.createKlasses(builder);
 
         System.out.println(ks.size());
-        ks.forEach(k -> show(k));
+        ks.forEach(k -> show(k, ""));
     }
 
-    private static void show(Klass k) {
-        System.out.println(k.getName());
-        System.out.println("    " + k.getSuperKlass().getName());
+    private static void show(Klass k, String s) {
+        if (k == Objekt.getInstance())
+            System.out.println(s + Objekt.getInstance().getName());
+        else {
+            System.out.println(s + k.getName());
+            show(k.getSuperKlass(), s + "   ");
+        }
     }
 }

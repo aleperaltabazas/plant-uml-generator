@@ -23,11 +23,6 @@ public class KlassBuilder {
     private List<String> annotations = new ArrayList<>();
     private Klass superKlass;
 
-    public Klass build() {
-        checkNull();
-        return new Klass(attributes, methods, name, classType, interfaces, parent, modifiers, annotations);
-    }
-
     private void checkNull() {
         if (classType == null || name == null) {
             throw new BuildError("Need parameters to build. Name: " + name + ", type: " + classType);
