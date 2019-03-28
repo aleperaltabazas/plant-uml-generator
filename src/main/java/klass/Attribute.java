@@ -106,6 +106,10 @@ public class Attribute {
         return annotations.stream().anyMatch(annotation -> annotation.matches(regex + "([(].*[)])?"));
     }
 
+    public boolean hasModifier(Modifier modifier) {
+        return modifiers.contains(modifier);
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

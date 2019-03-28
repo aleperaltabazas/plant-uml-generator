@@ -4,9 +4,7 @@ import exceptions.NoFKTypeException;
 import klass.Attribute;
 import klass.Klass;
 import klass.Method;
-import klass.Modifier;
 import klass.classtype.EnumKlass;
-import klass.classtype.Interfase;
 import persistence.FKType;
 import persistence.ForeignKey;
 import persistence.Table;
@@ -161,8 +159,7 @@ public class UMLMaker {
         List<Method> methods = klass.getMethods();
         StringBuilder sb = new StringBuilder();
 
-        methods.stream().filter(method -> (method.isVisible() && !method.isBoilerPlate()) || (klass.getClassType()
-                instanceof Interfase && !method.hasModifier(Modifier.Private))).forEach(met -> {
+        methods.stream().filter(method -> method.isVisible() && !(method.isBoilerPlate() || klass.inherits(method))).forEach(met -> {
             sb.append(met.getName()).append("(");
             met.getArguments().forEach(arg -> {
                 if (met.getArguments().indexOf(arg) > 0) sb.append(", ");

@@ -3,8 +3,10 @@ package klass;
 import klass.classtype.ClassType;
 import klass.objekt.Objekt;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 public class Klass {
     private List<Attribute> attributes;
@@ -111,5 +113,49 @@ public class Klass {
 
     public boolean hasParent() {
         return superKlass != Objekt.getInstance();
+    }
+
+    public boolean inherits(Method method) {
+        return inheritedMethods().contains(method);
+    }
+
+    public boolean inherits(Attribute attribute) {
+        return inheritedAttributes().contains(attribute);
+    }
+
+    protected List<Attribute> inheritedAttributes() {
+        return superKlass.getInheritableAttributes();
+    }
+
+    protected List<Attribute> getInheritableAttributes() {
+        List<Attribute> ownAttributes = attributes.stream().filter(attribute -> attribute.isVisible()
+                || attribute.hasModifier(Modifier.PackagePrivate)
+                || attribute.hasModifier(Modifier.Protected)).collect(Collectors.toList());
+
+        List<Attribute> superAttributes = superKlass.getInheritableAttributes();
+
+        List<Attribute> inherited = new ArrayList<>();
+        inherited.addAll(ownAttributes);
+        inherited.addAll(superAttributes);
+
+        return inherited;
+    }
+
+    protected List<Method> inheritedMethods() {
+        return superKlass.getInheritableMethods();
+    }
+
+    protected List<Method> getInheritableMethods() {
+        List<Method> ownMethods = methods.stream().filter(method -> method.isVisible()
+                || method.hasModifier(Modifier.PackagePrivate)
+                || method.hasModifier(Modifier.Protected)).collect(Collectors.toList());
+
+        List<Method> superMethods = superKlass.getInheritableMethods();
+
+        List<Method> inherited = new ArrayList<>();
+        inherited.addAll(ownMethods);
+        inherited.addAll(superMethods);
+
+        return inherited;
     }
 }
