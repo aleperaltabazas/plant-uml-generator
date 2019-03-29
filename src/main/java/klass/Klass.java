@@ -1,7 +1,7 @@
 package klass;
 
 import klass.classtype.ClassType;
-import klass.objekt.Objekt;
+import klass.objekt.ObjectClass;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,7 +20,7 @@ public class Klass {
 
     public Klass(List<Attribute> attributes, List<Method> methods, String name, ClassType type,
                  List<String> interfaces, List<Modifier> modifiers, List<String> annotations) {
-        this(attributes, methods, name, type, Objekt.getInstance(), interfaces, modifiers, annotations);
+        this(attributes, methods, name, type, ObjectClass.getInstance(), interfaces, modifiers, annotations);
     }
 
     public Klass(List<Attribute> attributes, List<Method> methods, String name, ClassType type, Klass superKlass,
@@ -112,7 +112,7 @@ public class Klass {
     }
 
     public boolean hasParent() {
-        return superKlass != Objekt.getInstance();
+        return superKlass != ObjectClass.getInstance();
     }
 
     public boolean inherits(Method method) {

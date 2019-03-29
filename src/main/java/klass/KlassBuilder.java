@@ -22,6 +22,8 @@ public class KlassBuilder {
     private List<Modifier> modifiers = new ArrayList<>();
     private List<String> annotations = new ArrayList<>();
     private Klass superKlass;
+    private List<MethodBuilder> methodBuilders = new ArrayList<>();
+    private List<AttributeBuilder> attributeBuilders = new ArrayList<>();
 
     private void checkNull() {
         if (classType == null || name == null) {
@@ -124,7 +126,7 @@ public class KlassBuilder {
     }
 
     private void parseBody(List<String> lines) throws BuildError {
-        String constructorRegex = "\\s*(public |protected |private )" + name + "\\s?[(].*[)]\\s?([{]|[;])?";
+        String constructorRegex = "\\s*(public |protected |private )?" + name + "\\s?[(].*[)]\\s?([{]|[;])?";
 
         MethodBuilder mb = new MethodBuilder();
         AttributeBuilder ab = new AttributeBuilder();
@@ -150,12 +152,15 @@ public class KlassBuilder {
                 mb.addAnotations(annotations);
                 methods.add(mb.build());
                 annotations.clear();
-                mb.clear();
+                methodBuilders.add(mb);
+                mb = new MethodBuilder();
+                annotations.clear();
             } else if (line.matches(attributeRegex)) {
                 ab.addDefinition(spaceless);
                 ab.addAnotations(annotations);
                 attributes.add(ab.build());
-                ab.clear();
+                attributeBuilders.add(ab);
+                ab = new AttributeBuilder();
                 annotations.clear();
             }
         }

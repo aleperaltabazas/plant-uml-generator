@@ -3,7 +3,7 @@ package main;
 import exceptions.NoSuchDirectoryException;
 import klass.Klass;
 import klass.KlassBuilder;
-import klass.objekt.Objekt;
+import klass.objekt.ObjectClass;
 import parsing.FileManager;
 import parsing.KlassReader;
 import parsing.UMLMaker;
@@ -34,8 +34,8 @@ public class TestMain {
     }
 
     private static void show(Klass k, String s) {
-        if (k == Objekt.getInstance())
-            System.out.println(s + Objekt.getInstance().getName());
+        if (k == ObjectClass.getInstance())
+            System.out.println(s + ObjectClass.getInstance().getName());
         else {
             System.out.println(s + k.getName());
             show(k.getSuperKlass(), s + "   ");

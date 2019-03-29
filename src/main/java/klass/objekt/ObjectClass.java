@@ -10,16 +10,16 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class Objekt extends Klass {
-    private static volatile Objekt instance;
+public class ObjectClass extends Klass {
+    private static volatile ObjectClass instance;
 
-    public Objekt() {
-        super(new ArrayList<>(), new ArrayList<>(), "Object", new ConcreteKlass(), null, new ArrayList<>(),
+    public ObjectClass() {
+        super(new ArrayList<>(), ObjectMethods.all(), "Object", new ConcreteKlass(), null, new ArrayList<>(),
                 Arrays.asList(Modifier.Public), new ArrayList<>());
     }
 
-    public static synchronized Objekt getInstance() {
-        if (instance == null) instance = new Objekt();
+    public static synchronized ObjectClass getInstance() {
+        if (instance == null) instance = new ObjectClass();
 
         return instance;
     }

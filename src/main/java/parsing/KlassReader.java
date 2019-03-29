@@ -5,7 +5,7 @@ import exceptions.NoClassDefinitionException;
 import exceptions.NoSuchClassException;
 import klass.Klass;
 import klass.KlassBuilder;
-import klass.objekt.Objekt;
+import klass.objekt.ObjectClass;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -55,7 +55,7 @@ public class KlassReader {
                 }
             } catch (NoClassDefinitionException | NoSuchClassException | BuildError e) {
                 LOGGER.info("Error finding superclass, defaulting to Object", e);
-                superClass = Objekt.getInstance();
+                superClass = ObjectClass.getInstance();
             }
 
             return klassBuilder.setSuperKlass(superClass).buildWithSuperclass();
