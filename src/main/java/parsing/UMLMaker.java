@@ -7,10 +7,10 @@ import klass.Method;
 import klass.classtype.EnumKlass;
 import persistence.FKType;
 import persistence.ForeignKey;
+import persistence.MiddleTable;
 import persistence.Table;
 import utils.ObjectToEntity;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -100,7 +100,8 @@ public class UMLMaker {
         ForeignKey destinationConnection = new ForeignKey("id_" + fk.getDestinationTable(), FKType.ManyToOne,
                 tableName, ObjectToEntity.camelToSnake(fk.getDestinationTable()));
 
-        return new Table(tableName, null, new ArrayList<>(), Arrays.asList(originConnection, destinationConnection));
+        return new MiddleTable(tableName, Arrays.asList(originConnection,
+                destinationConnection));
     }
 
 

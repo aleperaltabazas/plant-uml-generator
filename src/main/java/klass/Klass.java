@@ -128,9 +128,8 @@ public class Klass {
     }
 
     protected List<Attribute> getInheritableAttributes() {
-        List<Attribute> ownAttributes = attributes.stream().filter(attribute -> attribute.isVisible()
-                || attribute.hasModifier(Modifier.PackagePrivate)
-                || attribute.hasModifier(Modifier.Protected)).collect(Collectors.toList());
+        List<Attribute> ownAttributes =
+                attributes.stream().filter(attribute -> attribute.isInheritable()).collect(Collectors.toList());
 
         List<Attribute> superAttributes = superKlass.getInheritableAttributes();
 
@@ -146,9 +145,8 @@ public class Klass {
     }
 
     protected List<Method> getInheritableMethods() {
-        List<Method> ownMethods = methods.stream().filter(method -> method.isVisible()
-                || method.hasModifier(Modifier.PackagePrivate)
-                || method.hasModifier(Modifier.Protected)).collect(Collectors.toList());
+        List<Method> ownMethods =
+                methods.stream().filter(method -> method.isInheritable()).collect(Collectors.toList());
 
         List<Method> superMethods = superKlass.getInheritableMethods();
 
@@ -157,5 +155,19 @@ public class Klass {
         inherited.addAll(superMethods);
 
         return inherited;
+    }
+
+    public List<Method> allMethods() {
+        List<Method> allMethods = new ArrayList<>(methods);
+        allMethods.addAll(inheritedMethods());
+
+        return allMethods;
+    }
+
+    public List<Attribute> allAtributes() {
+        List<Attribute> allAtributes = new ArrayList<>(attributes);
+        allAtributes.addAll(inheritedAttributes());
+
+        return allAtributes;
     }
 }

@@ -74,4 +74,8 @@ public class Method {
     public int hashCode() {
         return Objects.hash(name, returnType, arguments, visible, modifiers);
     }
+
+    public boolean isInheritable() {
+        return isVisible() || hasModifier(Modifier.PackagePrivate) || hasModifier(Modifier.Protected);
+    }
 }

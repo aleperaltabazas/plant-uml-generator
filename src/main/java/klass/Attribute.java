@@ -95,7 +95,8 @@ public class Attribute {
     }
 
     public boolean isForeignKey() {
-        return hasAnnotation("(@ManyToOne|@OneToOne|@OneToMany|@ManyToMany)");
+        return hasAnnotation("(@ManyToOne([(].*[)])?|@OneToOne([(].*[)])?|@OneToMany([(].*[)])?|@ManyToMany([(].*[)])" +
+                "?)");
     }
 
     public boolean isTransient() {
@@ -125,5 +126,9 @@ public class Attribute {
     @Override
     public int hashCode() {
         return Objects.hash(name, klass, visible, modifiers, annotations);
+    }
+
+    public boolean isInheritable() {
+        return isVisible() || hasModifier(Modifier.PackagePrivate) || hasModifier(Modifier.Protected) || isPrimaryKey();
     }
 }

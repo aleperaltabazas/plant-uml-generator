@@ -22,11 +22,11 @@ public class TableBuilder {
 
     public Table build() {
         checkNull();
-        return new Table(tableName, primaryKey, attributes, foreignKeys);
+        return new Table(entity, primaryKey, attributes, foreignKeys);
     }
 
     private void checkNull() {
-        if (tableName == null || primaryKey == null)
+        if (entity == null || primaryKey == null)
             throw new BuildError("Need parameters to build. tableName: " + tableName + ", primaryKey: " + primaryKey);
 
         if (attributes == null) attributes = new ArrayList<>();
@@ -50,8 +50,9 @@ public class TableBuilder {
 
     private void parseAttributes(Klass klass) {
         List<Attribute> klassAttributes = filterTransients(klass);
+        List<Attribute> allAtributes = klass.allAtributes();
         parseSimpleAttributes(klassAttributes);
-        parsePrimaryKey(klass, klassAttributes);
+        parsePrimaryKey(klass, allAtributes);
 
     }
 

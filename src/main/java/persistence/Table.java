@@ -1,22 +1,32 @@
 package persistence;
 
+import klass.Klass;
+import klass.objekt.ObjectClass;
+
 import java.util.List;
 
+import static utils.ObjectToEntity.camelToSnake;
+
 public class Table {
-    private String name;
+    private Klass klass;
     private String pk;
     private List<TableAttribute> attributes;
     private List<ForeignKey> fks;
 
-    public Table(String name, String pk, List<TableAttribute> attributes, List<ForeignKey> fks) {
-        this.name = name;
+    public Table(Klass klass, String pk, List<TableAttribute> attributes, List<ForeignKey> fks) {
+        this.klass = klass;
         this.pk = pk;
         this.attributes = attributes;
         this.fks = fks;
     }
 
+    public boolean isInherited() {
+        return klass.getSuperKlass() != ObjectClass.getInstance();
+    }
+
     public String getName() {
-        return name;
+        camelToSnake(klass.getName());
+        return camelToSnake(klass.getName());
     }
 
     public String getPk() {
