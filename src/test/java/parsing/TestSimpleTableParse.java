@@ -7,7 +7,7 @@ import org.junit.Ignore;
 import org.junit.Test;
 import persistence.ForeignKey;
 import persistence.ForeignKeyFactory;
-import persistence.Table;
+import persistence.SimpleTable;
 import persistence.TableBuilder;
 import utils.AttributeFactory;
 import utils.KlassFactory;
@@ -17,7 +17,7 @@ import java.util.List;
 
 import static org.junit.Assert.*;
 
-public class TestTableParse {
+public class TestSimpleTableParse {
     Klass klass;
     private Attribute oneToOne;
     private Attribute oneToMany;
@@ -38,11 +38,11 @@ public class TestTableParse {
     public void tableOfKlassWithoutParsingForeignKeys() {
         TableBuilder tb = new TableBuilder();
         tb.parse(klass);
-        Table table = tb.build();
+        SimpleTable simpleTable = tb.build();
 
-        assertEquals("id (PK)", table.getPk());
-        assertEquals(2, table.getAttributes().size());
-        assertEquals(0, table.getFks().size());
+        assertEquals("id (PK)", simpleTable.getPk());
+        assertEquals(2, simpleTable.getAttributes().size());
+        assertEquals(0, simpleTable.getFks().size());
     }
 
     @Test
@@ -52,11 +52,11 @@ public class TestTableParse {
         TableBuilder tb = new TableBuilder();
         tb.parse(klass);
         tb.takeForeignKeys(foreignKeys);
-        Table table = tb.build();
+        SimpleTable simpleTable = tb.build();
 
-        assertEquals(2, table.getFks().size());
-        assertTrue(table.getFks().contains(ForeignKey.of(klass.getName(), oneToOne)));
-        assertTrue(table.getFks().contains(ForeignKey.of(klass.getName(), manyToOne)));
+        assertEquals(2, simpleTable.getFks().size());
+        assertTrue(simpleTable.getFks().contains(ForeignKey.of(klass.getName(), oneToOne)));
+        assertTrue(simpleTable.getFks().contains(ForeignKey.of(klass.getName(), manyToOne)));
     }
 
     @Test
@@ -71,13 +71,13 @@ public class TestTableParse {
         tb.parse(klass);
         tb.takeForeignKeys(foreignKeys);
 
-        Table table = tb.build();
+        SimpleTable simpleTable = tb.build();
 
         int finalSize = foreignKeys.size();
 
         assertEquals(3, initialSize);
         assertEquals(1, finalSize);
-        assertTrue(table.getFks().contains(ForeignKey.of(klass.getName(), oneToOne)));
-        assertFalse(table.getFks().contains(ForeignKey.of(klass.getName(), oneToMany)));
+        assertTrue(simpleTable.getFks().contains(ForeignKey.of(klass.getName(), oneToOne)));
+        assertFalse(simpleTable.getFks().contains(ForeignKey.of(klass.getName(), oneToMany)));
     }
 }

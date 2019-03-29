@@ -34,14 +34,14 @@ public class Main {
         TableReader tr = new TableReader();
 
         List<ForeignKey> foreignKeys = tr.readAllFks(klasses);
-        List<Table> tables = tr.readAllTables(klasses, foreignKeys);
+        List<Table> simpleTables = tr.readAllTables(klasses, foreignKeys);
 
         StringBuilder tableSB = new StringBuilder();
         tableSB.append("@startuml\n");
         tableSB.append("hide circle\n");
         tableSB.append("hide empty members\n");
 
-        tables.forEach(table -> {
+        simpleTables.forEach(table -> {
             maker.writeERD(table, foreignKeys).forEach(line -> tableSB.append(line).append("\n"));
 
         });

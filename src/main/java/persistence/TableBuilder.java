@@ -20,9 +20,9 @@ public class TableBuilder {
     private List<ForeignKey> foreignKeys;
     private List<TableAttribute> attributes;
 
-    public Table build() {
+    public SimpleTable build() {
         checkNull();
-        return new Table(entity, primaryKey, attributes, foreignKeys);
+        return new SimpleTable(entity, primaryKey, attributes, foreignKeys);
     }
 
     private void checkNull() {

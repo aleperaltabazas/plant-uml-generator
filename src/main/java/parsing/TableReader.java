@@ -4,10 +4,7 @@ import exceptions.NoPrimaryKeyError;
 import klass.Klass;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import persistence.ForeignKey;
-import persistence.ForeignKeyFactory;
-import persistence.Table;
-import persistence.TableBuilder;
+import persistence.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,18 +21,18 @@ public class TableReader {
     }
 
     public List<Table> readAllTables(List<Klass> klasses, List<ForeignKey> foreignKeys) {
-        List<Table> tables = new ArrayList<>();
+        List<Table> simpleTables = new ArrayList<>();
 
 
         klasses.stream().filter(Klass::isEntity).forEach(klass -> {
             try {
-                tables.add(readTable(klass, foreignKeys));
+                simpleTables.add(readTable(klass, foreignKeys));
             } catch (NoPrimaryKeyError e) {
                 LOGGER.error("No PK found for Class " + klass.getName(), e);
             }
         });
 
-        return tables;
+        return simpleTables;
     }
 
     public List<ForeignKey> readAllFks(List<Klass> klasses) {
