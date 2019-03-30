@@ -16,13 +16,7 @@ import java.util.List;
 
 public class UMLMaker {
     public List<String> writeERD(Table table, List<ForeignKey> fks) {
-        StringBuilder sb = new StringBuilder();
-        sb.append(appendTableHeader(table));
-        sb.append("{\n");
-        sb.append(appendTableAttributes(table));
-        sb.append("}\n");
-
-        return Arrays.asList(sb.toString().split("\\r?\\n"));
+        return Arrays.asList(table.write().split("\\r?\\n"));
     }
 
     private String appendTableAttributes(Table table) {
@@ -96,9 +90,9 @@ public class UMLMaker {
         String tableName = ObjectToEntity.camelToSnake(fk.getOriginTable() + "" + fk.getDestinationTable());
 
         ForeignKey originConnection = new ForeignKey("id_" + fk.getOriginTable(), FKType.ManyToOne, tableName,
-                ObjectToEntity.camelToSnake(fk.getOriginTable()));
+                ObjectToEntity.camelToSnake(fk.getOriginTable()), nullable);
         ForeignKey destinationConnection = new ForeignKey("id_" + fk.getDestinationTable(), FKType.ManyToOne,
-                tableName, ObjectToEntity.camelToSnake(fk.getDestinationTable()));
+                tableName, ObjectToEntity.camelToSnake(fk.getDestinationTable()), nullable);
 
         return new MiddleTable(tableName, Arrays.asList(originConnection,
                 destinationConnection));

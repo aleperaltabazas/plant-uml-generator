@@ -1,6 +1,10 @@
 package persistence.tables.inheritance;
 
 import exceptions.NoSuchStrategyException;
+import klass.Klass;
+import persistence.attributes.ForeignKey;
+
+import java.util.List;
 
 public interface InheritanceType {
     static InheritanceType parse(String inheritanceStrategy) {
@@ -18,4 +22,6 @@ public interface InheritanceType {
 
         throw new NoSuchStrategyException(strategy);
     }
+
+    String write(Klass parent, List<Klass> children, List<ForeignKey> foreignKeys);
 }

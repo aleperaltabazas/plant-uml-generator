@@ -45,6 +45,7 @@ public class InheritanceTableBuilder implements TableBuilder {
     public TableBuilder takeForeignKeys(List<ForeignKey> foreignKeys) {
         List<ForeignKey> fks = new ArrayList<>();
 
+        //TODO: also children classes
         foreignKeys.forEach(fk -> {
             if (fk.getOriginTable().equalsIgnoreCase(parent.getName())) fks.add(fk);
         });

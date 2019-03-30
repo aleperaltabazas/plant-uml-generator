@@ -13,4 +13,6 @@ public interface Table {
     List<TableAttribute> getAttributes();
 
     List<ForeignKey> getFks();
+
+    String write();
 }

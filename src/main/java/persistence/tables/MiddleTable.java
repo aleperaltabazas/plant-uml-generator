@@ -30,4 +30,8 @@ public class MiddleTable implements Table {
     public String getName() {
         return tableName;
     }
+
+    public String write() {
+        return null;
+    }
 }

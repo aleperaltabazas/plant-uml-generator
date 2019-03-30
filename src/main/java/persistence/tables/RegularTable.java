@@ -37,4 +37,8 @@ public class RegularTable implements Table {
     public List<ForeignKey> getFks() {
         return fks;
     }
+
+    public String write() {
+        return null;
+    }
 }

@@ -11,12 +11,14 @@ public class ForeignKey {
     private FKType type;
     private String originTable;
     private String destinationTable;
+    private boolean nullable;
 
-    public ForeignKey(String name, FKType type, String originTable, String destinationTable) {
+    public ForeignKey(String name, FKType type, String originTable, String destinationTable, boolean nullable) {
         this.name = name;
         this.type = type;
         this.originTable = originTable;
         this.destinationTable = destinationTable;
+        this.nullable = nullable;
     }
 
     public String getName() {
@@ -61,7 +63,8 @@ public class ForeignKey {
                 throw new NullPointerException();
         }
 
-        return new ForeignKey(keyName, keyType, originTable, destinationTable);
+        //TODO: add nullable checking
+        return new ForeignKey(keyName, keyType, originTable, destinationTable, false);
     }
 
     private static FKType parseKeyType(Attribute attribute) {
@@ -74,6 +77,10 @@ public class ForeignKey {
         if (attribute.hasAnnotation("@ManyToMany"))
             return FKType.ManyToMany;
         throw new NotAForeignKeyException(attribute);
+    }
+
+    public boolean isNullable() {
+        return nullable;
     }
 
     @Override
