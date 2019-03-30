@@ -7,7 +7,7 @@ import org.junit.Ignore;
 import org.junit.Test;
 import persistence.attributes.ForeignKey;
 import persistence.attributes.ForeignKeyFactory;
-import persistence.tables.SimpleTable;
+import persistence.tables.RegularTable;
 import persistence.tables.builders.SimpleTableBuilder;
 import utils.AttributeFactory;
 import utils.KlassFactory;
@@ -17,7 +17,7 @@ import java.util.List;
 
 import static org.junit.Assert.*;
 
-public class TestSimpleTableParse {
+public class TestRegularTableParse {
     Klass klass;
     private Attribute oneToOne;
     private Attribute oneToMany;
@@ -38,11 +38,11 @@ public class TestSimpleTableParse {
     public void tableOfKlassWithoutParsingForeignKeys() {
         SimpleTableBuilder tb = new SimpleTableBuilder();
         tb.parse(klass);
-        SimpleTable simpleTable = tb.build();
+        RegularTable regularTable = tb.build();
 
-        assertEquals("id (PK)", simpleTable.getPk());
-        assertEquals(2, simpleTable.getAttributes().size());
-        assertEquals(0, simpleTable.getFks().size());
+        assertEquals("id (PK)", regularTable.getPk());
+        assertEquals(2, regularTable.getAttributes().size());
+        assertEquals(0, regularTable.getFks().size());
     }
 
     @Test
@@ -52,11 +52,11 @@ public class TestSimpleTableParse {
         SimpleTableBuilder tb = new SimpleTableBuilder();
         tb.parse(klass);
         tb.takeForeignKeys(foreignKeys);
-        SimpleTable simpleTable = tb.build();
+        RegularTable regularTable = tb.build();
 
-        assertEquals(2, simpleTable.getFks().size());
-        assertTrue(simpleTable.getFks().contains(ForeignKey.of(klass.getName(), oneToOne)));
-        assertTrue(simpleTable.getFks().contains(ForeignKey.of(klass.getName(), manyToOne)));
+        assertEquals(2, regularTable.getFks().size());
+        assertTrue(regularTable.getFks().contains(ForeignKey.of(klass.getName(), oneToOne)));
+        assertTrue(regularTable.getFks().contains(ForeignKey.of(klass.getName(), manyToOne)));
     }
 
     @Test
@@ -71,13 +71,13 @@ public class TestSimpleTableParse {
         tb.parse(klass);
         tb.takeForeignKeys(foreignKeys);
 
-        SimpleTable simpleTable = tb.build();
+        RegularTable regularTable = tb.build();
 
         int finalSize = foreignKeys.size();
 
         assertEquals(3, initialSize);
         assertEquals(1, finalSize);
-        assertTrue(simpleTable.getFks().contains(ForeignKey.of(klass.getName(), oneToOne)));
-        assertFalse(simpleTable.getFks().contains(ForeignKey.of(klass.getName(), oneToMany)));
+        assertTrue(regularTable.getFks().contains(ForeignKey.of(klass.getName(), oneToOne)));
+        assertFalse(regularTable.getFks().contains(ForeignKey.of(klass.getName(), oneToMany)));
     }
 }

@@ -3,8 +3,9 @@ package persistence.tables.builders;
 import exceptions.NoSuchStrategyException;
 import klass.Klass;
 import persistence.attributes.ForeignKey;
-import persistence.tables.InheritanceType;
 import persistence.tables.Table;
+import persistence.tables.inheritance.InheritanceType;
+import persistence.tables.inheritance.MappedSuperclass;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,7 +32,7 @@ public class InheritanceTableBuilder implements TableBuilder {
         if (klass.inheritanceStrategy()) {
             this.type = InheritanceType.parse(klass.getInheritanceStrategy());
         } else if (klass.mappedSuperclass()) {
-            this.type = InheritanceType.MAPPED;
+            this.type = new MappedSuperclass();
         } else {
             throw new NoSuchStrategyException(klass);
         }

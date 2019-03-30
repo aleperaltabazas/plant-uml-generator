@@ -8,13 +8,13 @@ import java.util.List;
 
 import static utils.ObjectToEntity.camelToSnake;
 
-public class SimpleTable implements Table {
+public class RegularTable implements Table {
     private Klass klass;
     private String pk;
     private List<TableAttribute> attributes;
     private List<ForeignKey> fks;
 
-    public SimpleTable(Klass klass, String pk, List<TableAttribute> attributes, List<ForeignKey> fks) {
+    public RegularTable(Klass klass, String pk, List<TableAttribute> attributes, List<ForeignKey> fks) {
         this.klass = klass;
         this.pk = pk;
         this.attributes = attributes;

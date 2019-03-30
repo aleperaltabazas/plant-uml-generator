@@ -9,7 +9,7 @@ import klass.Klass;
 import persistence.attributes.FKType;
 import persistence.attributes.ForeignKey;
 import persistence.attributes.TableAttribute;
-import persistence.tables.SimpleTable;
+import persistence.tables.RegularTable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,9 +24,9 @@ public class SimpleTableBuilder implements TableBuilder {
     private List<ForeignKey> foreignKeys;
     private List<TableAttribute> attributes;
 
-    public SimpleTable build() {
+    public RegularTable build() {
         checkNull();
-        return new SimpleTable(entity, primaryKey, attributes, foreignKeys);
+        return new RegularTable(entity, primaryKey, attributes, foreignKeys);
     }
 
     private void checkNull() {

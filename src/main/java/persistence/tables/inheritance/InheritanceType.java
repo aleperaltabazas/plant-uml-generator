@@ -1,22 +1,20 @@
-package persistence.tables;
+package persistence.tables.inheritance;
 
 import exceptions.NoSuchStrategyException;
 
-public enum InheritanceType {
-    SINGLE, JOINED, PERCLASS, MAPPED;
-
-    public static InheritanceType parse(String inheritanceStrategy) {
-        if (!inheritanceStrategy.contains("(")) return SINGLE;
+public interface InheritanceType {
+    static InheritanceType parse(String inheritanceStrategy) {
+        if (!inheritanceStrategy.contains("(")) return new SingleTable();
 
         String strategy = inheritanceStrategy.substring(inheritanceStrategy.indexOf('('),
                 inheritanceStrategy.lastIndexOf(')')).replaceAll("strategy\\s?=\\s?(InheritanceType.)?", "");
 
         if (strategy.matches("SINGLE_TABLE"))
-            return SINGLE;
+            return new SingleTable();
         else if (strategy.matches("JOINED"))
-            return JOINED;
+            return new JoinedTable();
         else if (strategy.matches("TABLE_PER_CLASS"))
-            return PERCLASS;
+            return new TablePerClass();
 
         throw new NoSuchStrategyException(strategy);
     }

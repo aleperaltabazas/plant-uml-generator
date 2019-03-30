@@ -4,7 +4,7 @@ import exceptions.MultiplePrimaryKeyError;
 import exceptions.NoPrimaryKeyError;
 import org.junit.Before;
 import org.junit.Test;
-import persistence.tables.SimpleTable;
+import persistence.tables.RegularTable;
 import persistence.tables.builders.SimpleTableBuilder;
 import utils.AttributeFactory;
 import utils.KlassFactory;
@@ -25,9 +25,9 @@ public class TestPrimaryKey {
     @Test
     public void simpleTable() {
         tb.parse(KlassFactory.withAttributes("EntityKlass", Arrays.asList(AttributeFactory.pk("id", "Long"))));
-        SimpleTable simpleTable = tb.build();
-        assertEquals("id (PK)", simpleTable.getPk());
-        assertEquals("entity_klass", simpleTable.getName());
+        RegularTable regularTable = tb.build();
+        assertEquals("id (PK)", regularTable.getPk());
+        assertEquals("entity_klass", regularTable.getName());
     }
 
     @Test
