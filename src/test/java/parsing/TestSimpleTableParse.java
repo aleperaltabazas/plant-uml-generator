@@ -8,7 +8,7 @@ import org.junit.Test;
 import persistence.attributes.ForeignKey;
 import persistence.attributes.ForeignKeyFactory;
 import persistence.tables.SimpleTable;
-import persistence.tables.SimpleTableBuilder;
+import persistence.tables.builders.SimpleTableBuilder;
 import utils.AttributeFactory;
 import utils.KlassFactory;
 

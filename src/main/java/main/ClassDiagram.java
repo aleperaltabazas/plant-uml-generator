@@ -2,7 +2,7 @@ package main;
 
 import exceptions.NoSuchDirectoryException;
 import klass.Klass;
-import klass.KlassBuilder;
+import klass.builders.KlassBuilder;
 import net.sourceforge.plantuml.SourceFileReader;
 import parsing.FileManager;
 import parsing.KlassReader;

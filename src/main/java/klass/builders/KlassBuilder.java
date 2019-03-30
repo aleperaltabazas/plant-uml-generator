@@ -1,7 +1,11 @@
-package klass;
+package klass.builders;
 
 import exceptions.BuildError;
 import exceptions.NoClassDefinitionException;
+import klass.Attribute;
+import klass.Klass;
+import klass.Method;
+import klass.Modifier;
 import klass.classtype.*;
 
 import java.util.ArrayList;

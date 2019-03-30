@@ -4,7 +4,7 @@ import exceptions.BuildError;
 import exceptions.NoClassDefinitionException;
 import exceptions.NoSuchClassException;
 import klass.Klass;
-import klass.KlassBuilder;
+import klass.builders.KlassBuilder;
 import klass.objekt.ObjectClass;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

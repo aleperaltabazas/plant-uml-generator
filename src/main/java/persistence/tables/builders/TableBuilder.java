@@ -1,7 +1,8 @@
-package persistence.tables;
+package persistence.tables.builders;
 
 import klass.Klass;
 import persistence.attributes.ForeignKey;
+import persistence.tables.Table;
 
 import java.util.List;
 

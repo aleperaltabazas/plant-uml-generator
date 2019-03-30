@@ -1,7 +1,9 @@
-package klass;
+package klass.builders;
 
 import exceptions.BuildError;
 import javafx.util.Pair;
+import klass.Argument;
+import klass.Method;
 
 import java.util.ArrayList;
 import java.util.List;

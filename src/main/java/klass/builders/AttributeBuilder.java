@@ -1,6 +1,7 @@
-package klass;
+package klass.builders;
 
 import exceptions.BuildError;
+import klass.Attribute;
 
 public class AttributeBuilder extends AbstractBuilder {
     public void addDefinition(String definition) {

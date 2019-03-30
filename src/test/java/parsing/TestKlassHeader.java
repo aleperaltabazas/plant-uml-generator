@@ -1,6 +1,6 @@
 package parsing;
 
-import klass.KlassBuilder;
+import klass.builders.KlassBuilder;
 import klass.classtype.ConcreteKlass;
 import org.junit.Before;
 import org.junit.Test;

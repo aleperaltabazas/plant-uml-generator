@@ -1,4 +1,6 @@
-package klass;
+package klass.builders;
+
+import klass.Modifier;
 
 import java.util.ArrayList;
 import java.util.Arrays;

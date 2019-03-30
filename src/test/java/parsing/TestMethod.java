@@ -1,7 +1,7 @@
 package parsing;
 
 import klass.Argument;
-import klass.MethodBuilder;
+import klass.builders.MethodBuilder;
 import org.junit.Before;
 import org.junit.Test;
 

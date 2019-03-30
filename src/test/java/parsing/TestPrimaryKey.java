@@ -5,7 +5,7 @@ import exceptions.NoPrimaryKeyError;
 import org.junit.Before;
 import org.junit.Test;
 import persistence.tables.SimpleTable;
-import persistence.tables.SimpleTableBuilder;
+import persistence.tables.builders.SimpleTableBuilder;
 import utils.AttributeFactory;
 import utils.KlassFactory;
 

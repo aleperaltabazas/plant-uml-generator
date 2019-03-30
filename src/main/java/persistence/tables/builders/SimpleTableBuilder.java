@@ -1,4 +1,4 @@
-package persistence.tables;
+package persistence.tables.builders;
 
 import exceptions.BuildError;
 import exceptions.MultiplePrimaryKeyError;
@@ -9,6 +9,7 @@ import klass.Klass;
 import persistence.attributes.FKType;
 import persistence.attributes.ForeignKey;
 import persistence.attributes.TableAttribute;
+import persistence.tables.SimpleTable;
 
 import java.util.ArrayList;
 import java.util.List;

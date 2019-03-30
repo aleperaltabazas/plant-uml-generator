@@ -1,8 +1,10 @@
-package persistence.tables;
+package persistence.tables.builders;
 
 import exceptions.NoSuchStrategyException;
 import klass.Klass;
 import persistence.attributes.ForeignKey;
+import persistence.tables.InheritanceType;
+import persistence.tables.Table;
 
 import java.util.ArrayList;
 import java.util.List;

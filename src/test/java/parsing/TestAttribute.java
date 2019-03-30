@@ -1,6 +1,6 @@
 package parsing;
 
-import klass.AttributeBuilder;
+import klass.builders.AttributeBuilder;
 import org.junit.Before;
 import org.junit.Test;
 
