@@ -1,5 +1,6 @@
 package klass;
 
+import exceptions.NoSuchStrategyException;
 import klass.classtype.ClassType;
 import klass.objekt.ObjectClass;
 
@@ -169,5 +170,26 @@ public class Klass {
         allAtributes.addAll(inheritedAttributes());
 
         return allAtributes;
+    }
+
+    public boolean isInherited() {
+        return ObjectClass.getInstance() != superKlass;
+    }
+
+    public boolean inheritanceStrategy() {
+        return hasAnnotationByRegex("@Inheritance");
+    }
+
+    public boolean mappedSuperclass() {
+        return hasAnnotationByRegex("@MappedSuperclass");
+    }
+
+    private boolean hasAnnotationByRegex(String regex) {
+        return annotations.stream().anyMatch(a -> a.matches(regex + "([(].*[)])?"));
+    }
+
+    public String getInheritanceStrategy() {
+        return annotations.stream().filter(a -> a.matches("@Inheritance([(].*[)])?"))
+                .findFirst().orElseThrow(() -> new NoSuchStrategyException(this));
     }
 }

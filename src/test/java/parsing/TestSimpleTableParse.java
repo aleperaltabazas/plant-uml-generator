@@ -8,7 +8,7 @@ import org.junit.Test;
 import persistence.ForeignKey;
 import persistence.ForeignKeyFactory;
 import persistence.SimpleTable;
-import persistence.TableBuilder;
+import persistence.SimpleTableBuilder;
 import utils.AttributeFactory;
 import utils.KlassFactory;
 
@@ -36,7 +36,7 @@ public class TestSimpleTableParse {
 
     @Test
     public void tableOfKlassWithoutParsingForeignKeys() {
-        TableBuilder tb = new TableBuilder();
+        SimpleTableBuilder tb = new SimpleTableBuilder();
         tb.parse(klass);
         SimpleTable simpleTable = tb.build();
 
@@ -49,7 +49,7 @@ public class TestSimpleTableParse {
     public void tableOfKlassWhileParsingForeignKeys() {
         List<ForeignKey> foreignKeys = ForeignKeyFactory.foreignKeysOf(klass);
 
-        TableBuilder tb = new TableBuilder();
+        SimpleTableBuilder tb = new SimpleTableBuilder();
         tb.parse(klass);
         tb.takeForeignKeys(foreignKeys);
         SimpleTable simpleTable = tb.build();
@@ -67,7 +67,7 @@ public class TestSimpleTableParse {
         List<ForeignKey> foreignKeys = ForeignKeyFactory.foreignKeysOf(klass);
         int initialSize = foreignKeys.size();
 
-        TableBuilder tb = new TableBuilder();
+        SimpleTableBuilder tb = new SimpleTableBuilder();
         tb.parse(klass);
         tb.takeForeignKeys(foreignKeys);
 
