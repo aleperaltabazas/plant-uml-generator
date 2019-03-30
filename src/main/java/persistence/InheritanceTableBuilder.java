@@ -1,5 +1,6 @@
 package persistence;
 
+import exceptions.NoSuchStrategyException;
 import klass.Klass;
 
 import java.util.ArrayList;
@@ -26,6 +27,10 @@ public class InheritanceTableBuilder implements TableBuilder {
     private void parseType(Klass klass) {
         if (klass.inheritanceStrategy()) {
             this.type = InheritanceType.parse(klass.getInheritanceStrategy());
+        } else if (klass.mappedSuperclass()) {
+            this.type = InheritanceType.MAPPED;
+        } else {
+            throw new NoSuchStrategyException(klass);
         }
     }
 

@@ -4,7 +4,7 @@ import klass.Klass;
 
 public class NoSuchStrategyException extends RuntimeException {
     public NoSuchStrategyException(Klass klass) {
-        super(klass.getName() + " doesn't implement @Inheritance strategy.");
+        super(klass.getName() + " doesn't implement any inheritance mapping strategy.");
     }
 
     public NoSuchStrategyException(String strategy) {

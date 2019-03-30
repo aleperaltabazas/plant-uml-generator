@@ -3,7 +3,7 @@ package persistence;
 import exceptions.NoSuchStrategyException;
 
 public enum InheritanceType {
-    SINGLE, JOINED, PERCLASS;
+    SINGLE, JOINED, PERCLASS, MAPPED;
 
     public static InheritanceType parse(String inheritanceStrategy) {
         if (!inheritanceStrategy.contains("(")) return SINGLE;
