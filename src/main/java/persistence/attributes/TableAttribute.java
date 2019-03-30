@@ -1,4 +1,4 @@
-package persistence;
+package persistence.attributes;
 
 public class TableAttribute {
     private String name;

@@ -1,4 +1,4 @@
-package persistence;
+package persistence.tables;
 
 import klass.Klass;
 
@@ -8,4 +8,5 @@ public class InheritanceTable {
     private InheritanceType type;
     private Klass parent;
     private List<Klass> children;
+
 }

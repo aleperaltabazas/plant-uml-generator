@@ -6,8 +6,8 @@ import klass.Klass;
 import parsing.FileManager;
 import parsing.TableReader;
 import parsing.UMLMaker;
-import persistence.ForeignKey;
-import persistence.Table;
+import persistence.attributes.ForeignKey;
+import persistence.tables.Table;
 
 import java.io.IOException;
 import java.nio.file.NoSuchFileException;

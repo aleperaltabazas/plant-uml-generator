@@ -1,4 +1,4 @@
-package persistence;
+package persistence.attributes;
 
 public enum FKType {
     OneToOne,

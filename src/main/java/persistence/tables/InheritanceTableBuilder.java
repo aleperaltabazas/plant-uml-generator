@@ -1,7 +1,8 @@
-package persistence;
+package persistence.tables;
 
 import exceptions.NoSuchStrategyException;
 import klass.Klass;
+import persistence.attributes.ForeignKey;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,7 +39,6 @@ public class InheritanceTableBuilder implements TableBuilder {
         others.stream().filter(k -> k.getSuperKlass().equals(klass)).forEach(k -> children.add(k));
     }
 
-    @Override
     public TableBuilder takeForeignKeys(List<ForeignKey> foreignKeys) {
         List<ForeignKey> fks = new ArrayList<>();
 
@@ -49,5 +49,9 @@ public class InheritanceTableBuilder implements TableBuilder {
 
         this.fks.addAll(fks);
         return this;
+    }
+
+    public Table build() {
+        return null;
     }
 }

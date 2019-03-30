@@ -1,6 +1,6 @@
 package exceptions;
 
-import persistence.ForeignKey;
+import persistence.attributes.ForeignKey;
 
 public class NoFKTypeException extends RuntimeException {
     private ForeignKey fk;

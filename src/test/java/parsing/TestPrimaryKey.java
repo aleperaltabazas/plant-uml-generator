@@ -4,8 +4,8 @@ import exceptions.MultiplePrimaryKeyError;
 import exceptions.NoPrimaryKeyError;
 import org.junit.Before;
 import org.junit.Test;
-import persistence.SimpleTable;
-import persistence.SimpleTableBuilder;
+import persistence.tables.SimpleTable;
+import persistence.tables.SimpleTableBuilder;
 import utils.AttributeFactory;
 import utils.KlassFactory;
 

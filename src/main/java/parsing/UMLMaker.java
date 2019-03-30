@@ -5,7 +5,10 @@ import klass.Attribute;
 import klass.Klass;
 import klass.Method;
 import klass.classtype.EnumKlass;
-import persistence.*;
+import persistence.attributes.FKType;
+import persistence.attributes.ForeignKey;
+import persistence.tables.MiddleTable;
+import persistence.tables.Table;
 import utils.ObjectToEntity;
 
 import java.util.Arrays;

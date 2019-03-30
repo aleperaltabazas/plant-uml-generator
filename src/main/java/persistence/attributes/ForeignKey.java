@@ -1,4 +1,4 @@
-package persistence;
+package persistence.attributes;
 
 import exceptions.NotAForeignKeyException;
 import klass.Attribute;

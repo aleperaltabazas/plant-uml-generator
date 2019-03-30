@@ -3,8 +3,8 @@ package parsing;
 import exceptions.NotAForeignKeyException;
 import klass.Attribute;
 import org.junit.Test;
-import persistence.FKType;
-import persistence.ForeignKey;
+import persistence.attributes.FKType;
+import persistence.attributes.ForeignKey;
 import utils.AttributeFactory;
 
 import java.util.Arrays;

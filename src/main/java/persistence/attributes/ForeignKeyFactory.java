@@ -1,4 +1,4 @@
-package persistence;
+package persistence.attributes;
 
 import klass.Attribute;
 import klass.Klass;

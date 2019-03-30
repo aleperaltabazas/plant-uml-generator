@@ -5,10 +5,10 @@ import klass.Klass;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
-import persistence.ForeignKey;
-import persistence.ForeignKeyFactory;
-import persistence.SimpleTable;
-import persistence.SimpleTableBuilder;
+import persistence.attributes.ForeignKey;
+import persistence.attributes.ForeignKeyFactory;
+import persistence.tables.SimpleTable;
+import persistence.tables.SimpleTableBuilder;
 import utils.AttributeFactory;
 import utils.KlassFactory;
 
