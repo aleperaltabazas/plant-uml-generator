@@ -33,7 +33,7 @@ public class SingleTable implements InheritanceType {
                 sb.append(notNull.replace("{FROM}", fk.getOriginTable()).replace("{TO}", fk.getDestinationTable()));
         });
 
-        return null;
+        return sb.toString();
     }
 
     private String name(Klass parent) {
