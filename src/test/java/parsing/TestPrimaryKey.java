@@ -11,8 +11,7 @@ import utils.KlassFactory;
 
 import java.util.Arrays;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThrows;
+import static org.junit.Assert.*;
 
 public class TestPrimaryKey {
     private SimpleTableBuilder tb;

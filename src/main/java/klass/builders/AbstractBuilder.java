@@ -7,7 +7,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static parsing.RegexRepository.*;
+import static parsing.RegexRepository.annotationRegex;
 
 public abstract class AbstractBuilder {
     protected String name;

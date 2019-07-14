@@ -6,9 +6,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import persistence.attributes.ForeignKey;
 import persistence.attributes.ForeignKeyFactory;
+import persistence.tables.Table;
 import persistence.tables.builders.InheritanceTableBuilder;
 import persistence.tables.builders.SimpleTableBuilder;
-import persistence.tables.Table;
 import persistence.tables.builders.TableBuilder;
 
 import java.util.ArrayList;

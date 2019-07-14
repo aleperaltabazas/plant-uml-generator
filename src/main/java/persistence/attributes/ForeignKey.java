@@ -21,22 +21,6 @@ public class ForeignKey {
         this.nullable = nullable;
     }
 
-    public String getName() {
-        return name + " (FK)";
-    }
-
-    public FKType getType() {
-        return type;
-    }
-
-    public String getOriginTable() {
-        return originTable;
-    }
-
-    public String getDestinationTable() {
-        return destinationTable;
-    }
-
     public static ForeignKey of(String holderKlass, Attribute attribute) {
         if (!attribute.isForeignKey())
             throw new NotAForeignKeyException(attribute);
@@ -77,6 +61,22 @@ public class ForeignKey {
         if (attribute.hasAnnotation("@ManyToMany"))
             return FKType.ManyToMany;
         throw new NotAForeignKeyException(attribute);
+    }
+
+    public String getName() {
+        return name + " (FK)";
+    }
+
+    public FKType getType() {
+        return type;
+    }
+
+    public String getOriginTable() {
+        return originTable;
+    }
+
+    public String getDestinationTable() {
+        return destinationTable;
     }
 
     public boolean isNullable() {

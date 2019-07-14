@@ -187,8 +187,18 @@ public class KlassBuilder {
         return classType;
     }
 
+    public KlassBuilder setClassType(ClassType classType) {
+        this.classType = classType;
+        return this;
+    }
+
     public String getName() {
         return name;
+    }
+
+    public KlassBuilder setName(String name) {
+        this.name = name;
+        return this;
     }
 
     public String getSuperClass() {
@@ -199,32 +209,13 @@ public class KlassBuilder {
         return interfaces;
     }
 
-    public List<Attribute> getAttributes() {
-        return attributes;
-    }
-
-    public List<Method> getMethods() {
-        return methods;
-    }
-
-    public KlassBuilder setClassType(ClassType classType) {
-        this.classType = classType;
-        return this;
-    }
-
-    public KlassBuilder setName(String name) {
-        this.name = name;
-        return this;
-    }
-
-    public KlassBuilder setParent(String parent) {
-        this.parent = parent;
-        return this;
-    }
-
     public KlassBuilder setInterfaces(List<String> interfaces) {
         this.interfaces = interfaces;
         return this;
+    }
+
+    public List<Attribute> getAttributes() {
+        return attributes;
     }
 
     public KlassBuilder setAttributes(List<Attribute> attributes) {
@@ -232,8 +223,17 @@ public class KlassBuilder {
         return this;
     }
 
+    public List<Method> getMethods() {
+        return methods;
+    }
+
     public KlassBuilder setMethods(List<Method> methods) {
         this.methods = methods;
+        return this;
+    }
+
+    public KlassBuilder setParent(String parent) {
+        this.parent = parent;
         return this;
     }
 
