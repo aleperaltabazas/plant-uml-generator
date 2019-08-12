@@ -90,9 +90,9 @@ public class UMLMaker {
         String tableName = ObjectToEntity.camelToSnake(fk.getOriginTable() + "" + fk.getDestinationTable());
 
         ForeignKey originConnection = new ForeignKey("id_" + fk.getOriginTable(), FKType.ManyToOne, tableName,
-                ObjectToEntity.camelToSnake(fk.getOriginTable()), nullable);
+                ObjectToEntity.camelToSnake(fk.getOriginTable()), false);
         ForeignKey destinationConnection = new ForeignKey("id_" + fk.getDestinationTable(), FKType.ManyToOne,
-                tableName, ObjectToEntity.camelToSnake(fk.getDestinationTable()), nullable);
+                tableName, ObjectToEntity.camelToSnake(fk.getDestinationTable()), false);
 
         return new MiddleTable(tableName, Arrays.asList(originConnection,
                 destinationConnection));

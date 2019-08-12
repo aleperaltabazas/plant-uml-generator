@@ -4,6 +4,7 @@ import klass.Attribute;
 import klass.Klass;
 import klass.Modifier;
 import klass.classtype.ConcreteKlass;
+import klass.objekt.ObjectClass;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -28,7 +29,7 @@ public class KlassFactory {
 
     private static Klass withAttributesAndAnnotations(String name, List<Attribute> attributes,
                                                       List<String> annotations) {
-        return new Klass(attributes, new ArrayList<>(), name, new ConcreteKlass(), null, new ArrayList<>(),
-                Arrays.asList(Modifier.Public), annotations);
+        return new Klass(attributes, new ArrayList<>(), name, new ConcreteKlass(), ObjectClass.getInstance(),
+                new ArrayList<>(), Arrays.asList(Modifier.Public), annotations);
     }
 }

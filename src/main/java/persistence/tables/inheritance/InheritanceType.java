@@ -23,5 +23,7 @@ public interface InheritanceType {
         throw new NoSuchStrategyException(strategy);
     }
 
-    String write(Klass parent, List<Klass> children, List<ForeignKey> foreignKeys);
+    default String write(Klass parent, List<Klass> children, List<ForeignKey> foreignKeys) {
+        return "";
+    }
 }

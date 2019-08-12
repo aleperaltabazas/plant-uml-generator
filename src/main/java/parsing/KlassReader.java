@@ -15,7 +15,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static parsing.RegexRepository.*;
+import static parsing.RegexConstants.*;
 
 public class KlassReader {
     private static final Logger LOGGER = LoggerFactory.getLogger(KlassReader.class);
@@ -102,21 +102,21 @@ public class KlassReader {
                 break;
             }
 
-            if (line.matches(annotationRegex)) {
+            if (line.matches(ANNOTATION)) {
                 annotations.add(line.replaceAll("\\s+", " "));
             }
         }
 
         annotations.addAll(Arrays
                 .stream(definition.split("\\s"))
-                .filter(word -> word.matches(annotationRegex))
+                .filter(word -> word.matches(ANNOTATION))
                 .collect(Collectors.toList()));
 
         return annotations;
     }
 
     private boolean isClassDefinition(String line) {
-        return line.matches(classRegex) || line.matches(abstractRegex) || line.matches(interfaceRegex) || line.matches(enumRegex);
+        return line.matches(CLASS) || line.matches(ABSTRACT) || line.matches(INTERFACE) || line.matches(ENUM);
     }
 
     private String filterPackage(String text) {
@@ -161,7 +161,7 @@ public class KlassReader {
                 continue;
             }
 
-            inClassBody = line.matches(RegexRepository.klassDefinitionRegex);
+            inClassBody = line.matches(RegexConstants.KLASS_DEFINITION);
         }
 
         return sb.toString();

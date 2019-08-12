@@ -29,6 +29,7 @@ public class InheritanceTable implements Table {
     }
 
     public String write() {
-        return type.write(parent, children);
+        //return type.write(parent, children);
+        return "";
     }
 }

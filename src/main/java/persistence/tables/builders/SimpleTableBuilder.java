@@ -38,8 +38,9 @@ public class SimpleTableBuilder implements TableBuilder {
     }
 
     public TableBuilder parse(Klass klass, List<Klass> others) {
-        if (klass.isIgnorable())
+        if (klass.isIgnorable()) {
             return new InheritanceTableBuilder().parse(klass, others);
+        }
 
         this.entity = klass;
         parseName(klass);

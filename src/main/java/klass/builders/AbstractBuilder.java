@@ -7,7 +7,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static parsing.RegexRepository.annotationRegex;
+import static parsing.RegexConstants.*;
 
 public abstract class AbstractBuilder {
     protected String name;
@@ -26,14 +26,12 @@ public abstract class AbstractBuilder {
     }
 
     protected void parseAnnotations(String definition) {
-        annotations =
-                Arrays.stream(definition.split("\\s")).filter(word -> word.matches(annotationRegex)).collect(Collectors.toList());
+        annotations = Arrays.stream(definition.split("\\s")).filter(word -> word.matches(ANNOTATION)).collect(Collectors.toList());
     }
 
     protected int presentModifiers(String definition) {
         int presentModifiers = 0;
-        List<String> possibleModifiers = Arrays.asList("protected", "public", "abstract", "private", "static", "final",
-                "<.*>");
+        List<String> possibleModifiers = Arrays.asList("protected", "public", "private", "static", "final", "<.*>");
         List<String> words = Arrays.asList(definition.split("\\s"));
 
         for (String modifier : possibleModifiers) {
@@ -81,7 +79,7 @@ public abstract class AbstractBuilder {
     protected String removeAnnotations(String definition) {
         StringBuilder sb = new StringBuilder();
 
-        Arrays.stream(definition.split("\\s|\n")).filter(word -> !word.matches(annotationRegex)).forEach(word -> sb.append(word).append(" "));
+        Arrays.stream(definition.split("\\s|\n")).filter(word -> !word.matches(ANNOTATION)).forEach(word -> sb.append(word).append(" "));
 
         return sb.toString();
     }

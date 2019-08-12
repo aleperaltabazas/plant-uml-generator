@@ -1,13 +1,12 @@
 package main;
 
-import exceptions.BuildError;
 import exceptions.ImageCreatingError;
 
 import java.io.IOException;
 import java.nio.file.NoSuchFileException;
 
 public class Main {
-    public static void main(String[] args) throws IOException, BuildError {
+    public static void main(String[] args) throws IOException {
         if (args.length < 1)
             throw new NoSuchFileException("Run with the path to the model as argument");
 

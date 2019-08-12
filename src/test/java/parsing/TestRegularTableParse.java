@@ -12,6 +12,7 @@ import persistence.tables.builders.SimpleTableBuilder;
 import utils.AttributeFactory;
 import utils.KlassFactory;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -37,7 +38,7 @@ public class TestRegularTableParse {
     @Test
     public void tableOfKlassWithoutParsingForeignKeys() {
         SimpleTableBuilder tb = new SimpleTableBuilder();
-        tb.parse(klass);
+        tb.parse(klass, new ArrayList<>());
         RegularTable regularTable = tb.build();
 
         assertEquals("id (PK)", regularTable.getPk());
@@ -50,7 +51,7 @@ public class TestRegularTableParse {
         List<ForeignKey> foreignKeys = ForeignKeyFactory.foreignKeysOf(klass);
 
         SimpleTableBuilder tb = new SimpleTableBuilder();
-        tb.parse(klass);
+        tb.parse(klass, new ArrayList<>());
         tb.takeForeignKeys(foreignKeys);
         RegularTable regularTable = tb.build();
 
@@ -68,7 +69,7 @@ public class TestRegularTableParse {
         int initialSize = foreignKeys.size();
 
         SimpleTableBuilder tb = new SimpleTableBuilder();
-        tb.parse(klass);
+        tb.parse(klass, new ArrayList<>());
         tb.takeForeignKeys(foreignKeys);
 
         RegularTable regularTable = tb.build();

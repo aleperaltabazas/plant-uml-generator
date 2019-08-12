@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
-import static parsing.RegexRepository.*;
+import static parsing.RegexConstants.*;
 
 public class KlassBuilder {
     private ClassType classType;
@@ -93,9 +93,9 @@ public class KlassBuilder {
 
         for (String line : lines) {
             String constant = "";
-            if (line.matches(enumConstantRegex)) {
+            if (line.matches(ENUM_CONSTANT)) {
                 constant = line.replaceAll("(\\s+|,|;)", "");
-            } else if (line.matches(enumConstantWithBehaviorRegex)) {
+            } else if (line.matches(ENUM_CONSTANT_WITH_BEHAVIOR)) {
                 constant = line.substring(0, line.indexOf(";")).replaceAll("\\s+", "");
             }
 
@@ -147,11 +147,11 @@ public class KlassBuilder {
             if (line.matches(constructorRegex))
                 continue;
 
-            if (spaceless.matches(annotationRegex)) {
+            if (spaceless.matches(ANNOTATION)) {
                 annotations.add(spaceless);
             }
 
-            if (line.matches(methodRegex)) {
+            if (line.matches(METHOD)) {
                 mb.addDefinition(spaceless);
                 mb.addAnotations(annotations);
                 methods.add(mb.build());
@@ -159,7 +159,7 @@ public class KlassBuilder {
                 methodBuilders.add(mb);
                 mb = new MethodBuilder();
                 annotations.clear();
-            } else if (line.matches(attributeRegex)) {
+            } else if (line.matches(ATTRIBUTE)) {
                 ab.addDefinition(spaceless);
                 ab.addAnotations(annotations);
                 attributes.add(ab.build());
