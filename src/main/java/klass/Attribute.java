@@ -1,8 +1,7 @@
 package klass;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import io.vavr.collection.List;
+
 import java.util.Objects;
 
 public class Attribute {
@@ -41,17 +40,17 @@ public class Attribute {
     }
 
     private boolean isLibrary(String type) {
-        List<String> libraries = Arrays.asList("LocalDate", "LocalDateTime", "Date");
+        List<String> standardLibraries = List.of("LocalDate", "LocalDateTime", "Date");
 
-        return libraries.stream().anyMatch(library -> type.matches(library));
+        return standardLibraries.exists(library -> type.matches(library));
     }
 
     private boolean isSimpleGeneric(String type) {
-        if (oneGeneric().stream().anyMatch(g -> type.matches(g))) {
+        if (oneGeneric().exists(g -> type.matches(g))) {
             String generic = type.substring(type.indexOf('<') + 1, type.lastIndexOf('>'));
 
             return isIgnored(generic);
-        } else if (twoGeneric().stream().anyMatch(g -> type.matches(g))) {
+        } else if (twoGeneric().exists(g -> type.matches(g))) {
             String generic = type.substring(type.lastIndexOf(',') + 1, type.lastIndexOf('>')).replaceAll("\\+s", "");
 
             return isIgnored(generic);
@@ -61,25 +60,22 @@ public class Attribute {
     }
 
     private List<String> oneGeneric() {
-        return Arrays.asList("List<.+>" /* listRegex */,
+        return List.of("List<.+>" /* listRegex */,
                 "Set<.+>" /* setRegex */,
                 "Optional<.*>" /*optionalRegex*/);
     }
 
     private List<String> twoGeneric() {
-        return Arrays.asList("Map<.+\\s?,\\s?.+>" /* mapRegex */,
+        return List.of("Map<.+\\s?,\\s?.+>" /* mapRegex */,
                 "Pair<.*,.*>" /* pairRegex */);
     }
 
     private List<String> primitives() {
-        List<String> primivites = Arrays.asList("int", "float", "double", "char", "short", "long", "boolean", "byte");
-        List<String> almostPrimitives = Arrays.asList("Integer", "Float", "Double", "Character", "Short", "Long",
+        List<String> primitives = List.of("int", "float", "double", "char", "short", "long", "boolean", "byte");
+        List<String> primitivesAsObjects = List.of("Integer", "Float", "Double", "Character", "Short", "Long",
                 "Boolean", "Byte", "String");
 
-        List<String> result = new ArrayList<>(primivites);
-        result.addAll(almostPrimitives);
-
-        return result;
+        return primitives.appendAll(primitivesAsObjects);
     }
 
     private boolean isPrimitive(String type) {
@@ -104,7 +100,7 @@ public class Attribute {
     }
 
     public boolean hasAnnotation(String regex) {
-        return annotations.stream().anyMatch(annotation -> annotation.matches(regex + "([(].*[)])?"));
+        return annotations.exists(annotation -> annotation.matches(regex + "([(].*[)])?"));
     }
 
     public boolean hasModifier(Modifier modifier) {
@@ -129,6 +125,6 @@ public class Attribute {
     }
 
     public boolean isInheritable() {
-        return isVisible() || hasModifier(Modifier.PackagePrivate) || hasModifier(Modifier.Protected) || isPrimaryKey();
+        return isVisible() || hasModifier(Modifier.PACKAGE_PRIVATE) || hasModifier(Modifier.PROTECTED) || isPrimaryKey();
     }
 }

@@ -1,14 +1,13 @@
 package persistence.tables.builders;
 
 import exceptions.NoSuchStrategyException;
+import io.vavr.collection.List;
 import klass.Klass;
 import persistence.attributes.ForeignKey;
 import persistence.tables.Table;
 import persistence.tables.inheritance.InheritanceType;
 import persistence.tables.inheritance.MappedSuperclass;
 
-import java.util.ArrayList;
-import java.util.List;
 
 public class InheritanceTableBuilder implements TableBuilder {
     private Klass parent;
@@ -17,8 +16,8 @@ public class InheritanceTableBuilder implements TableBuilder {
     private InheritanceType type;
 
     public InheritanceTableBuilder() {
-        this.children = new ArrayList<>();
-        this.fks = new ArrayList<>();
+        this.children = List.empty();
+        this.fks = List.empty();
     }
 
     public TableBuilder parse(Klass klass, List<Klass> others) {
@@ -39,23 +38,19 @@ public class InheritanceTableBuilder implements TableBuilder {
     }
 
     private void parseChildren(Klass klass, List<Klass> others) {
-        others.stream().filter(k -> k.getSuperKlass().equals(klass)).forEach(k -> children.add(k));
+        children = children.appendAll(others.filter(k -> k.getSuperKlass().equals(klass)));
     }
 
     public TableBuilder takeForeignKeys(List<ForeignKey> foreignKeys) {
-        List<ForeignKey> fks = new ArrayList<>();
-
         //TODO: also children classes
-        foreignKeys.forEach(fk -> {
-            if (fk.getOriginTable().equalsIgnoreCase(parent.getName())) fks.add(fk);
-        });
+        List<ForeignKey> fks = foreignKeys.filter(fk -> fk.getOriginTable().equalsIgnoreCase(parent.getName()));
 
-
-        this.fks.addAll(fks);
+        this.fks = this.fks.appendAll(fks);
         return this;
     }
 
     public Table build() {
+        //TODO
         return null;
     }
 }

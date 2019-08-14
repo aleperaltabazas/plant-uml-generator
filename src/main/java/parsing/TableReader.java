@@ -1,6 +1,8 @@
 package parsing;
 
 import exceptions.NoPrimaryKeyError;
+import io.vavr.collection.List;
+import io.vavr.control.Option;
 import klass.Klass;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,9 +13,6 @@ import persistence.tables.builders.InheritanceTableBuilder;
 import persistence.tables.builders.SimpleTableBuilder;
 import persistence.tables.builders.TableBuilder;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class TableReader {
     private static final Logger LOGGER = LoggerFactory.getLogger(TableReader.class);
 
@@ -23,24 +22,19 @@ public class TableReader {
     }
 
     public List<Table> readAllTables(List<Klass> klasses, List<ForeignKey> foreignKeys) {
-        List<Table> simpleTables = new ArrayList<>();
-
-
-        klasses.stream().filter(Klass::isEntity).forEach(klass -> {
-            try {
-                simpleTables.add(readTable(klass, klasses, foreignKeys));
-            } catch (NoPrimaryKeyError e) {
-                LOGGER.error("No PK found for Class " + klass.getName(), e);
-            }
-        });
-
-        return simpleTables;
+        return klasses.filter(k -> k.isEntity())
+                .map(k -> {
+                    try {
+                        return Option.of(readTable(k, klasses, foreignKeys));
+                    } catch (NoPrimaryKeyError e) {
+                        LOGGER.error("No PK found for Class " + k.getName(), e);
+                        return Option.none();
+                    }
+                })
+                .flatMap(opt -> (List<Table>) opt.toList());
     }
 
     public List<ForeignKey> readAllFks(List<Klass> klasses) {
-        List<ForeignKey> foreignKeys = new ArrayList<>();
-        klasses.forEach(klass -> foreignKeys.addAll(ForeignKeyFactory.foreignKeysOf(klass)));
-
-        return foreignKeys;
+        return klasses.flatMap(klass -> ForeignKeyFactory.foreignKeysOf(klass));
     }
 }

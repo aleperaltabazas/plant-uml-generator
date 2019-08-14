@@ -1,11 +1,10 @@
 package parsing;
 
+import io.vavr.collection.List;
 import klass.Argument;
 import klass.builders.MethodBuilder;
 import org.junit.Before;
 import org.junit.Test;
-
-import java.util.List;
 
 import static org.junit.Assert.*;
 

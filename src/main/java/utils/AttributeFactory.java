@@ -1,12 +1,11 @@
 package utils;
 
+import io.vavr.collection.List;
 import klass.Attribute;
-
-import java.util.Arrays;
 
 public class AttributeFactory {
     public static Attribute simple(String name, String type) {
-        return new Attribute(name, type, true, Arrays.asList(), Arrays.asList());
+        return new Attribute(name, type, true, List.empty(), List.empty());
     }
 
     public static Attribute oneToOne(String name, String type) {
@@ -27,7 +26,7 @@ public class AttributeFactory {
     }
 
     private static Attribute withAnnotation(String name, String type, String annotation) {
-        return new Attribute(name, type, true, Arrays.asList(), Arrays.asList(annotation));
+        return new Attribute(name, type, true, List.empty(), List.of(annotation));
     }
 
     public static Attribute pk(String name, String type) {

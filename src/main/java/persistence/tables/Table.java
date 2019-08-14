@@ -1,9 +1,8 @@
 package persistence.tables;
 
+import io.vavr.collection.List;
 import persistence.attributes.ForeignKey;
 import persistence.attributes.TableAttribute;
-
-import java.util.List;
 
 public interface Table {
     String getName();

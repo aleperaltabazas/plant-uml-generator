@@ -21,7 +21,7 @@ public class TestForeignKey {
         fk = ForeignKey.of("Foo", attribute);
 
         assertEquals("Foo", fk.getOriginTable());
-        assertEquals(FKType.OneToOne, fk.getType());
+        assertEquals(FKType.ONE_TO_ONE, fk.getType());
         assertEquals("Bar", fk.getDestinationTable());
     }
 
@@ -31,7 +31,7 @@ public class TestForeignKey {
         fk = ForeignKey.of("Foo", attribute);
 
         assertEquals("Bar", fk.getOriginTable());
-        assertEquals(FKType.ManyToOne, fk.getType());
+        assertEquals(FKType.MANY_TO_ONE, fk.getType());
         assertEquals("Foo", fk.getDestinationTable());
     }
 
@@ -41,7 +41,7 @@ public class TestForeignKey {
         fk = ForeignKey.of("Foo", attribute);
 
         assertEquals("Foo", fk.getOriginTable());
-        assertEquals(FKType.ManyToOne, fk.getType());
+        assertEquals(FKType.MANY_TO_ONE, fk.getType());
         assertEquals("Bar", fk.getDestinationTable());
     }
 
@@ -51,7 +51,7 @@ public class TestForeignKey {
         fk = ForeignKey.of("Foo", attribute);
 
         assertEquals("Foo", fk.getOriginTable());
-        assertEquals(FKType.ManyToMany, fk.getType());
+        assertEquals(FKType.MANY_TO_MANY, fk.getType());
         assertEquals("Bar", fk.getDestinationTable());
     }
 

@@ -1,6 +1,7 @@
 package main;
 
 import exceptions.NoSuchDirectoryException;
+import io.vavr.collection.List;
 import klass.Klass;
 import klass.builders.KlassBuilder;
 import net.sourceforge.plantuml.SourceFileReader;
@@ -14,8 +15,6 @@ import persistence.tables.Table;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
-import java.util.Arrays;
-import java.util.List;
 
 public class Diagrams {
     public void create(String path) {
@@ -37,14 +36,13 @@ public class Diagrams {
         StringBuilder sb = new StringBuilder();
         sb.append("@startuml\n");
 
-        klasses.stream().filter(klass -> !klass.isIgnorable()).forEach(klass ->
+        klasses.filter(klass -> !klass.isIgnorable()).forEach(klass ->
                 maker.writeClassDiagram(klass).forEach(line -> sb.append(line).append("\n")));
 
         sb.append("@enduml");
         String text = sb.toString();
 
-
-        Path pathToFile = manager.writeFile(fileName, Arrays.asList(text));
+        Path pathToFile = manager.writeFile(fileName, List.of(text));
         File sourceFile = pathToFile.toFile();
         try {
             SourceFileReader sourceReader = new SourceFileReader(sourceFile);
@@ -75,6 +73,6 @@ public class Diagrams {
 
         tableSB.append("@enduml");
 
-        manager.writeFile("erd.uml", Arrays.asList(tableSB.toString()));
+        manager.writeFile("erd.uml", List.of(tableSB.toString()));
     }
 }

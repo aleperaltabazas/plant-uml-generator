@@ -1,6 +1,7 @@
 package parsing;
 
 import exceptions.NoFKTypeException;
+import io.vavr.collection.List;
 import klass.Attribute;
 import klass.Klass;
 import klass.Method;
@@ -11,12 +12,9 @@ import persistence.tables.MiddleTable;
 import persistence.tables.Table;
 import utils.ObjectToEntity;
 
-import java.util.Arrays;
-import java.util.List;
-
 public class UMLMaker {
     public List<String> writeERD(Table table, List<ForeignKey> fks) {
-        return Arrays.asList(table.write().split("\\r?\\n"));
+        return List.of(table.write().split("\\r?\\n"));
     }
 
     private String appendTableAttributes(Table table) {
@@ -50,19 +48,19 @@ public class UMLMaker {
         String relation;
 
         switch (fk.getType()) {
-            case OneToOne:
+            case ONE_TO_ONE:
                 relation =
                         ObjectToEntity.camelToSnake(fk.getOriginTable()) + " |o--o| " + ObjectToEntity.camelToSnake(fk.getDestinationTable());
                 break;
-            case OneToMany:
+            case ONE_TO_MANY:
                 relation =
                         ObjectToEntity.camelToSnake(fk.getOriginTable()) + " |o--o{ " + ObjectToEntity.camelToSnake(fk.getDestinationTable());
                 break;
-            case ManyToOne:
+            case MANY_TO_ONE:
                 relation =
                         ObjectToEntity.camelToSnake(fk.getOriginTable()) + " }o--o| " + ObjectToEntity.camelToSnake(fk.getDestinationTable());
                 break;
-            case ManyToMany:
+            case MANY_TO_MANY:
                 Table middleTable = middleTable(fk);
                 relation = appendMiddleTable(middleTable);
                 break;
@@ -89,12 +87,12 @@ public class UMLMaker {
     private Table middleTable(ForeignKey fk) {
         String tableName = ObjectToEntity.camelToSnake(fk.getOriginTable() + "" + fk.getDestinationTable());
 
-        ForeignKey originConnection = new ForeignKey("id_" + fk.getOriginTable(), FKType.ManyToOne, tableName,
+        ForeignKey originConnection = new ForeignKey("id_" + fk.getOriginTable(), FKType.MANY_TO_ONE, tableName,
                 ObjectToEntity.camelToSnake(fk.getOriginTable()), false);
-        ForeignKey destinationConnection = new ForeignKey("id_" + fk.getDestinationTable(), FKType.ManyToOne,
+        ForeignKey destinationConnection = new ForeignKey("id_" + fk.getDestinationTable(), FKType.MANY_TO_ONE,
                 tableName, ObjectToEntity.camelToSnake(fk.getDestinationTable()), false);
 
-        return new MiddleTable(tableName, Arrays.asList(originConnection,
+        return new MiddleTable(tableName, List.of(originConnection,
                 destinationConnection));
     }
 
@@ -109,7 +107,7 @@ public class UMLMaker {
         sb.append("} \n");
         sb.append(klassReferences(klass));
 
-        return Arrays.asList(sb.toString().split("\\r?\\n"));
+        return List.of(sb.toString().split("\\r?\\n"));
     }
 
     private String enumConstants(Klass klass) {
@@ -120,7 +118,7 @@ public class UMLMaker {
         String collectionRegex = "(List<.*>|Set<.*>|Map<.*,.*>)";
 
         StringBuilder sb = new StringBuilder();
-        klass.getAttributes().stream().filter(attr -> !attr.isIgnored()).forEach(attr -> {
+        klass.getAttributes().filter(attr -> !attr.isIgnored()).forEach(attr -> {
             if (attr.getKlass().matches(collectionRegex)) {
                 sb.append(klass.getName()).append(" --> \"*\" ").append(removeListWrapper(attr.getKlass())).append(
                         "\n");
@@ -144,7 +142,7 @@ public class UMLMaker {
         List<Attribute> attributes = klass.getAttributes();
         StringBuilder sb = new StringBuilder();
 
-        attributes.stream().filter(attr -> attr.isVisible() || klass.hasGetterFor(attr.getName())).forEach(attr ->
+        attributes.filter(attr -> attr.isVisible() || klass.hasGetterFor(attr.getName())).forEach(attr ->
                 sb.append(attr.getName()).append(": ").append(attr.getKlass()).append("\n"));
 
         return sb.toString();
@@ -154,10 +152,12 @@ public class UMLMaker {
         List<Method> methods = klass.getMethods();
         StringBuilder sb = new StringBuilder();
 
-        methods.stream().filter(method -> method.isVisible() && !(method.isBoilerPlate() || klass.inherits(method))).forEach(met -> {
+        methods.filter(method -> method.isVisible() && !(method.isBoilerPlate() || klass.inherits(method))).forEach(met -> {
             sb.append(met.getName()).append("(");
             met.getArguments().forEach(arg -> {
-                if (met.getArguments().indexOf(arg) > 0) sb.append(", ");
+                if (met.getArguments().indexOf(arg) > 0) {
+                    sb.append(", ");
+                }
                 sb.append(arg.getName()).append(": ").append(arg.getKlass());
             });
             sb.append("): ").append(met.getReturnType()).append("\n");

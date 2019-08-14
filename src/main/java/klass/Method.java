@@ -1,7 +1,7 @@
 package klass;
 
-import java.util.Arrays;
-import java.util.List;
+import io.vavr.collection.List;
+
 import java.util.Objects;
 
 public class Method {
@@ -28,7 +28,7 @@ public class Method {
     }
 
     public boolean isVisible() {
-        return visible || hasModifier(Modifier.Default);
+        return visible || hasModifier(Modifier.DEFAULT);
     }
 
     public String getName() {
@@ -50,7 +50,7 @@ public class Method {
     }
 
     private boolean redefinition() {
-        List<String> redefinables = Arrays.asList("equals", "hashCode", "clone");
+        List<String> redefinables = List.of("equals", "hashCode", "clone");
         return redefinables.contains(name);
     }
 
@@ -76,6 +76,6 @@ public class Method {
     }
 
     public boolean isInheritable() {
-        return isVisible() || hasModifier(Modifier.PackagePrivate) || hasModifier(Modifier.Protected);
+        return isVisible() || hasModifier(Modifier.PACKAGE_PRIVATE) || hasModifier(Modifier.PROTECTED);
     }
 }

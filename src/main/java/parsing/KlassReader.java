@@ -3,16 +3,13 @@ package parsing;
 import exceptions.BuildError;
 import exceptions.NoClassDefinitionException;
 import exceptions.NoSuchClassException;
+import io.vavr.collection.List;
 import klass.Klass;
 import klass.builders.KlassBuilder;
 import klass.objekt.ObjectClass;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.LinkedHashSet;
-import java.util.List;
 import java.util.stream.Collectors;
 
 import static parsing.RegexConstants.*;
@@ -21,20 +18,16 @@ public class KlassReader {
     private static final Logger LOGGER = LoggerFactory.getLogger(KlassReader.class);
 
     public List<Klass> createKlasses(List<KlassBuilder> builders) {
-        List<Klass> klasses = new ArrayList<>();
-        builders.forEach(builder -> {
+        List<Klass> klasses = List.empty();
+        for (KlassBuilder builder : builders) {
             Klass newKlass = createKlass(builder, builders, klasses);
-            klasses.add(newKlass);
 
             if (!klasses.contains(newKlass)) {
-                klasses.add(newKlass);
+                klasses = klasses.append(newKlass);
             }
-        });
+        }
 
-
-        ArrayList<Klass> finalList = new ArrayList<>(new LinkedHashSet<>(klasses));
-
-        return finalList.stream().filter(klass -> !klass.getName().equalsIgnoreCase("klass")).collect(Collectors.toList());
+        return klasses.distinct().filter(klass -> !klass.getName().equalsIgnoreCase("klass"));
     }
 
     public Klass createKlass(KlassBuilder klassBuilder, List<KlassBuilder> others, List<Klass> klasses) {
@@ -42,16 +35,18 @@ public class KlassReader {
             Klass superClass;
 
             try {
-                if (klasses.stream().anyMatch(klass -> klass.getName().equalsIgnoreCase(klassBuilder.getSuperClass()))) {
+                if (klasses.exists(klass -> klass.getName().equalsIgnoreCase(klassBuilder.getSuperClass()))) {
                     superClass =
-                            klasses.stream().filter(klass -> klass.getName().equals(klassBuilder.getSuperClass()))
-                                    .findFirst().orElseThrow(() -> new NoSuchClassException(klassBuilder.getSuperClass()));
+                            klasses.filter(klass -> klass.getName().equals(klassBuilder.getSuperClass()))
+                                    .headOption().getOrElseThrow(() -> new NoSuchClassException(klassBuilder.getSuperClass()));
                 } else {
                     KlassBuilder other =
-                            others.stream().filter(otherBuilder -> otherBuilder.getName().equalsIgnoreCase(klassBuilder.getSuperClass()))
-                                    .findFirst().orElseThrow(() -> new NoSuchClassException(klassBuilder.getSuperClass()));
+                            others.filter(otherBuilder -> otherBuilder.getName().equalsIgnoreCase(klassBuilder.getSuperClass()))
+                                    .headOption().getOrElseThrow(() -> new NoSuchClassException(klassBuilder.getSuperClass()));
                     superClass = createKlass(other, others, klasses);
-                    if (!klasses.contains(superClass)) klasses.add(superClass);
+                    if (!klasses.contains(superClass)) {
+                        klasses = klasses.append(superClass);
+                    }
                 }
             } catch (NoClassDefinitionException | NoSuchClassException | BuildError e) {
                 LOGGER.info("Error finding superclass, defaulting to Object", e);
@@ -65,16 +60,7 @@ public class KlassReader {
     }
 
     public List<KlassBuilder> getBuilders(List<String> classes) {
-        List<KlassBuilder> builders = new ArrayList<>();
-        classes.forEach(klass -> {
-            try {
-                builders.add(getKlassBuilder(klass));
-            } catch (NoClassDefinitionException e) {
-                LOGGER.error("No class was found", e);
-            }
-        });
-
-        return builders;
+        return classes.map(c -> getKlassBuilder(c));
     }
 
     private KlassBuilder getKlassBuilder(String text) {
@@ -93,7 +79,7 @@ public class KlassReader {
     }
 
     private List<String> getAnnotations(String text) {
-        List<String> annotations = new ArrayList<>();
+        List<String> annotations = List.empty();
         String definition = "";
 
         for (String line : text.split("\n")) {
@@ -103,12 +89,12 @@ public class KlassReader {
             }
 
             if (line.matches(ANNOTATION)) {
-                annotations.add(line.replaceAll("\\s+", " "));
+                annotations = annotations.append(line.replaceAll("\\s+", " "));
             }
         }
 
-        annotations.addAll(Arrays
-                .stream(definition.split("\\s"))
+        annotations = annotations.appendAll(List
+                .of(definition.split("\\s"))
                 .filter(word -> word.matches(ANNOTATION))
                 .collect(Collectors.toList()));
 

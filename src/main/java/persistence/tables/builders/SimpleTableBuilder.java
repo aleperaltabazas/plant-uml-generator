@@ -4,16 +4,13 @@ import exceptions.BuildError;
 import exceptions.MultiplePrimaryKeyError;
 import exceptions.NoFkFoundException;
 import exceptions.NoPrimaryKeyError;
+import io.vavr.collection.List;
 import klass.Attribute;
 import klass.Klass;
 import persistence.attributes.FKType;
 import persistence.attributes.ForeignKey;
 import persistence.attributes.TableAttribute;
 import persistence.tables.RegularTable;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
 
 import static utils.ObjectToEntity.camelToSnake;
 
@@ -33,8 +30,8 @@ public class SimpleTableBuilder implements TableBuilder {
         if (entity == null || primaryKey == null)
             throw new BuildError("Need parameters to build. tableName: " + tableName + ", primaryKey: " + primaryKey);
 
-        if (attributes == null) attributes = new ArrayList<>();
-        if (foreignKeys == null) foreignKeys = new ArrayList<>();
+        if (attributes == null) attributes = List.empty();
+        if (foreignKeys == null) foreignKeys = List.empty();
     }
 
     public TableBuilder parse(Klass klass, List<Klass> others) {
@@ -49,12 +46,12 @@ public class SimpleTableBuilder implements TableBuilder {
     }
 
     public TableBuilder takeForeignKeys(List<ForeignKey> foreignKeys) {
-        if (this.foreignKeys == null) this.foreignKeys = new ArrayList<>();
+        if (this.foreignKeys == null) this.foreignKeys = List.empty();
 
         List<ForeignKey> localOriginFKs =
-                foreignKeys.stream().filter(fk -> fk.getOriginTable().equals(entity.getName())).collect(Collectors.toList());
+                foreignKeys.filter(fk -> fk.getOriginTable().equalsIgnoreCase(entity.getName()));
 
-        this.foreignKeys.addAll(localOriginFKs);
+        this.foreignKeys = this.foreignKeys.appendAll(localOriginFKs);
         return this;
     }
 
@@ -63,16 +60,15 @@ public class SimpleTableBuilder implements TableBuilder {
         List<Attribute> allAtributes = klass.allAtributes();
         parseSimpleAttributes(klassAttributes);
         parsePrimaryKey(klass, allAtributes);
-
     }
 
     private List<Attribute> filterTransients(Klass klass) {
-        return klass.getAttributes().stream().filter(attr -> !attr.isTransient()).collect(Collectors.toList());
+        return klass.getAttributes().filter(attr -> !attr.isTransient());
     }
 
     private void parsePrimaryKey(Klass klass, List<Attribute> klassAttributes) {
         List<Attribute> possiblePks =
-                klassAttributes.stream().filter(attribute -> attribute.isPrimaryKey()).collect(Collectors.toList());
+                klassAttributes.filter(attribute -> attribute.isPrimaryKey());
 
         if (possiblePks.size() > 1) {
             StringBuilder sb = new StringBuilder();
@@ -89,11 +85,9 @@ public class SimpleTableBuilder implements TableBuilder {
     }
 
     private void parseSimpleAttributes(List<Attribute> klassAttributes) {
-        this.attributes = new ArrayList<>();
-
-        klassAttributes.stream().filter(attribute -> !(attribute.isPrimaryKey() || attribute.isForeignKey()))
-                .forEach(attribute -> this.attributes.add(new TableAttribute(camelToSnake(attribute.getName()),
-                        attribute.getKlass())));
+        this.attributes = klassAttributes
+                .filter(a -> !(a.isPrimaryKey() || a.isForeignKey()))
+                .map(a -> new TableAttribute(a.getName(), a.getKlass()));
     }
 
     private void parseName(Klass klass) {
@@ -102,13 +96,13 @@ public class SimpleTableBuilder implements TableBuilder {
 
     private FKType parseRelationType(List<String> annotations) {
         if (annotations.contains("@OneToOne"))
-            return FKType.OneToOne;
+            return FKType.ONE_TO_ONE;
         if (annotations.contains("@OneToMany"))
-            return FKType.OneToMany;
+            return FKType.ONE_TO_MANY;
         if (annotations.contains("@ManyToOne"))
-            return FKType.ManyToOne;
+            return FKType.MANY_TO_ONE;
         if (annotations.contains("@ManyToMany"))
-            return FKType.ManyToMany;
+            return FKType.MANY_TO_MANY;
 
         throw new NoFkFoundException();
     }

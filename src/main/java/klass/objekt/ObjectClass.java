@@ -1,21 +1,18 @@
 package klass.objekt;
 
+import io.vavr.collection.List;
 import klass.Attribute;
 import klass.Klass;
 import klass.Method;
 import klass.Modifier;
 import klass.classtype.ConcreteKlass;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
 public class ObjectClass extends Klass {
-    private static volatile ObjectClass instance;
+    private static ObjectClass instance;
 
     public ObjectClass() {
-        super(new ArrayList<>(), ObjectMethods.all(), "Object", new ConcreteKlass(), null, new ArrayList<>(),
-                Arrays.asList(Modifier.Public), new ArrayList<>());
+        super(List.empty(), ObjectMethods.all(), "Object", new ConcreteKlass(), null, List.empty(),
+                List.of(Modifier.PUBLIC), List.empty());
     }
 
     public static synchronized ObjectClass getInstance() {

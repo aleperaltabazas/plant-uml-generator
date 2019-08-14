@@ -1,10 +1,8 @@
 package persistence.tables;
 
+import io.vavr.collection.List;
 import persistence.attributes.ForeignKey;
 import persistence.attributes.TableAttribute;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class MiddleTable implements Table {
     private String tableName;
@@ -20,7 +18,7 @@ public class MiddleTable implements Table {
     }
 
     public List<TableAttribute> getAttributes() {
-        return new ArrayList<>();
+        return List.empty();
     }
 
     public List<ForeignKey> getFks() {

@@ -1,6 +1,7 @@
 package klass.classtype;
 
-import java.util.List;
+import io.vavr.collection.List;
+
 import java.util.Objects;
 
 public class EnumKlass implements ClassType {
@@ -18,7 +19,7 @@ public class EnumKlass implements ClassType {
         StringBuilder sb = new StringBuilder();
 
         sb.append(enumerated.get(0));
-        enumerated.stream().skip(1).forEach(e -> sb.append(", ").append(e));
+        enumerated.drop(1).forEach(e -> sb.append(", ").append(e));
 
         return sb.toString();
     }

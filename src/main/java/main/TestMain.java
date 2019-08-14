@@ -1,6 +1,7 @@
 package main;
 
 import exceptions.NoSuchDirectoryException;
+import io.vavr.collection.List;
 import klass.Klass;
 import klass.builders.KlassBuilder;
 import klass.objekt.ObjectClass;
@@ -9,7 +10,6 @@ import parsing.KlassReader;
 import parsing.UMLMaker;
 
 import java.io.File;
-import java.util.List;
 
 public class TestMain {
     public static void main(String[] args) {

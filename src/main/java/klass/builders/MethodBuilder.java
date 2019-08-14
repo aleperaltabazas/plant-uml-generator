@@ -1,12 +1,10 @@
 package klass.builders;
 
 import exceptions.BuildError;
+import io.vavr.collection.List;
 import javafx.util.Pair;
 import klass.Argument;
 import klass.Method;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class MethodBuilder extends AbstractBuilder {
     private String name;
@@ -29,24 +27,27 @@ public class MethodBuilder extends AbstractBuilder {
         String arguments = definition.substring(first, last);
 
         fillArgumentMap(arguments);
-        this.arguments = new ArrayList<>();
+        this.arguments = List.empty();
 
-        this.argumentsMap.forEach(a -> this.arguments.add(new Argument(a.getValue(), a.getKey())));
+        for (Pair<String, String> a : this.argumentsMap) {
+            this.arguments = this.arguments.append(new Argument(a.getValue(), a.getKey()));
+        }
     }
 
     private void fillArgumentMap(String arguments) {
         char[] ars = arguments.toCharArray();
-        List<Character> characters = new ArrayList<>();
+        List<Character> characters = List.empty();
 
-        for (char a : ars)
-            characters.add(a);
+        for (char a : ars) {
+            characters = characters.append(a);
+        }
 
         int greaterOrLesserThan = 0;
 
         StringBuilder sb = new StringBuilder();
 
-        List<String> names = new ArrayList<>();
-        List<String> types = new ArrayList<>();
+        List<String> names = List.empty();
+        List<String> types = List.empty();
 
         for (Character character : characters) {
             if (character == '<') greaterOrLesserThan++;
@@ -54,14 +55,15 @@ public class MethodBuilder extends AbstractBuilder {
 
             if (character == ' ' && greaterOrLesserThan == 0) {
                 String str = sb.toString();
-                if (!str.isEmpty())
-                    types.add(str);
+                if (!str.isEmpty()) {
+                    types = types.append(str);
+                }
                 sb = new StringBuilder();
                 continue;
             }
 
             if (character == ',' && greaterOrLesserThan == 0) {
-                names.add(sb.toString());
+                names = names.append(sb.toString());
                 sb = new StringBuilder();
                 continue;
             }
@@ -70,12 +72,15 @@ public class MethodBuilder extends AbstractBuilder {
         }
 
         String str = sb.toString();
-        if (!str.isEmpty())
-            names.add(str);
+        if (!str.isEmpty()) {
+            names = names.append(str);
+        }
 
-        argumentsMap = new ArrayList<>();
+        argumentsMap = List.empty();
 
-        names.forEach(name -> argumentsMap.add(new Pair<>(name, types.get(names.indexOf(name)))));
+        for (String s : names) {
+            this.argumentsMap = argumentsMap.append(new Pair<>(s, types.get(names.indexOf(s))));
+        }
     }
 
     private void parseName(String definition) {

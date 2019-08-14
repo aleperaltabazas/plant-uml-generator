@@ -1,5 +1,6 @@
 package parsing;
 
+import io.vavr.collection.List;
 import klass.Attribute;
 import klass.Klass;
 import org.junit.Before;
@@ -12,14 +13,10 @@ import persistence.tables.builders.SimpleTableBuilder;
 import utils.AttributeFactory;
 import utils.KlassFactory;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
 import static org.junit.Assert.*;
 
 public class TestRegularTableParse {
-    Klass klass;
+    private Klass klass;
     private Attribute oneToOne;
     private Attribute oneToMany;
     private Attribute manyToOne;
@@ -32,15 +29,16 @@ public class TestRegularTableParse {
         manyToOne = AttributeFactory.manyToOne("parent", "Klass");
         Attribute some = AttributeFactory.simple("some", "int");
         Attribute other = AttributeFactory.simple("other", "float");
-        klass = KlassFactory.withAttributes("Entity", Arrays.asList(pk, oneToOne, oneToMany, manyToOne, some, other));
+        klass = KlassFactory.withAttributes("Entity", List.of(pk, oneToOne, oneToMany, manyToOne, some, other));
     }
 
     @Test
     public void tableOfKlassWithoutParsingForeignKeys() {
         SimpleTableBuilder tb = new SimpleTableBuilder();
-        tb.parse(klass, new ArrayList<>());
+        tb.parse(klass, List.empty());
         RegularTable regularTable = tb.build();
 
+        assertEquals("entity", regularTable.getName());
         assertEquals("id (PK)", regularTable.getPk());
         assertEquals(2, regularTable.getAttributes().size());
         assertEquals(0, regularTable.getFks().size());
@@ -51,7 +49,7 @@ public class TestRegularTableParse {
         List<ForeignKey> foreignKeys = ForeignKeyFactory.foreignKeysOf(klass);
 
         SimpleTableBuilder tb = new SimpleTableBuilder();
-        tb.parse(klass, new ArrayList<>());
+        tb.parse(klass, List.empty());
         tb.takeForeignKeys(foreignKeys);
         RegularTable regularTable = tb.build();
 
@@ -69,7 +67,7 @@ public class TestRegularTableParse {
         int initialSize = foreignKeys.size();
 
         SimpleTableBuilder tb = new SimpleTableBuilder();
-        tb.parse(klass, new ArrayList<>());
+        tb.parse(klass, List.empty());
         tb.takeForeignKeys(foreignKeys);
 
         RegularTable regularTable = tb.build();

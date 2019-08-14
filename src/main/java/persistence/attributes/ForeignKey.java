@@ -31,17 +31,17 @@ public class ForeignKey {
         String destinationTable;
 
         switch (keyType) {
-            case OneToOne:
-            case ManyToOne:
-            case ManyToMany:
+            case ONE_TO_ONE:
+            case MANY_TO_ONE:
+            case MANY_TO_MANY:
                 originTable = holderKlass;
                 destinationTable = attribute.getKlass();
                 break;
-            case OneToMany:
+            case ONE_TO_MANY:
                 originTable = attribute.getKlass().matches("\\w+<.*>") ? removeListWrapper(attribute.getKlass()) :
                         attribute.getKlass();
                 destinationTable = holderKlass;
-                keyType = FKType.ManyToOne;
+                keyType = FKType.MANY_TO_ONE;
                 break;
             default:
                 throw new NullPointerException();
@@ -53,13 +53,13 @@ public class ForeignKey {
 
     private static FKType parseKeyType(Attribute attribute) {
         if (attribute.hasAnnotation("@OneToOne"))
-            return FKType.OneToOne;
+            return FKType.ONE_TO_ONE;
         if (attribute.hasAnnotation("@OneToMany"))
-            return FKType.OneToMany;
+            return FKType.ONE_TO_MANY;
         if (attribute.hasAnnotation("@ManyToOne"))
-            return FKType.ManyToOne;
+            return FKType.MANY_TO_ONE;
         if (attribute.hasAnnotation("@ManyToMany"))
-            return FKType.ManyToMany;
+            return FKType.MANY_TO_MANY;
         throw new NotAForeignKeyException(attribute);
     }
 

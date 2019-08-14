@@ -1,12 +1,10 @@
 package klass.objekt;
 
+import io.vavr.collection.List;
 import klass.Method;
-
-import java.util.Arrays;
-import java.util.List;
 
 public class ObjectMethods {
     public static List<Method> all() {
-        return Arrays.asList();
+        return List.empty();
     }
 }

@@ -1,10 +1,9 @@
 package persistence.tables.builders;
 
+import io.vavr.collection.List;
 import klass.Klass;
 import persistence.attributes.ForeignKey;
 import persistence.tables.Table;
-
-import java.util.List;
 
 public interface TableBuilder {
     TableBuilder parse(Klass entity, List<Klass> others);

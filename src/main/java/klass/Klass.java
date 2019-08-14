@@ -1,13 +1,11 @@
 package klass;
 
 import exceptions.NoSuchStrategyException;
+import io.vavr.collection.List;
 import klass.classtype.ClassType;
 import klass.objekt.ObjectClass;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 public class Klass {
     private List<Attribute> attributes;
@@ -57,7 +55,7 @@ public class Klass {
     }
 
     public boolean hasGetterFor(String name) {
-        return methods.stream().anyMatch(method -> method.getName().equalsIgnoreCase("get" + name));
+        return methods.exists(method -> method.getName().equalsIgnoreCase("get" + name));
     }
 
     public boolean isIgnorable() {
@@ -85,7 +83,7 @@ public class Klass {
     }
 
     public boolean isEntity() {
-        return annotations.stream().anyMatch(a -> a.matches("@Entity([(].*[)])?"));
+        return annotations.exists(a -> a.matches("@Entity([(].*[)])?"));
     }
 
     @Override
@@ -129,16 +127,7 @@ public class Klass {
     }
 
     protected List<Attribute> getInheritableAttributes() {
-        List<Attribute> ownAttributes =
-                attributes.stream().filter(attribute -> attribute.isInheritable()).collect(Collectors.toList());
-
-        List<Attribute> superAttributes = superKlass.getInheritableAttributes();
-
-        List<Attribute> inherited = new ArrayList<>();
-        inherited.addAll(ownAttributes);
-        inherited.addAll(superAttributes);
-
-        return inherited;
+        return attributes.filter(attribute -> attribute.isInheritable()).appendAll(superKlass.getInheritableAttributes());
     }
 
     protected List<Method> inheritedMethods() {
@@ -146,30 +135,15 @@ public class Klass {
     }
 
     protected List<Method> getInheritableMethods() {
-        List<Method> ownMethods =
-                methods.stream().filter(method -> method.isInheritable()).collect(Collectors.toList());
-
-        List<Method> superMethods = superKlass.getInheritableMethods();
-
-        List<Method> inherited = new ArrayList<>();
-        inherited.addAll(ownMethods);
-        inherited.addAll(superMethods);
-
-        return inherited;
+        return methods.filter(method -> method.isInheritable()).appendAll(superKlass.getInheritableMethods());
     }
 
     public List<Method> allMethods() {
-        List<Method> allMethods = new ArrayList<>(methods);
-        allMethods.addAll(inheritedMethods());
-
-        return allMethods;
+        return methods.appendAll(inheritedMethods());
     }
 
     public List<Attribute> allAtributes() {
-        List<Attribute> allAtributes = new ArrayList<>(attributes);
-        allAtributes.addAll(inheritedAttributes());
-
-        return allAtributes;
+        return attributes.appendAll(inheritedAttributes());
     }
 
     public boolean isInherited() {
@@ -185,11 +159,11 @@ public class Klass {
     }
 
     private boolean hasAnnotationByRegex(String regex) {
-        return annotations.stream().anyMatch(a -> a.matches(regex + "([(].*[)])?"));
+        return annotations.exists(a -> a.matches(regex + "([(].*[)])?"));
     }
 
     public String getInheritanceStrategy() {
-        return annotations.stream().filter(a -> a.matches("@Inheritance([(].*[)])?"))
-                .findFirst().orElseThrow(() -> new NoSuchStrategyException(this));
+        return annotations.filter(a -> a.matches("@Inheritance([(].*[)])?"))
+                .headOption().getOrElseThrow(() -> new NoSuchStrategyException(this));
     }
 }

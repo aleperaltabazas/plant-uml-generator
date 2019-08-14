@@ -2,15 +2,13 @@ package parsing;
 
 import exceptions.NoSuchFileException;
 import exceptions.WriteError;
+import io.vavr.collection.List;
 
 import java.io.*;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
 
 public class FileManager {
     public Path writeFile(String fileName, List<String> lines) {
@@ -24,16 +22,16 @@ public class FileManager {
 
     public List<String> findAllClasses(String path) {
         File file = new File(path);
-        List<String> all = new ArrayList<>();
+        List<String> all = List.empty();
 
         if (file.isDirectory()) {
             for (File f : file.listFiles()) {
-                all.addAll(findAllClasses(f.getAbsolutePath()));
+                all = all.appendAll(findAllClasses(f.getAbsolutePath()));
             }
         } else {
             if (file.getName().endsWith(".java")) {
                 try {
-                    all.add(fileToText(file.getAbsolutePath()));
+                    all = all.append(fileToText(file.getAbsolutePath()));
                 } catch (FileNotFoundException e) {
                     throw new NoSuchFileException(file.getAbsolutePath());
                 }
@@ -45,7 +43,7 @@ public class FileManager {
 
     public String fileToText(String path) throws FileNotFoundException {
         BufferedReader reader = new BufferedReader(new FileReader(path));
-        List<String> lines = reader.lines().collect(Collectors.toList());
+        List<String> lines = List.ofAll(reader.lines());
 
         StringBuilder sb = new StringBuilder();
         lines.forEach(line -> sb.append(line).append("\n"));

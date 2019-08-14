@@ -1,10 +1,9 @@
 package persistence.tables;
 
+import io.vavr.collection.List;
 import klass.Klass;
 import persistence.attributes.ForeignKey;
 import persistence.attributes.TableAttribute;
-
-import java.util.List;
 
 import static utils.ObjectToEntity.camelToSnake;
 

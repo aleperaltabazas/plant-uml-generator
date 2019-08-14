@@ -1,13 +1,13 @@
 package klass;
 
 public enum Modifier {
-    Public,
-    Private,
-    Protected,
-    PackagePrivate,
-    Static,
-    Final,
-    Generic,
-    Abstract,
-    Default
+    PUBLIC,
+    PRIVATE,
+    PROTECTED,
+    PACKAGE_PRIVATE,
+    STATIC,
+    FINAL,
+    GENERIC,
+    ABSTRACT,
+    DEFAULT,
 }
